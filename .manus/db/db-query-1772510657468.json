@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `availability` (`id` int AUTO_INCREMENT NOT NULL, `dayOfWeek` int NOT NULL, `startTime` varchar(8) NOT NULL, `endTime` varchar(8) NOT NULL, `isActive` boolean NOT NULL DEFAULT true, `timezone` varchar(64) DEFAULT 'America/Los_Angeles', CONSTRAINT `availability_id` PRIMARY KEY(`id`));",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user oHQ5cTB5HrMfnaD.root --database UusZELR6PWAvnyvU98nd85 --execute CREATE TABLE IF NOT EXISTS `availability` (`id` int AUTO_INCREMENT NOT NULL, `dayOfWeek` int NOT NULL, `startTime` varchar(8) NOT NULL, `endTime` varchar(8) NOT NULL, `isActive` boolean NOT NULL DEFAULT true, `timezone` varchar(64) DEFAULT 'America/Los_Angeles', CONSTRAINT `availability_id` PRIMARY KEY(`id`));",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 56
+}

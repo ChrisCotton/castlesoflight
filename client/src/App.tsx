@@ -5,31 +5,61 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import Book from "./pages/Book";
+import AdminLayout from "./components/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import CRM from "./pages/admin/CRM";
+import LeadDetail from "./pages/admin/LeadDetail";
+import Bookings from "./pages/admin/Bookings";
+import Availability from "./pages/admin/Availability";
+import Analytics from "./pages/admin/Analytics";
+
+function AdminRoute({ component: Component }: { component: React.ComponentType }) {
+  return (
+    <AdminLayout>
+      <Component />
+    </AdminLayout>
+  );
+}
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      {/* Public routes */}
+      <Route path="/" component={Home} />
+      <Route path="/book" component={Book} />
+
+      {/* Admin routes */}
+      <Route path="/admin">
+        {() => <AdminRoute component={Dashboard} />}
+      </Route>
+      <Route path="/admin/crm">
+        {() => <AdminRoute component={CRM} />}
+      </Route>
+      <Route path="/admin/leads/:id">
+        {() => <AdminRoute component={LeadDetail} />}
+      </Route>
+      <Route path="/admin/bookings">
+        {() => <AdminRoute component={Bookings} />}
+      </Route>
+      <Route path="/admin/availability">
+        {() => <AdminRoute component={Availability} />}
+      </Route>
+      <Route path="/admin/analytics">
+        {() => <AdminRoute component={Analytics} />}
+      </Route>
+
+      {/* Fallback */}
+      <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
           <Router />
