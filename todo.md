@@ -50,3 +50,16 @@
 - [x] Add testimonials/quotes section with cinematic card design
 - [x] Polish admin sidebar to match new HUD aesthetic
 - [x] Final checkpoint and delivery
+
+## Stripe Payment Integration
+- [x] Add Stripe npm package and scaffold
+- [x] Extend bookings schema: price_cents, currency, stripe_session_id, payment_status, payment_intent_id
+- [x] Extend call_types schema: price_cents, currency, is_paid
+- [x] Server: createCheckoutSession tRPC procedure
+- [x] Server: Stripe webhook handler (checkout.session.completed, payment_intent.payment_failed)
+- [x] Public booking flow: redirect to Stripe Checkout after slot selection
+- [x] Public booking flow: /book/success and /book/cancel pages
+- [x] Admin bookings: show payment status badge (paid/pending/failed/free)
+- [x] Admin availability: set price per call type
+- [x] Vitest tests for payment procedures (30 total tests passing)
+- [x] Final checkpoint

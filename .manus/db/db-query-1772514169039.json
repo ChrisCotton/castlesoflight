@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE `bookings` ADD `stripeSessionId` varchar(256);\nALTER TABLE `bookings` ADD `stripePaymentIntentId` varchar(256);\nALTER TABLE `bookings` ADD `paymentStatus` enum('free','pending','paid','failed','refunded') DEFAULT 'free' NOT NULL;\nALTER TABLE `bookings` ADD `priceCents` int DEFAULT 0 NOT NULL;\nALTER TABLE `callTypes` ADD `isPaid` boolean DEFAULT false NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user oHQ5cTB5HrMfnaD.root --database UusZELR6PWAvnyvU98nd85 --execute ALTER TABLE `bookings` ADD `stripeSessionId` varchar(256);\nALTER TABLE `bookings` ADD `stripePaymentIntentId` varchar(256);\nALTER TABLE `bookings` ADD `paymentStatus` enum('free','pending','paid','failed','refunded') DEFAULT 'free' NOT NULL;\nALTER TABLE `bookings` ADD `priceCents` int DEFAULT 0 NOT NULL;\nALTER TABLE `callTypes` ADD `isPaid` boolean DEFAULT false NOT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2006
+}

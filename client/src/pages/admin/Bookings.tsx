@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -11,15 +12,36 @@ import {
   CheckCircle2,
   XCircle,
   Loader2,
-  Video,
   Phone,
   MessageSquare,
+  CreditCard,
+  DollarSign,
+  AlertCircle,
+  Gift,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
+type PaymentStatus = "free" | "pending" | "paid" | "failed" | "refunded";
+
+const PAYMENT_STYLES: Record<PaymentStatus, { icon: React.ReactNode; color: string; bg: string; border: string; label: string }> = {
+  free: { icon: <Gift className="w-3 h-3" />, color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]", label: "Free" },
+  pending: { icon: <CreditCard className="w-3 h-3" />, color: "text-[oklch(0.82_0.20_58)]", bg: "bg-[oklch(0.82_0.20_58_/_0.1)]", border: "border-[oklch(0.82_0.20_58_/_0.3)]", label: "Payment Pending" },
+  paid: { icon: <DollarSign className="w-3 h-3" />, color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]", label: "Paid" },
+  failed: { icon: <AlertCircle className="w-3 h-3" />, color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30", label: "Payment Failed" },
+  refunded: { icon: <CreditCard className="w-3 h-3" />, color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]", label: "Refunded" },
+};
+
+function PaymentChip({ status, priceCents }: { status: PaymentStatus; priceCents?: number }) {
+  const s = PAYMENT_STYLES[status];
+  return (
+    <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 ${s.bg} ${s.color} border ${s.border}`}>
+      {s.icon} {s.label}{status === "paid" && priceCents ? ` · $${(priceCents / 100).toLocaleString()}` : ""}
+    </span>
+  );
+}
 
 const STATUS_STYLES: Record<BookingStatus, { color: string; bg: string; border: string; label: string }> = {
   pending: { color: "text-primary", bg: "bg-primary/10", border: "border-primary/30", label: "Pending" },
@@ -63,10 +85,11 @@ function BookingCard({ booking, callTypes, onUpdate }: {
     <div className={`rounded-xl border ${STATUS_STYLES[status].border} bg-card p-5`}>
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
             <StatusChip status={status} />
+            <PaymentChip status={(booking.paymentStatus ?? "free") as PaymentStatus} priceCents={booking.priceCents} />
             {ct && (
-              <span className="text-xs text-muted-foreground font-mono flex items-center gap-1">
+              <span className="text-xs text-[oklch(0.45_0.015_220)] font-mono flex items-center gap-1">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ct.color ?? "#6366f1" }} />
                 {ct.name} · {ct.durationMinutes} min
               </span>

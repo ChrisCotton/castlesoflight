@@ -97,6 +97,7 @@ export const callTypes = mysqlTable("callTypes", {
   price: decimal("price", { precision: 10, scale: 2 }).default("0"),
   currency: varchar("currency", { length: 8 }).default("USD"),
   isActive: boolean("isActive").default(true).notNull(),
+  isPaid: boolean("isPaid").default(false).notNull(),
   color: varchar("color", { length: 32 }).default("#6366f1"),
   sortOrder: int("sortOrder").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -146,6 +147,13 @@ export const bookings = mysqlTable("bookings", {
     .notNull(),
   confirmationToken: varchar("confirmationToken", { length: 128 }),
   adminNotes: text("adminNotes"),
+  // Stripe payment fields
+  stripeSessionId: varchar("stripeSessionId", { length: 256 }),
+  stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 256 }),
+  paymentStatus: mysqlEnum("paymentStatus", ["free", "pending", "paid", "failed", "refunded"])
+    .default("free")
+    .notNull(),
+  priceCents: int("priceCents").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

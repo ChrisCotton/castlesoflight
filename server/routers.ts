@@ -6,6 +6,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import * as db from "./db";
+import { stripe } from "./stripe";
 
 // ─── Admin guard ──────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -247,6 +248,10 @@ const bookingRouter = router({
         timezone: input.timezone ?? "America/Los_Angeles",
       });
 
+      // Retrieve the newly created booking to get its ID
+      const allBookings = await db.getBookings();
+      const newBooking = allBookings.find((b) => b.confirmationToken === token);
+
       if (leadId) {
         await db.addInteraction({
           leadId,
@@ -261,7 +266,68 @@ const bookingRouter = router({
         content: `${input.email} booked on ${input.scheduledDate} at ${input.scheduledTime}. Company: ${input.company ?? "N/A"}`,
       }).catch(() => {});
 
-      return { success: true, token };
+      return { success: true, token, bookingId: newBooking?.id };
+    }),
+
+  // Public: create Stripe checkout session for a paid booking
+  createCheckoutSession: publicProcedure
+    .input(
+      z.object({
+        bookingId: z.number(),
+        origin: z.string().url(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const booking = await db.getBookingById(input.bookingId);
+      if (!booking) throw new TRPCError({ code: "NOT_FOUND", message: "Booking not found" });
+
+      const callTypes = await db.getCallTypes(true);
+      const callType = callTypes.find((ct) => ct.id === booking.callTypeId);
+      if (!callType) throw new TRPCError({ code: "NOT_FOUND", message: "Call type not found" });
+
+      const priceCents = Math.round(parseFloat(callType.price ?? "0") * 100);
+      if (priceCents === 0) {
+        // Free call — confirm immediately
+        await db.updateBooking(input.bookingId, { status: "confirmed", paymentStatus: "free" });
+        return { url: `${input.origin}/book/success?token=${booking.confirmationToken}&free=1` };
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        customer_email: booking.email,
+        allow_promotion_codes: true,
+        line_items: [
+          {
+            price_data: {
+              currency: callType.currency?.toLowerCase() ?? "usd",
+              product_data: {
+                name: callType.name,
+                description: `${callType.durationMinutes}-minute session on ${booking.scheduledDate} at ${booking.scheduledTime}`,
+              },
+              unit_amount: priceCents,
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          booking_id: input.bookingId.toString(),
+          customer_email: booking.email,
+          customer_name: `${booking.firstName} ${booking.lastName}`,
+        },
+        client_reference_id: input.bookingId.toString(),
+        success_url: `${input.origin}/book/success?token=${booking.confirmationToken}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${input.origin}/book/cancel?booking_id=${input.bookingId}`,
+      });
+
+      // Update booking with session id and pending payment status
+      await db.updateBooking(input.bookingId, {
+        stripeSessionId: session.id,
+        paymentStatus: "pending",
+        priceCents,
+      });
+
+      return { url: session.url! };
     }),
 
   // Admin: list bookings
