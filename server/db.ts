@@ -368,6 +368,98 @@ export async function getActiveSubscriberCount() {
 }
 
 // ─── Analytics ────────────────────────────────────────────────────────────────
+export async function getLeadStats() {
+  const db = await getDb();
+  if (!db) return null;
+
+  const [byStage, bySource, byOffer, recentLeads, wonLeads, allActive] = await Promise.all([
+    // Pipeline value and count by stage
+    db.select({
+      stage: leads.stage,
+      count: sql<number>`count(*)`,
+      totalValue: sql<number>`coalesce(sum(dealValue), 0)`,
+    })
+      .from(leads)
+      .where(eq(leads.isArchived, false))
+      .groupBy(leads.stage),
+
+    // Lead count by source
+    db.select({
+      source: leads.source,
+      count: sql<number>`count(*)`,
+    })
+      .from(leads)
+      .where(eq(leads.isArchived, false))
+      .groupBy(leads.source),
+
+    // Lead count by offer interest
+    db.select({
+      offerInterest: leads.offerInterest,
+      count: sql<number>`count(*)`,
+      totalValue: sql<number>`coalesce(sum(dealValue), 0)`,
+    })
+      .from(leads)
+      .where(eq(leads.isArchived, false))
+      .groupBy(leads.offerInterest),
+
+    // Leads added in last 30 days (for velocity chart)
+    db.select({
+      date: sql<string>`DATE(createdAt)`,
+      count: sql<number>`count(*)`,
+    })
+      .from(leads)
+      .where(and(
+        eq(leads.isArchived, false),
+        gte(leads.createdAt, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+      ))
+      .groupBy(sql`DATE(createdAt)`)
+      .orderBy(sql`DATE(createdAt)`),
+
+    // Won deals
+    db.select({
+      count: sql<number>`count(*)`,
+      totalValue: sql<number>`coalesce(sum(dealValue), 0)`,
+    })
+      .from(leads)
+      .where(and(eq(leads.isArchived, false), eq(leads.stage, "closed_won"))),
+
+    // All active (non-lost, non-archived) for totals
+    db.select({
+      count: sql<number>`count(*)`,
+      totalValue: sql<number>`coalesce(sum(dealValue), 0)`,
+    })
+      .from(leads)
+      .where(and(
+        eq(leads.isArchived, false),
+        ne(leads.stage, "closed_lost")
+      )),
+  ]);
+
+  const totalActive = Number(allActive[0]?.count ?? 0);
+  const totalPipeline = Number(allActive[0]?.totalValue ?? 0);
+  const wonCount = Number(wonLeads[0]?.count ?? 0);
+  const wonValue = Number(wonLeads[0]?.totalValue ?? 0);
+  const closedCount = byStage.filter(s => s.stage === "closed_won" || s.stage === "closed_lost")
+    .reduce((sum, s) => sum + Number(s.count), 0);
+  const winRate = closedCount > 0 ? Math.round((wonCount / closedCount) * 100) : 0;
+  const avgDealSize = totalActive > 0 ? Math.round(totalPipeline / totalActive) : 0;
+
+  return {
+    byStage: byStage.map(s => ({ stage: s.stage, count: Number(s.count), totalValue: Number(s.totalValue) })),
+    bySource: bySource.map(s => ({ source: s.source, count: Number(s.count) })),
+    byOffer: byOffer.map(o => ({ offerInterest: o.offerInterest, count: Number(o.count), totalValue: Number(o.totalValue) })),
+    recentLeads: recentLeads.map(r => ({ date: r.date, count: Number(r.count) })),
+    summary: {
+      totalActive,
+      totalPipeline,
+      wonCount,
+      wonValue,
+      winRate,
+      avgDealSize,
+    },
+  };
+}
+
 export async function getAnalyticsSummary() {
   const db = await getDb();
   if (!db) return null;

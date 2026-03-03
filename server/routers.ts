@@ -624,6 +624,7 @@ const newsletterRouter = router({
 // ─── Analytics ────────────────────────────────────────────────────────────────
 const analyticsRouter = router({
   summary: adminProcedure.query(() => db.getAnalyticsSummary()),
+  leadStats: adminProcedure.query(() => db.getLeadStats()),
 });
 
 // ─── App router ───────────────────────────────────────────────────────────────

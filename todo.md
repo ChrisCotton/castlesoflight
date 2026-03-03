@@ -104,3 +104,15 @@
 - [x] Write vitest tests for the batch endpoint (78 total tests passing)
 - [x] Generate curl commands for all 10 LinkedIn prospects
 - [x] Final checkpoint
+
+## Lead Tracking Dashboard
+- [x] tRPC: leadStats procedure (pipeline value by stage, source breakdown, deal velocity, win rate, avg deal size)
+- [x] KPI cards: Total Pipeline Value, Active Leads, Avg Deal Size, Win Rate, Won Revenue
+- [x] Stage funnel bar chart (Recharts) with deal value per stage
+- [x] Source breakdown donut chart (linkedin, referral, website, etc.)
+- [x] Deal velocity trend line chart (leads added over time)
+- [x] Live lead table: sortable by stage/value/date, filterable by stage/source/offer, search by name/company
+- [x] Lead row quick actions: view detail, open LinkedIn profile
+- [x] Wire LeadsDashboard into admin sidebar nav
+- [x] 78 tests passing, zero TypeScript errors
+- [x] Final checkpoint

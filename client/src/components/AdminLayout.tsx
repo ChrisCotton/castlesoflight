@@ -15,6 +15,7 @@ import {
   ShieldAlert,
   Activity,
   Mail,
+  TrendingUp,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: "/admin/availability", label: "Availability", icon: Clock },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
+  { href: "/admin/leads", label: "Lead Intel", icon: TrendingUp },
 ];
 
 function HudTime() {
