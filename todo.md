@@ -63,3 +63,14 @@
 - [x] Admin availability: set price per call type
 - [x] Vitest tests for payment procedures (30 total tests passing)
 - [x] Final checkpoint
+
+## Email Automation
+- [x] Install Resend SDK and configure API key
+- [x] Build email helper (server/email.ts) with HTML templates
+- [x] Client confirmation email: booking details, date/time, meeting link placeholder
+- [x] Admin lead alert email: full booking details, client info, deal value
+- [x] Trigger client + admin emails on free booking creation (routers.ts)
+- [x] Trigger client + admin emails on Stripe webhook payment confirmed
+- [x] Trigger admin alert on new CRM lead capture (contact form, book download)
+- [x] Vitest tests for email template generation (38 email tests, 68 total)
+- [x] Final checkpoint

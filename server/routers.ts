@@ -7,6 +7,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import * as db from "./db";
 import { stripe } from "./stripe";
+import { sendClientConfirmation, sendAdminLeadAlert, sendAdminNewLeadAlert } from "./email";
 
 // ─── Admin guard ──────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -48,6 +49,15 @@ const leadRouter = router({
         title: `New Lead: ${input.firstName} ${input.lastName}`,
         content: `${input.email} — ${input.company ?? "No company"} — Interested in: ${input.offerInterest ?? "unknown"}`,
       }).catch(() => {});
+      // Fire admin lead alert email (non-blocking)
+      sendAdminNewLeadAlert({
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        company: input.company,
+        message: input.message,
+        source: "Contact Form",
+      }).catch((err) => console.error("[Email] Admin new lead alert failed:", err));
       return { success: true };
     }),
 
@@ -266,6 +276,39 @@ const bookingRouter = router({
         content: `${input.email} booked on ${input.scheduledDate} at ${input.scheduledTime}. Company: ${input.company ?? "N/A"}`,
       }).catch(() => {});
 
+      // Fetch call type for email data
+      const callTypes = await db.getCallTypes(true);
+      const callType = callTypes.find((ct) => ct.id === input.callTypeId);
+      const isPaidCallType = parseFloat(callType?.price ?? "0") > 0;
+
+      // For FREE call types: send confirmation emails immediately
+      // For PAID call types: emails are sent after Stripe webhook confirms payment
+      if (!isPaidCallType && callType) {
+        const emailData = {
+          firstName: input.firstName,
+          lastName: input.lastName,
+          email: input.email,
+          company: input.company,
+          phone: input.phone,
+          message: input.message,
+          callTypeName: callType.name,
+          durationMinutes: callType.durationMinutes,
+          scheduledDate: input.scheduledDate,
+          scheduledTime: input.scheduledTime,
+          timezone: input.timezone,
+          priceCents: 0,
+          paymentStatus: "free",
+          bookingId: newBooking?.id,
+        };
+        // Send both emails non-blocking
+        sendClientConfirmation(emailData).catch((err) =>
+          console.error("[Email] Client confirmation failed:", err)
+        );
+        sendAdminLeadAlert(emailData).catch((err) =>
+          console.error("[Email] Admin lead alert failed:", err)
+        );
+      }
+
       return { success: true, token, bookingId: newBooking?.id };
     }),
 
@@ -326,6 +369,32 @@ const bookingRouter = router({
         paymentStatus: "pending",
         priceCents,
       });
+
+      // For free calls that bypass Stripe, send emails immediately
+      if (priceCents === 0) {
+        const emailData = {
+          firstName: booking.firstName,
+          lastName: booking.lastName,
+          email: booking.email,
+          company: booking.company,
+          phone: booking.phone,
+          message: booking.message,
+          callTypeName: callType.name,
+          durationMinutes: callType.durationMinutes,
+          scheduledDate: booking.scheduledDate,
+          scheduledTime: booking.scheduledTime,
+          timezone: booking.timezone,
+          priceCents: 0,
+          paymentStatus: "free",
+          bookingId: input.bookingId,
+        };
+        sendClientConfirmation(emailData).catch((err) =>
+          console.error("[Email] Client confirmation failed:", err)
+        );
+        sendAdminLeadAlert(emailData).catch((err) =>
+          console.error("[Email] Admin lead alert failed:", err)
+        );
+      }
 
       return { url: session.url! };
     }),
@@ -396,6 +465,14 @@ const captureRouter = router({
         title: `Book Download: ${input.email}`,
         content: `${input.firstName ?? "Someone"} downloaded the free chapter.`,
       }).catch(() => {});
+      // Fire admin new lead alert for book download (non-blocking)
+      if (!existing) {
+        sendAdminNewLeadAlert({
+          firstName: input.firstName ?? "Reader",
+          email: input.email,
+          source: "Book Download (Free Chapter)",
+        }).catch((err) => console.error("[Email] Book download lead alert failed:", err));
+      }
       return { success: true };
     }),
 

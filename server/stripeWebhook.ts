@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
 import { stripe } from "./stripe";
 import { getDb } from "./db";
-import { bookings } from "../drizzle/schema";
+import { bookings, callTypes } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "./_core/notification";
+import { sendClientConfirmation, sendAdminLeadAlert } from "./email";
 
 export const stripeWebhookRouter = Router();
 
@@ -72,9 +73,52 @@ stripeWebhookRouter.post(
               })
               .where(eq(bookings.id, bookingId));
 
+            // Fetch full booking + call type for email
+            const bookingRows = await db
+              .select()
+              .from(bookings)
+              .where(eq(bookings.id, bookingId))
+              .limit(1);
+            const booking = bookingRows[0];
+
+            if (booking) {
+              const ctRows = await db
+                .select()
+                .from(callTypes)
+                .where(eq(callTypes.id, booking.callTypeId))
+                .limit(1);
+              const ct = ctRows[0];
+
+              if (ct) {
+                const emailData = {
+                  firstName: booking.firstName,
+                  lastName: booking.lastName,
+                  email: booking.email,
+                  company: booking.company,
+                  phone: booking.phone,
+                  message: booking.message,
+                  callTypeName: ct.name,
+                  durationMinutes: ct.durationMinutes,
+                  scheduledDate: booking.scheduledDate,
+                  scheduledTime: booking.scheduledTime,
+                  timezone: booking.timezone,
+                  priceCents: booking.priceCents,
+                  paymentStatus: "paid",
+                  bookingId,
+                };
+                // Send confirmation to client and alert to admin (non-blocking)
+                sendClientConfirmation(emailData).catch((err) =>
+                  console.error("[Stripe Webhook] Client confirmation email failed:", err)
+                );
+                sendAdminLeadAlert(emailData).catch((err) =>
+                  console.error("[Stripe Webhook] Admin lead alert email failed:", err)
+                );
+              }
+            }
+
             await notifyOwner({
-              title: `Payment Received — Booking #${bookingId}`,
-              content: `Stripe session ${session.id} completed. Booking confirmed.`,
+              title: `💰 Payment Received — Booking #${bookingId}`,
+              content: `Stripe session ${session.id} completed. Booking confirmed. Emails sent.`,
             }).catch(() => {});
           }
           break;
