@@ -90,3 +90,8 @@
 - [x] Sidebar: add Newsletter nav item to AdminLayout
 - [x] Vitest tests: 68 total tests passing (newsletter uses existing email tests)
 - [x] Final checkpoint
+
+## Scroll-Triggered Newsletter Popup
+- [x] NewsletterPopup component (scroll 60% trigger, session dismissal, framer-motion animation)
+- [x] Embed in Home.tsx
+- [x] Final checkpoint

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import NewsletterPopup from "@/components/NewsletterPopup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -977,6 +978,7 @@ function Footer() {
 export default function Home() {
   return (
     <div className="min-h-screen bg-[oklch(0.04_0.005_260)]">
+      <NewsletterPopup />
       <HudStatusBar />
       <Nav />
       <Hero />
