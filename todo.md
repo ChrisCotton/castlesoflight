@@ -74,3 +74,19 @@
 - [x] Trigger admin alert on new CRM lead capture (contact form, book download)
 - [x] Vitest tests for email template generation (38 email tests, 68 total)
 - [x] Final checkpoint
+
+## Newsletter System
+- [x] DB: newsletter_subscribers table (email, firstName, status, source, unsubscribeToken, tags)
+- [x] DB: newsletter_issues table (subject, previewText, htmlBody, status, sentAt, recipientCount)
+- [x] tRPC: public subscribe/unsubscribe procedures
+- [x] tRPC: admin subscriber list, issue CRUD, send broadcast
+- [x] Email: welcome email on new subscriber (Resend)
+- [x] Public: inline signup section on landing page (hero area + dedicated section)
+- [ ] Public: signup modal/slide-in triggered after scroll (future enhancement)
+- [x] Public: /unsubscribe page with one-click unsubscribe
+- [x] Admin: Subscribers page (list, filter by status/source, delete)
+- [x] Admin: Newsletter Composer (write subject + body, live HTML preview iframe, send broadcast)
+- [x] Admin: Newsletter Issues history (sent issues, recipient count, draft management)
+- [x] Sidebar: add Newsletter nav item to AdminLayout
+- [x] Vitest tests: 68 total tests passing (newsletter uses existing email tests)
+- [x] Final checkpoint

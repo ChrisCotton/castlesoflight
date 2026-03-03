@@ -14,6 +14,7 @@ import {
   Loader2,
   ShieldAlert,
   Activity,
+  Mail,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { href: "/admin/bookings", label: "Bookings", icon: Calendar },
   { href: "/admin/availability", label: "Availability", icon: Clock },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
 ];
 
 function HudTime() {

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `newsletterIssues` (`id` int AUTO_INCREMENT NOT NULL, `subject` varchar(512) NOT NULL, `previewText` varchar(512), `htmlBody` text NOT NULL, `textBody` text, `status` enum('draft','sent','scheduled') NOT NULL DEFAULT 'draft', `recipientCount` int NOT NULL DEFAULT 0, `sentAt` timestamp NULL, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, CONSTRAINT `newsletterIssues_id` PRIMARY KEY(`id`))",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user oHQ5cTB5HrMfnaD.root --database UusZELR6PWAvnyvU98nd85 --execute CREATE TABLE IF NOT EXISTS `newsletterIssues` (`id` int AUTO_INCREMENT NOT NULL, `subject` varchar(512) NOT NULL, `previewText` varchar(512), `htmlBody` text NOT NULL, `textBody` text, `status` enum('draft','sent','scheduled') NOT NULL DEFAULT 'draft', `recipientCount` int NOT NULL DEFAULT 0, `sentAt` timestamp NULL, `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, CONSTRAINT `newsletterIssues_id` PRIMARY KEY(`id`))",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 53
+}

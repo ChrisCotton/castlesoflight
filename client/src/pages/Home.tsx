@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -903,29 +904,68 @@ function Contact() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="border-t border-[oklch(0.78_0.18_195_/_0.10)] py-10">
+    <footer className="border-t border-[oklch(0.78_0.18_195_/_0.10)] pt-14 pb-8">
       <div className="container">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[oklch(0.82_0.20_58)] flex items-center justify-center">
-              <Terminal className="w-3.5 h-3.5 text-[oklch(0.06_0.01_260)]" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-7 h-7 rounded-lg bg-[oklch(0.82_0.20_58)] flex items-center justify-center">
+                <Terminal className="w-3.5 h-3.5 text-[oklch(0.06_0.01_260)]" />
+              </div>
+              <span className="font-display font-bold text-foreground">
+                Castles<span className="text-[oklch(0.82_0.20_58)]">of</span>Light
+              </span>
             </div>
-            <span className="font-display font-bold text-foreground">
-              Castles<span className="text-[oklch(0.82_0.20_58)]">of</span>Light
-            </span>
+            <p className="text-xs text-[oklch(0.40_0.015_220)] leading-relaxed mb-4">
+              AI-augmented infrastructure consulting. 30 years of scar tissue, deployed at the speed of thought.
+            </p>
+            <div className="flex items-center gap-4 text-xs font-mono text-[oklch(0.40_0.015_220)]">
+              <a href="mailto:chris@castlesoflight.com" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5" /> Email
+              </a>
+              <a href="https://linkedin.com/in/christophercotton" target="_blank" rel="noopener noreferrer" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
+                <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+              </a>
+              <a href="https://github.com/christophercotton" target="_blank" rel="noopener noreferrer" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
+                <Github className="w-3.5 h-3.5" /> GitHub
+              </a>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6 text-xs font-mono text-[oklch(0.40_0.015_220)]">
-            <a href="mailto:chris@castlesoflight.com" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5" /> chris@castlesoflight.com
-            </a>
-            <a href="https://linkedin.com/in/christophercotton" target="_blank" rel="noopener noreferrer" className="hover:text-[oklch(0.78_0.18_195)] transition-colors">
-              <Linkedin className="w-3.5 h-3.5" />
-            </a>
+          {/* Quick Links */}
+          <div>
+            <p className="text-xs font-mono text-[oklch(0.78_0.18_195)] tracking-widest mb-4">// QUICK LINKS</p>
+            <ul className="space-y-2">
+              {[
+                { href: "#services", label: "Services" },
+                { href: "#case-studies", label: "Case Studies" },
+                { href: "#about", label: "About" },
+                { href: "/book", label: "Book a Call" },
+                { href: "#contact", label: "Contact" },
+              ].map((l) => (
+                <li key={l.href}>
+                  <a href={l.href} className="text-xs text-[oklch(0.40_0.015_220)] hover:text-[oklch(0.78_0.18_195)] transition-colors font-mono">
+                    → {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="text-xs font-mono text-[oklch(0.30_0.015_220)]">
+          {/* Newsletter */}
+          <div>
+            <NewsletterSignup variant="footer" source="landing_page" subtitle="Weekly AI + DevOps tactics from the trenches. No fluff." />
+          </div>
+        </div>
+
+        <div className="border-t border-[oklch(0.78_0.18_195_/_0.08)] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="text-xs font-mono text-[oklch(0.25_0.015_220)]">
             © 2026 Castles of Light LLC · San Francisco, CA
+          </div>
+          <div className="flex items-center gap-4 text-xs font-mono text-[oklch(0.25_0.015_220)]">
+            <span className="text-[oklch(0.78_0.18_195_/_0.4)]">● SYS.ONLINE</span>
+            <span>CASTLES OF LIGHT v2.0</span>
           </div>
         </div>
       </div>
@@ -946,6 +986,7 @@ export default function Home() {
       <Testimonials />
       <About />
       <BookSection />
+      <NewsletterSignup variant="hero" title="HARDCORE INFRASTRUCTURE" subtitle="Weekly dispatches on AI-augmented DevOps, cloud cost reduction, and building at the speed of thought. Written by a 30-year infrastructure veteran." source="landing_page" />
       <Contact />
       <Footer />
     </div>

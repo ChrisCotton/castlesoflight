@@ -171,3 +171,51 @@ export const emailCaptures = mysqlTable("emailCaptures", {
 });
 
 export type EmailCapture = typeof emailCaptures.$inferSelect;
+
+// ─── Newsletter Subscribers ───────────────────────────────────────────────────
+export const newsletterSubscribers = mysqlTable("newsletterSubscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  firstName: varchar("firstName", { length: 128 }),
+  lastName: varchar("lastName", { length: 128 }),
+  status: mysqlEnum("status", ["active", "unsubscribed", "bounced"])
+    .default("active")
+    .notNull(),
+  source: mysqlEnum("source", [
+    "landing_page",
+    "book_download",
+    "booking",
+    "contact_form",
+    "manual",
+    "other",
+  ])
+    .default("landing_page")
+    .notNull(),
+  tags: json("tags").$type<string[]>().default([]),
+  unsubscribeToken: varchar("unsubscribeToken", { length: 128 }).notNull(),
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
+
+// ─── Newsletter Issues ────────────────────────────────────────────────────────
+export const newsletterIssues = mysqlTable("newsletterIssues", {
+  id: int("id").autoincrement().primaryKey(),
+  subject: varchar("subject", { length: 512 }).notNull(),
+  previewText: varchar("previewText", { length: 512 }),
+  htmlBody: text("htmlBody").notNull(),
+  textBody: text("textBody"),
+  status: mysqlEnum("status", ["draft", "sent", "scheduled"])
+    .default("draft")
+    .notNull(),
+  recipientCount: int("recipientCount").default(0).notNull(),
+  sentAt: timestamp("sentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NewsletterIssue = typeof newsletterIssues.$inferSelect;
+export type InsertNewsletterIssue = typeof newsletterIssues.$inferInsert;

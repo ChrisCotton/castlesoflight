@@ -13,6 +13,8 @@ import LeadDetail from "./pages/admin/LeadDetail";
 import Bookings from "./pages/admin/Bookings";
 import Availability from "./pages/admin/Availability";
 import Analytics from "./pages/admin/Analytics";
+import Newsletter from "./pages/admin/Newsletter";
+import Unsubscribe from "./pages/Unsubscribe";
 
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   return (
@@ -48,6 +50,12 @@ function Router() {
       <Route path="/admin/analytics">
         {() => <AdminRoute component={Analytics} />}
       </Route>
+      <Route path="/admin/newsletter">
+        {() => <AdminRoute component={Newsletter} />}
+      </Route>
+
+      {/* Public utility routes */}
+      <Route path="/unsubscribe" component={Unsubscribe} />
 
       {/* Fallback */}
       <Route path="/404" component={NotFound} />

@@ -7,7 +7,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import * as db from "./db";
 import { stripe } from "./stripe";
-import { sendClientConfirmation, sendAdminLeadAlert, sendAdminNewLeadAlert } from "./email";
+import { sendClientConfirmation, sendAdminLeadAlert, sendAdminNewLeadAlert, sendNewsletterWelcome, sendNewsletterBroadcast } from "./email";
 
 // ─── Admin guard ──────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -479,6 +479,148 @@ const captureRouter = router({
   list: adminProcedure.query(() => db.getEmailCaptures()),
 });
 
+// ─── Newsletter ───────────────────────────────────────────────────────────────
+const newsletterRouter = router({
+  // Public: subscribe
+  subscribe: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        source: z.enum(["landing_page", "book_download", "booking", "contact_form", "manual", "other"]).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const result = await db.subscribeToNewsletter(
+        input.email,
+        input.firstName,
+        input.lastName,
+        input.source ?? "landing_page"
+      );
+      // Send welcome email only to new subscribers
+      if (result.isNew && result.subscriber) {
+        sendNewsletterWelcome({
+          firstName: result.subscriber.firstName ?? undefined,
+          email: result.subscriber.email,
+          unsubscribeToken: result.subscriber.unsubscribeToken,
+        }).catch((err) => console.error("[Email] Newsletter welcome failed:", err));
+      }
+      return { success: true, isNew: result.isNew };
+    }),
+
+  // Public: unsubscribe via token
+  unsubscribe: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .mutation(async ({ input }) => {
+      const ok = await db.unsubscribeFromNewsletter(input.token);
+      return { success: ok };
+    }),
+
+  // Admin: list subscribers
+  listSubscribers: adminProcedure
+    .input(z.object({ status: z.string().optional() }))
+    .query(({ input }) => db.getNewsletterSubscribers(input.status)),
+
+  // Admin: subscriber count
+  subscriberCount: adminProcedure.query(() => db.getActiveSubscriberCount()),
+
+  // Admin: list issues
+  listIssues: adminProcedure.query(() => db.getNewsletterIssues()),
+
+  // Admin: get single issue
+  getIssue: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ input }) => db.getNewsletterIssueById(input.id)),
+
+  // Admin: create draft
+  createIssue: adminProcedure
+    .input(
+      z.object({
+        subject: z.string().min(1),
+        previewText: z.string().optional(),
+        htmlBody: z.string().min(1),
+        textBody: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const issue = await db.createNewsletterIssue({
+        subject: input.subject,
+        previewText: input.previewText,
+        htmlBody: input.htmlBody,
+        textBody: input.textBody,
+        status: "draft",
+      });
+      return issue;
+    }),
+
+  // Admin: update draft
+  updateIssue: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        subject: z.string().min(1).optional(),
+        previewText: z.string().optional(),
+        htmlBody: z.string().optional(),
+        textBody: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      await db.updateNewsletterIssue(id, data);
+      return { success: true };
+    }),
+
+  // Admin: send broadcast
+  sendIssue: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      const issue = await db.getNewsletterIssueById(input.id);
+      if (!issue) throw new TRPCError({ code: "NOT_FOUND", message: "Issue not found" });
+      if (issue.status === "sent") throw new TRPCError({ code: "BAD_REQUEST", message: "Issue already sent" });
+
+      const subscribers = await db.getNewsletterSubscribers("active");
+      if (subscribers.length === 0) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "No active subscribers" });
+      }
+
+      // Mark as sent immediately to prevent double-sends
+      await db.updateNewsletterIssue(input.id, {
+        status: "sent",
+        sentAt: new Date(),
+        recipientCount: subscribers.length,
+      });
+
+      // Send broadcast (non-blocking — returns stats)
+      const stats = await sendNewsletterBroadcast(
+        subscribers.map((s) => ({
+          email: s.email,
+          firstName: s.firstName,
+          unsubscribeToken: s.unsubscribeToken,
+        })),
+        {
+          subject: issue.subject,
+          htmlBody: issue.htmlBody,
+          previewText: issue.previewText,
+        }
+      );
+
+      return { success: true, sent: stats.sent, failed: stats.failed };
+    }),
+
+  // Admin: delete subscriber
+  deleteSubscriber: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      const db2 = await db.getDb();
+      if (!db2) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const { newsletterSubscribers } = await import("../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+      await db2.delete(newsletterSubscribers).where(eq(newsletterSubscribers.id, input.id));
+      return { success: true };
+    }),
+});
+
 // ─── Analytics ────────────────────────────────────────────────────────────────
 const analyticsRouter = router({
   summary: adminProcedure.query(() => db.getAnalyticsSummary()),
@@ -499,6 +641,7 @@ export const appRouter = router({
   booking: bookingRouter,
   capture: captureRouter,
   analytics: analyticsRouter,
+  newsletter: newsletterRouter,
 });
 
 export type AppRouter = typeof appRouter;

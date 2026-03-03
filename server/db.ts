@@ -9,6 +9,8 @@ import {
   emailCaptures,
   interactions,
   leads,
+  newsletterIssues,
+  newsletterSubscribers,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -252,12 +254,125 @@ export async function getEmailCaptures() {
   return db.select().from(emailCaptures).orderBy(desc(emailCaptures.createdAt));
 }
 
+// ─── Newsletter Subscribers ──────────────────────────────────────────────────
+export async function subscribeToNewsletter(
+  email: string,
+  firstName?: string,
+  lastName?: string,
+  source: typeof newsletterSubscribers.$inferInsert["source"] = "landing_page"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  // Upsert: if already subscribed, re-activate; if new, insert
+  const existing = await db
+    .select()
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.email, email))
+    .limit(1);
+  if (existing.length) {
+    if (existing[0].status === "unsubscribed") {
+      await db
+        .update(newsletterSubscribers)
+        .set({ status: "active", firstName, lastName, unsubscribedAt: null, updatedAt: new Date() })
+        .where(eq(newsletterSubscribers.email, email));
+    }
+    return { isNew: false, subscriber: existing[0] };
+  }
+  await db.insert(newsletterSubscribers).values({
+    email,
+    firstName,
+    lastName,
+    source,
+    unsubscribeToken: token,
+  });
+  const created = await db
+    .select()
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.email, email))
+    .limit(1);
+  return { isNew: true, subscriber: created[0] };
+}
+
+export async function unsubscribeFromNewsletter(token: string) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const existing = await db
+    .select()
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.unsubscribeToken, token))
+    .limit(1);
+  if (!existing.length) return false;
+  await db
+    .update(newsletterSubscribers)
+    .set({ status: "unsubscribed", unsubscribedAt: new Date() })
+    .where(eq(newsletterSubscribers.unsubscribeToken, token));
+  return true;
+}
+
+export async function getNewsletterSubscribers(status?: string) {
+  const db = await getDb();
+  if (!db) return [];
+  const conditions = status
+    ? [eq(newsletterSubscribers.status, status as "active" | "unsubscribed" | "bounced")]
+    : [];
+  return db
+    .select()
+    .from(newsletterSubscribers)
+    .where(conditions.length ? and(...conditions) : undefined)
+    .orderBy(desc(newsletterSubscribers.subscribedAt));
+}
+
+export async function getNewsletterIssues() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(newsletterIssues).orderBy(desc(newsletterIssues.createdAt));
+}
+
+export async function getNewsletterIssueById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(newsletterIssues).where(eq(newsletterIssues.id, id)).limit(1);
+  return result[0];
+}
+
+export async function createNewsletterIssue(data: typeof newsletterIssues.$inferInsert) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.insert(newsletterIssues).values(data);
+  const created = await db
+    .select()
+    .from(newsletterIssues)
+    .orderBy(desc(newsletterIssues.createdAt))
+    .limit(1);
+  return created[0];
+}
+
+export async function updateNewsletterIssue(
+  id: number,
+  data: Partial<typeof newsletterIssues.$inferInsert>
+) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(newsletterIssues).set(data).where(eq(newsletterIssues.id, id));
+}
+
+export async function getActiveSubscriberCount() {
+  const db = await getDb();
+  if (!db) return 0;
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(newsletterSubscribers)
+    .where(eq(newsletterSubscribers.status, "active"));
+  return Number(result[0]?.count ?? 0);
+}
+
 // ─── Analytics ────────────────────────────────────────────────────────────────
 export async function getAnalyticsSummary() {
   const db = await getDb();
   if (!db) return null;
 
-  const [leadCounts, bookingCounts, emailCaptureCount, pipelineValue] = await Promise.all([
+  const [leadCounts, bookingCounts, emailCaptureCount, pipelineValue, subscriberCount, issueCount] = await Promise.all([
     db.select({ stage: leads.stage, count: sql<number>`count(*)` })
       .from(leads)
       .where(eq(leads.isArchived, false))
@@ -269,7 +384,13 @@ export async function getAnalyticsSummary() {
     db.select({ total: sql<number>`sum(dealValue)` })
       .from(leads)
       .where(and(eq(leads.isArchived, false), ne(leads.stage, "closed_lost"))),
+    db.select({ count: sql<number>`count(*)` })
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.status, "active")),
+    db.select({ count: sql<number>`count(*)` })
+      .from(newsletterIssues)
+      .where(eq(newsletterIssues.status, "sent")),
   ]);
 
-  return { leadCounts, bookingCounts, emailCaptureCount, pipelineValue };
+  return { leadCounts, bookingCounts, emailCaptureCount, pipelineValue, subscriberCount, issueCount };
 }

@@ -438,3 +438,169 @@ export async function sendAdminNewLeadAlert(data: {
   }
   console.log(`[Email] New lead alert sent for ${data.email} (source: ${data.source})`);
 }
+
+// ─── Newsletter Welcome Email ─────────────────────────────────────────────────
+
+export function buildNewsletterWelcomeEmail(data: {
+  firstName?: string;
+  email: string;
+  unsubscribeToken: string;
+}): string {
+  const name = data.firstName ?? "Friend";
+  const unsubUrl = `https://castlesoflight.com/unsubscribe?token=${data.unsubscribeToken}`;
+
+  return emailWrapper(`
+    <!-- Hero -->
+    <tr>
+      <td style="background:linear-gradient(135deg,${BG_CARD} 0%,#0D1117 100%);border:1px solid ${BORDER};border-radius:12px;padding:40px 32px 32px;margin-bottom:24px;">
+        <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.15em;color:${BRAND_CYAN};text-transform:uppercase;font-weight:600;">// TRANSMISSION RECEIVED</p>
+        <h1 style="margin:0 0 16px;font-size:28px;font-weight:800;color:#FFFFFF;line-height:1.2;">
+          You're in, ${name}.<br/>
+          <span style="color:${BRAND_AMBER};">Welcome to the inner circle.</span>
+        </h1>
+        <p style="margin:0;font-size:16px;color:#9CA3AF;line-height:1.7;">
+          You've just subscribed to <strong style="color:#E5E7EB;">Hardcore Infrastructure</strong> — the newsletter where I share what I actually learn building AI-augmented DevOps systems, slashing cloud costs, and navigating the enterprise infrastructure world after 30 years in the trenches.
+        </p>
+      </td>
+    </tr>
+    <tr><td style="height:24px;"></td></tr>
+
+    <!-- What to expect -->
+    <tr>
+      <td style="background:${BG_CARD};border:1px solid ${BORDER};border-radius:12px;padding:32px;">
+        <p style="margin:0 0 20px;font-size:11px;letter-spacing:0.15em;color:${BRAND_CYAN};text-transform:uppercase;font-weight:600;">// WHAT YOU'LL GET</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid ${BORDER};">
+              <span style="color:${BRAND_AMBER};font-weight:700;margin-right:12px;">01</span>
+              <span style="color:#E5E7EB;font-size:15px;">Real-world AI + DevOps case studies — no fluff, no theory</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid ${BORDER};">
+              <span style="color:${BRAND_AMBER};font-weight:700;margin-right:12px;">02</span>
+              <span style="color:#E5E7EB;font-size:15px;">Infrastructure cost-cutting tactics that actually work at scale</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid ${BORDER};">
+              <span style="color:${BRAND_AMBER};font-weight:700;margin-right:12px;">03</span>
+              <span style="color:#E5E7EB;font-size:15px;">Early access to tools, frameworks, and consulting offers</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;">
+              <span style="color:${BRAND_AMBER};font-weight:700;margin-right:12px;">04</span>
+              <span style="color:#E5E7EB;font-size:15px;">Subscriber-only chapters from <em>HARDCORE INFRASTRUCTURE</em></span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr><td style="height:24px;"></td></tr>
+
+    <!-- CTA -->
+    <tr>
+      <td style="text-align:center;padding:8px 0 32px;">
+        <a href="https://castlesoflight.com" style="display:inline-block;background:${BRAND_AMBER};color:#000000;font-weight:800;font-size:15px;padding:14px 32px;border-radius:6px;text-decoration:none;letter-spacing:0.05em;">
+          EXPLORE THE NERVE CENTER →
+        </a>
+        <p style="margin:16px 0 0;font-size:13px;color:${TEXT_MUTED};">
+          Or <a href="https://castlesoflight.com/book" style="color:${BRAND_CYAN};text-decoration:none;">book a free exploratory call</a> if you have a specific infrastructure challenge.
+        </p>
+      </td>
+    </tr>
+
+    <!-- Unsubscribe -->
+    <tr>
+      <td style="text-align:center;padding:24px 0 0;border-top:1px solid ${BORDER};">
+        <p style="margin:0;font-size:12px;color:${TEXT_MUTED};">
+          You're receiving this because you subscribed at castlesoflight.com.<br/>
+          <a href="${unsubUrl}" style="color:${TEXT_MUTED};text-decoration:underline;">Unsubscribe</a> at any time — no hard feelings.
+        </p>
+      </td>
+    </tr>
+  `);
+}
+
+export async function sendNewsletterWelcome(data: {
+  firstName?: string;
+  email: string;
+  unsubscribeToken: string;
+}): Promise<void> {
+  const resend = getResend();
+  const html = buildNewsletterWelcomeEmail(data);
+
+  const { error } = await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: data.email,
+    subject: `You're in — Welcome to Hardcore Infrastructure`,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send newsletter welcome:", error);
+    throw new Error(`Email send failed: ${error.message}`);
+  }
+  console.log(`[Email] Newsletter welcome sent to ${data.email}`);
+}
+
+// ─── Newsletter Broadcast ─────────────────────────────────────────────────────
+
+export async function sendNewsletterBroadcast(
+  subscribers: Array<{ email: string; firstName?: string | null; unsubscribeToken: string }>,
+  issue: { subject: string; htmlBody: string; previewText?: string | null }
+): Promise<{ sent: number; failed: number }> {
+  const resend = getResend();
+  let sent = 0;
+  let failed = 0;
+
+  // Send in batches of 10 to avoid rate limits
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+    const batch = subscribers.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (sub) => {
+        const unsubUrl = `https://castlesoflight.com/unsubscribe?token=${sub.unsubscribeToken}`;
+        // Inject personalised unsubscribe footer into the HTML body
+        const personalizedHtml = issue.htmlBody.replace(
+          "{{UNSUBSCRIBE_URL}}",
+          unsubUrl
+        ) + `
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;border-top:1px solid #1A2035;">
+            <tr>
+              <td style="padding:24px 0;text-align:center;font-size:12px;color:#6B7280;font-family:'Segoe UI',Arial,sans-serif;">
+                You're receiving this because you subscribed at castlesoflight.com.<br/>
+                <a href="${unsubUrl}" style="color:#6B7280;text-decoration:underline;">Unsubscribe</a>
+              </td>
+            </tr>
+          </table>`;
+
+        try {
+          const { error } = await resend.emails.send({
+            from: FROM_ADDRESS,
+            to: sub.email,
+            subject: issue.subject,
+            html: personalizedHtml,
+          });
+          if (error) {
+            console.error(`[Newsletter] Failed to send to ${sub.email}:`, error);
+            failed++;
+          } else {
+            sent++;
+          }
+        } catch (err) {
+          console.error(`[Newsletter] Exception sending to ${sub.email}:`, err);
+          failed++;
+        }
+      })
+    );
+    // Small delay between batches
+    if (i + BATCH_SIZE < subscribers.length) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+  }
+
+  console.log(`[Newsletter] Broadcast complete: ${sent} sent, ${failed} failed`);
+  return { sent, failed };
+}
