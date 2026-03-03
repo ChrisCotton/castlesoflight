@@ -7,11 +7,14 @@ import {
   bookings,
   callTypes,
   emailCaptures,
+  emailTemplates,
   interactions,
   leads,
   newsletterIssues,
   newsletterSubscribers,
   users,
+  type EmailTemplate,
+  type InsertEmailTemplate,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -485,4 +488,127 @@ export async function getAnalyticsSummary() {
   ]);
 
   return { leadCounts, bookingCounts, emailCaptureCount, pipelineValue, subscriberCount, issueCount };
+}
+
+// ─── Email Templates ──────────────────────────────────────────────────────────
+export async function listEmailTemplates(): Promise<EmailTemplate[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(emailTemplates).orderBy(emailTemplates.category, emailTemplates.name);
+}
+
+export async function getEmailTemplateById(id: number): Promise<EmailTemplate | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(emailTemplates).where(eq(emailTemplates.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function createEmailTemplate(data: Omit<InsertEmailTemplate, "id" | "createdAt" | "updatedAt">): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(emailTemplates).values({ ...data });
+  return (result[0] as { insertId: number }).insertId;
+}
+
+export async function updateEmailTemplate(id: number, data: Partial<Omit<InsertEmailTemplate, "id" | "createdAt" | "updatedAt">>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(emailTemplates).set(data).where(eq(emailTemplates.id, id));
+}
+
+export async function deleteEmailTemplate(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(emailTemplates).where(eq(emailTemplates.id, id));
+}
+
+export async function seedBuiltInTemplates(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  // Only seed if no built-in templates exist yet
+  const existing = await db.select({ id: emailTemplates.id }).from(emailTemplates).where(eq(emailTemplates.isBuiltIn, true)).limit(1);
+  if (existing.length > 0) return;
+
+  const templates: Omit<InsertEmailTemplate, "id" | "createdAt" | "updatedAt">[] = [
+    {
+      name: "LinkedIn First Touch",
+      category: "first_touch",
+      subject: "Quick question about {{company}}'s infrastructure",
+      variables: ["firstName", "company", "jobTitle", "painPoint"],
+      isBuiltIn: true,
+      bodyHtml: `<p>Hi {{firstName}},</p>
+<p>I came across your profile and noticed {{company}} is scaling fast — congrats on the growth.</p>
+<p>I'm Christopher Cotton, an infrastructure architect with 30 years across Spotify, Google ProServe, and Raytheon. I specialize in one thing: compressing 3-month infrastructure buildouts into 48 hours using AI-augmented DevOps.</p>
+<p>I work with engineering leaders who are tired of watching {{painPoint}} slow down their roadmap. If that resonates, I'd love to show you what's possible in a 30-minute call — no pitch, just a diagnostic conversation.</p>
+<p>Worth a quick chat?</p>
+<p>— Christopher</p>`,
+    },
+    {
+      name: "Follow-Up (No Response)",
+      category: "follow_up",
+      subject: "Re: {{company}}'s infrastructure",
+      variables: ["firstName", "company"],
+      isBuiltIn: true,
+      bodyHtml: `<p>Hi {{firstName}},</p>
+<p>I sent a note last week about infrastructure acceleration at {{company}} — wanted to follow up in case it got buried.</p>
+<p>I'll keep this short: I help engineering teams ship infrastructure 10x faster using AI-augmented DevOps. My last three clients cut deployment lag by 80–99% within 48 hours of engagement.</p>
+<p>If the timing isn't right, no worries at all. But if you're dealing with slow deploys, cloud cost overruns, or a backlog that keeps growing — I'd love to talk.</p>
+<p>15 minutes this week?</p>
+<p>— Christopher</p>`,
+    },
+    {
+      name: "Proposal Follow-Up",
+      category: "proposal",
+      subject: "Following up on The Sprint proposal — {{company}}",
+      variables: ["firstName", "company", "proposalValue", "sprintScope"],
+      isBuiltIn: true,
+      bodyHtml: `<p>Hi {{firstName}},</p>
+<p>I wanted to follow up on the proposal I sent for {{company}}. I know decisions like this take time, and I want to make sure you have everything you need.</p>
+<p>To recap what's on the table: {{sprintScope}} — delivered in 48 hours, guaranteed. The investment is {{proposalValue}}.</p>
+<p>A few things I can offer to make this easier:</p>
+<ul>
+  <li>A 30-minute technical deep-dive call to walk through the exact deliverables</li>
+  <li>References from two recent clients in similar situations</li>
+  <li>A phased payment option if that helps with budget timing</li>
+</ul>
+<p>What would be most useful for you right now?</p>
+<p>— Christopher</p>`,
+    },
+    {
+      name: "Closed-Won Thank You",
+      category: "closed_won",
+      subject: "Welcome aboard — let's build something great, {{firstName}}",
+      variables: ["firstName", "company", "startDate", "deliverable"],
+      isBuiltIn: true,
+      bodyHtml: `<p>Hi {{firstName}},</p>
+<p>I'm genuinely excited to work with you and the {{company}} team. This is going to be a great engagement.</p>
+<p>Here's what happens next:</p>
+<ol>
+  <li><strong>Kickoff call:</strong> We'll schedule a 60-minute session to align on scope, access requirements, and success metrics.</li>
+  <li><strong>Diagnostic phase:</strong> I'll spend the first few hours mapping your current infrastructure and identifying the highest-leverage intervention points.</li>
+  <li><strong>Build phase:</strong> {{deliverable}} — delivered by {{startDate}}.</li>
+</ol>
+<p>I'll send a calendar invite for the kickoff within 24 hours. In the meantime, if you can start gathering read-only access credentials for your cloud environment, that will save us time on day one.</p>
+<p>Let's build something great.</p>
+<p>— Christopher</p>`,
+    },
+    {
+      name: "Re-Engagement (90-Day)",
+      category: "re_engagement",
+      subject: "Checking in — how's the infrastructure holding up at {{company}}?",
+      variables: ["firstName", "company", "previousContext"],
+      isBuiltIn: true,
+      bodyHtml: `<p>Hi {{firstName}},</p>
+<p>It's been a few months since we last connected. I've been heads-down on some interesting work — most recently helping a fintech team cut their cloud spend by 80% while doubling deployment frequency.</p>
+<p>I wanted to check in on {{company}}. {{previousContext}}</p>
+<p>A lot has changed in the AI-augmented DevOps space in the last 90 days — tools that used to take weeks to configure now take hours. If your infrastructure roadmap has evolved since we last spoke, I'd love to hear what you're working on.</p>
+<p>Worth a 20-minute catch-up call?</p>
+<p>— Christopher</p>`,
+    },
+  ];
+
+  for (const t of templates) {
+    await db.insert(emailTemplates).values(t);
+  }
 }

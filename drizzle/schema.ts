@@ -219,3 +219,29 @@ export const newsletterIssues = mysqlTable("newsletterIssues", {
 
 export type NewsletterIssue = typeof newsletterIssues.$inferSelect;
 export type InsertNewsletterIssue = typeof newsletterIssues.$inferInsert;
+
+// ─── Outreach Email Templates ─────────────────────────────────────────────────
+export const emailTemplates = mysqlTable("emailTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 256 }).notNull(),
+  category: mysqlEnum("category", [
+    "first_touch",
+    "follow_up",
+    "proposal",
+    "closed_won",
+    "re_engagement",
+    "custom",
+  ])
+    .default("custom")
+    .notNull(),
+  subject: varchar("subject", { length: 512 }).notNull(),
+  bodyHtml: text("bodyHtml").notNull(),
+  // JSON array of variable names used in this template, e.g. ["firstName","company"]
+  variables: json("variables").$type<string[]>().default([]),
+  isBuiltIn: boolean("isBuiltIn").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;

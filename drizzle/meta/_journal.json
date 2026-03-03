@@ -29,6 +29,13 @@
       "when": 1772515355306,
       "tag": "0003_little_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1772527576849,
+      "tag": "0004_nebulous_butterfly",
+      "breakpoints": true
     }
   ]
 }

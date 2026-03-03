@@ -7,6 +7,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import * as db from "./db";
 import { stripe } from "./stripe";
+import { emailTemplateRouter } from "./emailTemplateRouter";
 import { sendClientConfirmation, sendAdminLeadAlert, sendAdminNewLeadAlert, sendNewsletterWelcome, sendNewsletterBroadcast } from "./email";
 
 // ─── Admin guard ──────────────────────────────────────────────────────────────
@@ -643,6 +644,7 @@ export const appRouter = router({
   capture: captureRouter,
   analytics: analyticsRouter,
   newsletter: newsletterRouter,
+  emailTemplate: emailTemplateRouter,
 });
 
 export type AppRouter = typeof appRouter;

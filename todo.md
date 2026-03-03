@@ -122,3 +122,16 @@
 - [x] Add "Days Since Last Contact" column with red warning (7+ days)
 - [x] Add one-click stage dropdown in lead table rows
 - [x] Final checkpoint
+
+## Personalized Outreach Email Templates
+- [x] DB: email_templates table (id, name, subject, bodyHtml, variables, category, createdAt)
+- [x] tRPC: admin CRUD for templates (list, get, create, update, delete)
+- [x] tRPC: renderTemplate procedure (merge lead fields into template variables)
+- [x] tRPC: sendOutreach procedure (render + send via Resend + log interaction)
+- [x] Email: cinematic HUD-branded HTML base template with variable slots
+- [x] Built-in templates: LinkedIn First Touch, Follow-Up (No Response), Proposal Follow-Up, Closed-Won Thank You, Re-Engagement (90-day)
+- [x] Admin: Email Templates page (list templates, create/edit with live preview)
+- [x] Admin: "Send Email" button on lead detail page → pick template → preview merged → send
+- [x] Sidebar: add Email Templates nav item
+- [x] Vitest tests for template rendering and send procedure (90 total tests passing)
+- [x] Final checkpoint

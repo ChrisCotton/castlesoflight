@@ -1,0 +1,43 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user oHQ5cTB5HrMfnaD.root --database UusZELR6PWAvnyvU98nd85 --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "availability"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "blockedDates"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "bookings"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "callTypes"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "emailCaptures"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "interactions"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "leads"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "newsletterIssues"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "newsletterSubscribers"
+    },
+    {
+      "Tables_in_UusZELR6PWAvnyvU98nd85": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_UusZELR6PWAvnyvU98nd85\n__drizzle_migrations\navailability\nblockedDates\nbookings\ncallTypes\nemailCaptures\ninteractions\nleads\nnewsletterIssues\nnewsletterSubscribers\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

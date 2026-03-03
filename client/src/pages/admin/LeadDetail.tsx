@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SendEmailDialog from "@/components/SendEmailDialog";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -135,6 +136,7 @@ export default function LeadDetail() {
   const leadId = parseInt(id ?? "0");
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState<Record<string, string>>({});
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
 
   const utils = trpc.useUtils();
   const { data, isLoading } = trpc.lead.get.useQuery({ id: leadId });
@@ -333,11 +335,21 @@ export default function LeadDetail() {
           <div className="rounded-xl border border-border bg-card p-4">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Quick Actions</h3>
             <div className="space-y-2">
-              <a href={`mailto:${lead.email}`} className="w-full">
-                <Button variant="outline" size="sm" className="w-full justify-start border-border text-foreground hover:bg-secondary text-sm">
-                  <Mail className="w-3.5 h-3.5 mr-2 text-primary" /> Send Email
-                </Button>
-              </a>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start border-[oklch(0.78_0.18_195_/_0.3)] text-[oklch(0.78_0.18_195)] hover:bg-[oklch(0.78_0.18_195_/_0.08)] text-sm"
+                onClick={() => setEmailDialogOpen(true)}
+              >
+                <Mail className="w-3.5 h-3.5 mr-2" /> Send Email
+              </Button>
+              <SendEmailDialog
+                open={emailDialogOpen}
+                onOpenChange={setEmailDialogOpen}
+                leadId={leadId}
+                leadName={`${lead.firstName} ${lead.lastName}`}
+                leadEmail={lead.email}
+              />
               <Link href={`/book`} className="w-full">
                 <Button variant="outline" size="sm" className="w-full justify-start border-border text-foreground hover:bg-secondary text-sm">
                   <Calendar className="w-3.5 h-3.5 mr-2 text-primary" /> Schedule Call

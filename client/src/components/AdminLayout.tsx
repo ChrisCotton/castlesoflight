@@ -16,6 +16,7 @@ import {
   Activity,
   Mail,
   TrendingUp,
+  FileText,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
   { href: "/admin/leads", label: "Lead Intel", icon: TrendingUp },
+  { href: "/admin/email-templates", label: "Email Templates", icon: FileText },
 ];
 
 function HudTime() {

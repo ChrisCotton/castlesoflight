@@ -16,6 +16,7 @@ import Analytics from "./pages/admin/Analytics";
 import Newsletter from "./pages/admin/Newsletter";
 import LeadsDashboard from "./pages/admin/LeadsDashboard";
 import Unsubscribe from "./pages/Unsubscribe";
+import EmailTemplates from "./pages/admin/EmailTemplates";
 
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   return (
@@ -56,6 +57,9 @@ function Router() {
       </Route>
       <Route path="/admin/leads">
         {() => <AdminRoute component={LeadsDashboard} />}
+      </Route>
+      <Route path="/admin/email-templates">
+        {() => <AdminRoute component={EmailTemplates} />}
       </Route>
 
       {/* Public utility routes */}
