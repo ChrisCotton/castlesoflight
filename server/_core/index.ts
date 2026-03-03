@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { stripeWebhookRouter } from "../stripeWebhook";
+import { batchLeadsRouter } from "../batchLeadsRouter";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -34,6 +35,9 @@ async function startServer() {
   // Stripe webhook MUST receive raw body — register BEFORE express.json()
   app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
   app.use(stripeWebhookRouter);
+
+  // Batch leads REST API (API-key secured, no session required)
+  app.use(batchLeadsRouter);
 
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));

@@ -95,3 +95,12 @@
 - [x] NewsletterPopup component (scroll 60% trigger, session dismissal, framer-motion animation)
 - [x] Embed in Home.tsx
 - [x] Final checkpoint
+
+## Batch Leads REST API
+- [x] Add CRM_API_KEY secret to environment
+- [x] Create POST /api/leads/batch endpoint secured with X-API-Key header
+- [x] Validate each lead payload with Zod before insert
+- [x] Return per-lead success/error results in response
+- [x] Write vitest tests for the batch endpoint (78 total tests passing)
+- [x] Generate curl commands for all 10 LinkedIn prospects
+- [x] Final checkpoint
