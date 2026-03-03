@@ -42,3 +42,11 @@
 - [x] Vitest unit tests for all tRPC procedures (20 tests passing)
 - [x] Mobile responsiveness pass
 - [x] Final checkpoint and delivery
+
+## Design Overhaul (Reference-Driven)
+- [x] Overhaul CSS: deep black, prismatic cyan/teal/amber palette, HUD terminal typography
+- [x] Rebuild hero: prismatic light streak SVG/CSS animation, HUD data overlays, cinematic layout
+- [x] Add SYS.ONLINE status bar and terminal HUD elements throughout
+- [x] Add testimonials/quotes section with cinematic card design
+- [x] Polish admin sidebar to match new HUD aesthetic
+- [x] Final checkpoint and delivery

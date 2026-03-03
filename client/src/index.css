@@ -1,6 +1,8 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -43,52 +45,78 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ─── CINEMATIC DEEP BLACK + PRISMATIC HUD PALETTE ─────────────────────────── */
 :root {
-  /* Deep space dark with electric amber accent */
-  --radius: 0.75rem;
-  --background: oklch(0.08 0.01 260);
-  --foreground: oklch(0.95 0.01 260);
-  --card: oklch(0.11 0.015 260);
-  --card-foreground: oklch(0.95 0.01 260);
-  --popover: oklch(0.12 0.015 260);
-  --popover-foreground: oklch(0.95 0.01 260);
-  --primary: oklch(0.78 0.18 55);
-  --primary-foreground: oklch(0.1 0.01 260);
-  --secondary: oklch(0.16 0.02 260);
-  --secondary-foreground: oklch(0.85 0.01 260);
-  --muted: oklch(0.15 0.015 260);
-  --muted-foreground: oklch(0.55 0.02 260);
-  --accent: oklch(0.62 0.22 280);
-  --accent-foreground: oklch(0.98 0.005 260);
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0.005 260);
-  --border: oklch(0.22 0.02 260);
-  --input: oklch(0.18 0.02 260);
-  --ring: oklch(0.78 0.18 55);
-  --chart-1: oklch(0.78 0.18 55);
-  --chart-2: oklch(0.62 0.22 280);
-  --chart-3: oklch(0.65 0.18 160);
-  --chart-4: oklch(0.7 0.2 200);
-  --chart-5: oklch(0.6 0.22 340);
-  --sidebar: oklch(0.09 0.015 260);
-  --sidebar-foreground: oklch(0.85 0.01 260);
-  --sidebar-primary: oklch(0.78 0.18 55);
-  --sidebar-primary-foreground: oklch(0.1 0.01 260);
-  --sidebar-accent: oklch(0.15 0.02 260);
-  --sidebar-accent-foreground: oklch(0.85 0.01 260);
-  --sidebar-border: oklch(0.18 0.02 260);
-  --sidebar-ring: oklch(0.78 0.18 55);
-  /* Custom brand tokens */
-  --brand-amber: oklch(0.78 0.18 55);
-  --brand-violet: oklch(0.62 0.22 280);
-  --brand-emerald: oklch(0.65 0.18 160);
-  --brand-glow: oklch(0.78 0.18 55 / 0.15);
-  --brand-glow-violet: oklch(0.62 0.22 280 / 0.15);
+  --radius: 0.5rem;
+
+  /* Pure void black background — like the Brave Search reference */
+  --background:   oklch(0.04 0.005 260);
+  --foreground:   oklch(0.96 0.008 200);
+
+  /* Cards: barely-there elevation above void */
+  --card:         oklch(0.07 0.008 240);
+  --card-foreground: oklch(0.96 0.008 200);
+
+  --popover:      oklch(0.08 0.01 240);
+  --popover-foreground: oklch(0.96 0.008 200);
+
+  /* PRIMARY: Electric amber — the dominant prismatic streak color */
+  --primary:      oklch(0.82 0.20 58);
+  --primary-foreground: oklch(0.06 0.01 260);
+
+  /* SECONDARY: Deep charcoal surface */
+  --secondary:    oklch(0.11 0.01 250);
+  --secondary-foreground: oklch(0.80 0.01 200);
+
+  --muted:        oklch(0.10 0.008 250);
+  --muted-foreground: oklch(0.50 0.015 220);
+
+  /* ACCENT: Electric cyan/teal — the HUD terminal color */
+  --accent:       oklch(0.78 0.18 195);
+  --accent-foreground: oklch(0.04 0.005 260);
+
+  --destructive:  oklch(0.58 0.24 25);
+  --destructive-foreground: oklch(0.96 0.008 200);
+
+  --border:       oklch(0.16 0.015 240);
+  --input:        oklch(0.12 0.01 250);
+  --ring:         oklch(0.82 0.20 58);
+
+  /* Chart colors: prismatic spectrum */
+  --chart-1: oklch(0.82 0.20 58);   /* amber */
+  --chart-2: oklch(0.78 0.18 195);  /* cyan */
+  --chart-3: oklch(0.65 0.22 280);  /* violet */
+  --chart-4: oklch(0.68 0.20 160);  /* emerald */
+  --chart-5: oklch(0.65 0.24 340);  /* magenta */
+
+  /* Sidebar: slightly lighter than void */
+  --sidebar:         oklch(0.055 0.008 250);
+  --sidebar-foreground: oklch(0.80 0.01 200);
+  --sidebar-primary: oklch(0.82 0.20 58);
+  --sidebar-primary-foreground: oklch(0.06 0.01 260);
+  --sidebar-accent:  oklch(0.10 0.01 250);
+  --sidebar-accent-foreground: oklch(0.80 0.01 200);
+  --sidebar-border:  oklch(0.13 0.012 250);
+  --sidebar-ring:    oklch(0.82 0.20 58);
+
+  /* ── Brand tokens ── */
+  --brand-amber:   oklch(0.82 0.20 58);
+  --brand-cyan:    oklch(0.78 0.18 195);
+  --brand-violet:  oklch(0.65 0.22 280);
+  --brand-emerald: oklch(0.68 0.20 160);
+  --brand-magenta: oklch(0.65 0.24 340);
+  --brand-blue:    oklch(0.62 0.20 240);
+
+  /* Glow halos */
+  --glow-amber:   oklch(0.82 0.20 58 / 0.25);
+  --glow-cyan:    oklch(0.78 0.18 195 / 0.25);
+  --glow-violet:  oklch(0.65 0.22 280 / 0.20);
 }
 
-/* Dark theme same as root — site is always dark */
-.dark { }
+/* Site is always dark — .dark mirrors :root */
+.dark {}
 
+/* ─── BASE LAYER ─────────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -96,92 +124,226 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
   [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
   a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
+  select:not(:disabled) {
     @apply cursor-pointer;
   }
 }
 
+/* ─── COMPONENT LAYER ────────────────────────────────────────────────────────── */
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
-
   .flex {
     min-height: 0;
     min-width: 0;
   }
-
   @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
-      padding-right: 1.5rem;
-    }
+    .container { padding-left: 1.5rem; padding-right: 1.5rem; }
   }
-
   @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem; /* 32px - desktop padding */
-      padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
-    }
+    .container { padding-left: 2rem; padding-right: 2rem; max-width: 1280px; }
   }
 }
-/* ─── Brand utilities ─────────────────────────────────────────── */
+
+/* ─── BRAND UTILITIES ────────────────────────────────────────────────────────── */
+
+/* Prismatic gradient text — amber → cyan → violet */
 .gradient-text {
-  background: linear-gradient(135deg, var(--brand-amber) 0%, var(--brand-violet) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--brand-amber) 0%,
+    oklch(0.88 0.15 80) 30%,
+    var(--brand-cyan) 65%,
+    var(--brand-violet) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.glow-amber {
-  box-shadow: 0 0 40px var(--brand-glow);
+/* Amber-only gradient text */
+.gradient-text-amber {
+  background: linear-gradient(135deg, oklch(0.92 0.18 70) 0%, var(--brand-amber) 50%, oklch(0.72 0.22 45) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.glow-violet {
-  box-shadow: 0 0 40px var(--brand-glow-violet);
+/* Cyan HUD text */
+.text-cyan-hud {
+  color: var(--brand-cyan);
+  text-shadow: 0 0 20px oklch(0.78 0.18 195 / 0.6);
 }
 
+/* Glow effects */
+.glow-amber { box-shadow: 0 0 60px var(--glow-amber), 0 0 120px oklch(0.82 0.20 58 / 0.10); }
+.glow-cyan  { box-shadow: 0 0 60px var(--glow-cyan),  0 0 120px oklch(0.78 0.18 195 / 0.10); }
+.glow-sm-amber { box-shadow: 0 0 20px var(--glow-amber); }
+.glow-sm-cyan  { box-shadow: 0 0 20px var(--glow-cyan); }
+
+/* Grid background — fine dot matrix like Abyssal UI */
 .grid-bg {
   background-image:
-    linear-gradient(oklch(0.22 0.02 260 / 0.4) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.22 0.02 260 / 0.4) 1px, transparent 1px);
-  background-size: 60px 60px;
+    radial-gradient(circle, oklch(0.25 0.02 240 / 0.5) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* ─── Scrollbar ───────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--background); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+/* Fine line grid */
+.line-grid-bg {
+  background-image:
+    linear-gradient(oklch(0.18 0.015 240 / 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.18 0.015 240 / 0.4) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
 
-html { scroll-behavior: smooth; }
+/* HUD border — cyan glow edge */
+.hud-border {
+  border: 1px solid oklch(0.78 0.18 195 / 0.35);
+  box-shadow: 0 0 0 1px oklch(0.78 0.18 195 / 0.10), inset 0 0 20px oklch(0.78 0.18 195 / 0.04);
+}
+
+/* HUD card */
+.hud-card {
+  background: oklch(0.07 0.008 240 / 0.85);
+  border: 1px solid oklch(0.78 0.18 195 / 0.20);
+  box-shadow:
+    0 0 0 1px oklch(0.78 0.18 195 / 0.08),
+    0 4px 24px oklch(0.04 0.005 260 / 0.8),
+    inset 0 1px 0 oklch(0.78 0.18 195 / 0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* Amber card */
+.amber-card {
+  background: oklch(0.07 0.008 240 / 0.85);
+  border: 1px solid oklch(0.82 0.20 58 / 0.25);
+  box-shadow:
+    0 0 0 1px oklch(0.82 0.20 58 / 0.08),
+    0 4px 24px oklch(0.04 0.005 260 / 0.8),
+    inset 0 1px 0 oklch(0.82 0.20 58 / 0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* SYS.ONLINE status pill */
+.sys-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: oklch(0.68 0.20 160 / 0.12);
+  border: 1px solid oklch(0.68 0.20 160 / 0.35);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: oklch(0.78 0.18 160);
+}
+.sys-online::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(0.78 0.18 160);
+  box-shadow: 0 0 8px oklch(0.78 0.18 160 / 0.8);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* HUD label — monospace uppercase */
+.hud-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: oklch(0.78 0.18 195);
+}
+
+/* Prismatic light streak — CSS-only */
+.prismatic-streak {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* Scan line overlay */
+.scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0.04 0.005 260 / 0.15) 2px,
+    oklch(0.04 0.005 260 / 0.15) 4px
+  );
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes streak-drift {
+  0%   { transform: translateX(-10%) translateY(5%) rotate(-15deg); opacity: 0.6; }
+  50%  { transform: translateX(5%) translateY(-3%) rotate(-12deg); opacity: 0.9; }
+  100% { transform: translateX(-10%) translateY(5%) rotate(-15deg); opacity: 0.6; }
+}
+
+@keyframes streak-drift-2 {
+  0%   { transform: translateX(5%) translateY(-5%) rotate(8deg); opacity: 0.5; }
+  50%  { transform: translateX(-5%) translateY(3%) rotate(10deg); opacity: 0.8; }
+  100% { transform: translateX(5%) translateY(-5%) rotate(8deg); opacity: 0.5; }
+}
+
+@keyframes hud-flicker {
+  0%, 98%, 100% { opacity: 1; }
+  99% { opacity: 0.85; }
+}
+
+@keyframes data-scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: oklch(0.78 0.18 195 / 0.25); box-shadow: 0 0 20px oklch(0.78 0.18 195 / 0.1); }
+  50%       { border-color: oklch(0.78 0.18 195 / 0.5);  box-shadow: 0 0 40px oklch(0.78 0.18 195 / 0.2); }
+}
+
+.animate-streak-1 { animation: streak-drift 8s ease-in-out infinite; }
+.animate-streak-2 { animation: streak-drift-2 11s ease-in-out infinite; }
+.animate-hud-flicker { animation: hud-flicker 6s ease-in-out infinite; }
+.animate-float { animation: float-y 4s ease-in-out infinite; }
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+.animate-border-glow { animation: border-glow 4s ease-in-out infinite; }
