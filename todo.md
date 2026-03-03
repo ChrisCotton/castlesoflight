@@ -116,3 +116,9 @@
 - [x] Wire LeadsDashboard into admin sidebar nav
 - [x] 78 tests passing, zero TypeScript errors
 - [x] Final checkpoint
+
+## Lead Table Enhancements
+- [x] Execute batch curl script to seed 10 LinkedIn prospects
+- [x] Add "Days Since Last Contact" column with red warning (7+ days)
+- [x] Add one-click stage dropdown in lead table rows
+- [x] Final checkpoint

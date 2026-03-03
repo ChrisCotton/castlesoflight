@@ -36,12 +36,13 @@ async function startServer() {
   app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
   app.use(stripeWebhookRouter);
 
-  // Batch leads REST API (API-key secured, no session required)
-  app.use(batchLeadsRouter);
-
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  // Batch leads REST API (API-key secured, no session required)
+  // Registered AFTER express.json() so req.body is fully parsed
+  app.use(batchLeadsRouter);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   // tRPC API

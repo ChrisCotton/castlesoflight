@@ -10,10 +10,10 @@ import {
   TrendingUp, DollarSign, Users, Target, Award, Search,
   ChevronUp, ChevronDown, ExternalLink, ArrowRight, Filter,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const STAGE_LABELS: Record<string, string> = {
@@ -52,19 +52,83 @@ function fmt(n: number) {
   return `$${n.toLocaleString()}`;
 }
 
-function stageBadge(stage: string) {
-  const colors: Record<string, string> = {
-    new_lead: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
-    contacted: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-    qualified: "bg-violet-500/20 text-violet-300 border-violet-500/30",
-    proposal_sent: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-    closed_won: "bg-green-500/20 text-green-300 border-green-500/30",
-    closed_lost: "bg-red-500/20 text-red-300 border-red-500/30",
-  };
-  return (
-    <span className={`px-2 py-0.5 rounded text-xs font-mono border ${colors[stage] ?? "bg-white/10 text-white/60"}`}>
-      {STAGE_LABELS[stage] ?? stage}
+function daysSince(date: Date | string | null | undefined): number | null {
+  if (!date) return null;
+  return Math.floor((Date.now() - new Date(date).getTime()) / 86_400_000);
+}
+
+function DaysSinceCell({ date }: { date: Date | string | null | undefined }) {
+  const days = daysSince(date);
+  if (days === null) return (
+    <span className="inline-flex items-center gap-1 text-red-400 font-mono text-xs font-bold">
+      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+      NEVER
     </span>
+  );
+  if (days >= 7) return (
+    <span className="inline-flex items-center gap-1 text-red-400 font-mono text-xs font-bold">
+      <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+      {days}d ⚠
+    </span>
+  );
+  if (days >= 3) return (
+    <span className="inline-flex items-center gap-1 text-amber-400 font-mono text-xs">
+      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+      {days}d
+    </span>
+  );
+  return (
+    <span className="inline-flex items-center gap-1 text-emerald-400 font-mono text-xs">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+      {days}d
+    </span>
+  );
+}
+
+// ─── Stage Dropdown ───────────────────────────────────────────────────────────
+function StageDropdown({
+  leadId,
+  currentStage,
+  onUpdate,
+  isPending,
+}: {
+  leadId: number;
+  currentStage: string;
+  onUpdate: (id: number, stage: string) => void;
+  isPending: boolean;
+}) {
+  const colors: Record<string, string> = {
+    new_lead: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30",
+    contacted: "bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30",
+    qualified: "bg-violet-500/20 text-violet-300 border-violet-500/40 hover:bg-violet-500/30",
+    proposal_sent: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30",
+    closed_won: "bg-green-500/20 text-green-300 border-green-500/40 hover:bg-green-500/30",
+    closed_lost: "bg-red-500/20 text-red-300 border-red-500/40 hover:bg-red-500/30",
+  };
+
+  return (
+    <Select
+      value={currentStage}
+      onValueChange={(val) => onUpdate(leadId, val)}
+      disabled={isPending}
+    >
+      <SelectTrigger
+        className={`h-6 px-2 text-xs font-mono border rounded w-auto min-w-[110px] transition-colors ${colors[currentStage] ?? "bg-white/10 text-white/60 border-white/20"} ${isPending ? "opacity-50 cursor-wait" : ""}`}
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="bg-black/95 border-white/10 backdrop-blur-xl">
+        {STAGE_ORDER.map((s) => (
+          <SelectItem
+            key={s}
+            value={s}
+            className="text-xs font-mono text-white/70 hover:text-white focus:text-white focus:bg-white/10 cursor-pointer"
+          >
+            {STAGE_LABELS[s]}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 
@@ -111,7 +175,7 @@ function HudTooltip({ active, payload, label }: { active?: boolean; payload?: { 
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-type SortField = "name" | "company" | "stage" | "dealValue" | "createdAt" | "lastContactedAt";
+type SortField = "name" | "company" | "stage" | "dealValue" | "createdAt" | "lastContactedAt" | "daysSince";
 type SortDir = "asc" | "desc";
 
 export default function LeadsDashboard() {
@@ -122,9 +186,29 @@ export default function LeadsDashboard() {
   const [offerFilter, setOfferFilter] = useState("all");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   const { data: stats, isLoading: statsLoading } = trpc.analytics.leadStats.useQuery();
   const { data: leads, isLoading: leadsLoading } = trpc.lead.list.useQuery({ includeArchived: false });
+  const utils = trpc.useUtils();
+
+  const updateLead = trpc.lead.update.useMutation({
+    onMutate: ({ id }) => setUpdatingId(id),
+    onSuccess: (_, { stage }) => {
+      setUpdatingId(null);
+      utils.lead.list.invalidate();
+      utils.analytics.leadStats.invalidate();
+      toast.success(`Stage updated to ${STAGE_LABELS[stage ?? ""] ?? stage}`);
+    },
+    onError: (err) => {
+      setUpdatingId(null);
+      toast.error(`Stage update failed: ${err.message}`);
+    },
+  });
+
+  function handleStageUpdate(leadId: number, newStage: string) {
+    updateLead.mutate({ id: leadId, stage: newStage as "new_lead" | "contacted" | "qualified" | "proposal_sent" | "closed_won" | "closed_lost" });
+  }
 
   // ── Filtered + sorted lead table ──
   const filteredLeads = useMemo(() => {
@@ -149,6 +233,10 @@ export default function LeadsDashboard() {
         else if (sortField === "lastContactedAt") {
           va = a.lastContactedAt ? new Date(a.lastContactedAt).getTime() : 0;
           vb = b.lastContactedAt ? new Date(b.lastContactedAt).getTime() : 0;
+        } else if (sortField === "daysSince") {
+          // Sort by staleness: null (never) = most stale = highest days
+          va = a.lastContactedAt ? daysSince(a.lastContactedAt) ?? 9999 : 9999;
+          vb = b.lastContactedAt ? daysSince(b.lastContactedAt) ?? 9999 : 9999;
         }
         if (va < vb) return sortDir === "asc" ? -1 : 1;
         if (va > vb) return sortDir === "asc" ? 1 : -1;
@@ -185,6 +273,12 @@ export default function LeadsDashboard() {
 
   const summary = stats?.summary;
 
+  // Count stale leads (never contacted or not contacted in 7+ days)
+  const staleCount = leads?.filter(l => {
+    const d = daysSince(l.lastContactedAt);
+    return d === null || d >= 7;
+  }).length ?? 0;
+
   return (
     <AdminLayout>
       <div className="p-6 space-y-6">
@@ -194,8 +288,19 @@ export default function LeadsDashboard() {
             <div className="font-mono text-xs text-cyan-400 tracking-widest mb-1">// LEAD INTELLIGENCE</div>
             <h1 className="text-2xl font-bold text-white">Pipeline Dashboard</h1>
           </div>
-          <div className="font-mono text-xs text-white/30 border border-white/10 rounded px-3 py-1.5">
-            {leads?.length ?? 0} TOTAL LEADS
+          <div className="flex items-center gap-3">
+            {staleCount > 0 && (
+              <div
+                className="font-mono text-xs text-red-400 border border-red-500/30 bg-red-500/10 rounded px-3 py-1.5 cursor-pointer hover:bg-red-500/20 transition-colors"
+                onClick={() => { setSortField("daysSince"); setSortDir("desc"); }}
+                title="Click to sort by staleness"
+              >
+                ⚠ {staleCount} STALE LEAD{staleCount !== 1 ? "S" : ""}
+              </div>
+            )}
+            <div className="font-mono text-xs text-white/30 border border-white/10 rounded px-3 py-1.5">
+              {leads?.length ?? 0} TOTAL LEADS
+            </div>
           </div>
         </div>
 
@@ -229,7 +334,7 @@ export default function LeadsDashboard() {
                 <Tooltip content={<HudTooltip />} />
                 <Bar dataKey="count" name="Leads" radius={[4, 4, 0, 0]}>
                   {stageFunnelData.map((entry, index) => (
-                    <Cell key={index} fill={STAGE_COLORS[STAGE_ORDER[index]] ?? "#22d3ee"} />
+                    <Cell key={index} fill={STAGE_COLORS[STAGE_ORDER[index]] ?? "#22d3ee"} fillOpacity={0.8} />
                   ))}
                 </Bar>
               </BarChart>
@@ -361,6 +466,7 @@ export default function LeadsDashboard() {
                     { label: "Deal Value", field: "dealValue" as SortField },
                     { label: "Added", field: "createdAt" as SortField },
                     { label: "Last Contact", field: "lastContactedAt" as SortField },
+                    { label: "Stale", field: "daysSince" as SortField },
                   ].map(col => (
                     <th
                       key={col.field}
@@ -380,7 +486,7 @@ export default function LeadsDashboard() {
                 {leadsLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i} className="border-b border-white/5">
-                      {Array.from({ length: 7 }).map((_, j) => (
+                      {Array.from({ length: 8 }).map((_, j) => (
                         <td key={j} className="px-4 py-3">
                           <div className="h-4 bg-white/5 rounded animate-pulse" />
                         </td>
@@ -389,57 +495,72 @@ export default function LeadsDashboard() {
                   ))
                 ) : filteredLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-white/30 font-mono text-xs">
+                    <td colSpan={8} className="px-4 py-12 text-center text-white/30 font-mono text-xs">
                       {leads?.length === 0 ? "NO LEADS YET — RUN THE BATCH IMPORT SCRIPT TO SEED YOUR PIPELINE" : "NO LEADS MATCH CURRENT FILTERS"}
                     </td>
                   </tr>
                 ) : (
-                  filteredLeads.map((lead) => (
-                    <tr
-                      key={lead.id}
-                      className="border-b border-white/5 hover:bg-white/[0.03] transition-colors group"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="text-white font-medium text-sm">{lead.firstName} {lead.lastName}</div>
-                        <div className="text-white/40 text-xs font-mono">{lead.email}</div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="text-white/70 text-sm">{lead.company ?? "—"}</div>
-                        <div className="text-white/30 text-xs">{lead.jobTitle ?? ""}</div>
-                      </td>
-                      <td className="px-4 py-3">{stageBadge(lead.stage)}</td>
-                      <td className="px-4 py-3">
-                        <span className="text-amber-400 font-mono font-bold text-sm">
-                          {lead.dealValue ? fmt(parseFloat(lead.dealValue)) : "—"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-white/40 font-mono text-xs">
-                        {new Date(lead.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3 text-white/40 font-mono text-xs">
-                        {lead.lastContactedAt ? new Date(lead.lastContactedAt).toLocaleDateString() : <span className="text-red-400/60">Never</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 px-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 font-mono text-xs"
-                            onClick={() => navigate(`/admin/crm/${lead.id}`)}
-                          >
-                            View <ArrowRight className="w-3 h-3 ml-1" />
-                          </Button>
-                          {lead.linkedIn && (
-                            <a href={lead.linkedIn} target="_blank" rel="noopener noreferrer">
-                              <Button size="sm" variant="ghost" className="h-7 px-2 text-white/40 hover:text-white hover:bg-white/10">
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
-                            </a>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  filteredLeads.map((lead) => {
+                    const isStale = daysSince(lead.lastContactedAt) === null || (daysSince(lead.lastContactedAt) ?? 0) >= 7;
+                    return (
+                      <tr
+                        key={lead.id}
+                        className={`border-b border-white/5 hover:bg-white/[0.03] transition-colors group ${isStale ? "border-l-2 border-l-red-500/40" : ""}`}
+                      >
+                        <td className="px-4 py-3">
+                          <div className="text-white font-medium text-sm">{lead.firstName} {lead.lastName}</div>
+                          <div className="text-white/40 text-xs font-mono">{lead.email}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-white/70 text-sm">{lead.company ?? "—"}</div>
+                          <div className="text-white/30 text-xs">{lead.jobTitle ?? ""}</div>
+                        </td>
+                        {/* One-click stage dropdown */}
+                        <td className="px-4 py-3">
+                          <StageDropdown
+                            leadId={lead.id}
+                            currentStage={lead.stage}
+                            onUpdate={handleStageUpdate}
+                            isPending={updatingId === lead.id}
+                          />
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-amber-400 font-mono font-bold text-sm">
+                            {lead.dealValue ? fmt(parseFloat(lead.dealValue)) : "—"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-white/40 font-mono text-xs">
+                          {new Date(lead.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3 text-white/40 font-mono text-xs">
+                          {lead.lastContactedAt ? new Date(lead.lastContactedAt).toLocaleDateString() : <span className="text-red-400/60">Never</span>}
+                        </td>
+                        {/* Days since last contact */}
+                        <td className="px-4 py-3">
+                          <DaysSinceCell date={lead.lastContactedAt} />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 px-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 font-mono text-xs"
+                              onClick={() => navigate(`/admin/crm/${lead.id}`)}
+                            >
+                              View <ArrowRight className="w-3 h-3 ml-1" />
+                            </Button>
+                            {lead.linkedIn && (
+                              <a href={lead.linkedIn} target="_blank" rel="noopener noreferrer">
+                                <Button size="sm" variant="ghost" className="h-7 px-2 text-white/40 hover:text-white hover:bg-white/10">
+                                  <ExternalLink className="w-3 h-3" />
+                                </Button>
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -453,8 +574,11 @@ export default function LeadsDashboard() {
                   {fmt(filteredLeads.reduce((sum, l) => sum + parseFloat(l.dealValue ?? "0"), 0))}
                 </span>
               </div>
-              <div className="font-mono text-xs text-white/20">
-                {filteredLeads.filter(l => l.stage === "closed_won").length} WON · {filteredLeads.filter(l => l.stage === "closed_lost").length} LOST
+              <div className="font-mono text-xs text-white/20 flex items-center gap-4">
+                {staleCount > 0 && (
+                  <span className="text-red-400/70">{staleCount} STALE</span>
+                )}
+                <span>{filteredLeads.filter(l => l.stage === "closed_won").length} WON · {filteredLeads.filter(l => l.stage === "closed_lost").length} LOST</span>
               </div>
             </div>
           )}
