@@ -55,50 +55,52 @@ export default function NewsletterSignup({
 
   if (variant === "hero") {
     return (
-      <section className="py-20 relative overflow-hidden">
+      <section className="py-16 relative overflow-hidden">
         {/* Background glow */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-amber-500/5 rounded-full blur-3xl" />
         </div>
         <div className="container relative z-10">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 mb-6">
-              <Mail className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-xs font-mono text-amber-400 tracking-widest">FREE NEWSLETTER</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 leading-tight">
-              {title}
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">{subtitle}</p>
+          {/* Constrained card — not full-width */}
+          <div className="max-w-2xl mx-auto">
+            <div className="hud-card rounded-2xl p-8 md:p-10">
+              <div className="flex items-center gap-2 mb-4">
+                <Mail className="w-4 h-4 text-amber-400" />
+                <span className="text-xs font-mono text-amber-400 tracking-widest">FREE NEWSLETTER</span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-foreground mb-3 leading-tight">
+                {title}
+              </h2>
+              <p className="text-[oklch(0.55_0.015_220)] mb-6 leading-relaxed">{subtitle}</p>
 
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-              <Input
-                type="text"
-                placeholder="First name (optional)"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="bg-background/50 border-border font-mono sm:w-36 shrink-0"
-              />
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-background/50 border-border font-mono flex-1"
-              />
-              <Button
-                type="submit"
-                disabled={subscribe.isPending}
-                className="bg-amber-500 hover:bg-amber-400 text-black font-bold shrink-0"
-              >
-                {subscribe.isPending ? "JOINING..." : "JOIN FREE →"}
-              </Button>
-            </form>
-            <p className="text-xs text-muted-foreground/60 mt-3 font-mono">
-              No spam. Unsubscribe anytime. Join {" "}
-              <span className="text-amber-400">infrastructure engineers</span> who build at the speed of thought.
-            </p>
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  type="text"
+                  placeholder="First name (optional)"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="bg-[oklch(0.07_0.008_240)] border-[oklch(0.78_0.18_195_/_0.20)] font-mono sm:w-36 shrink-0"
+                />
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-[oklch(0.07_0.008_240)] border-[oklch(0.78_0.18_195_/_0.20)] font-mono flex-1"
+                />
+                <Button
+                  type="submit"
+                  disabled={subscribe.isPending}
+                  className="bg-[oklch(0.82_0.20_58)] hover:bg-[oklch(0.88_0.18_60)] text-[oklch(0.06_0.01_260)] font-bold shrink-0 glow-sm-amber"
+                >
+                  {subscribe.isPending ? "JOINING..." : "JOIN FREE →"}
+                </Button>
+              </form>
+              <p className="text-xs text-[oklch(0.35_0.015_220)] mt-3 font-mono">
+                No spam. Unsubscribe anytime.
+              </p>
+            </div>
           </div>
         </div>
       </section>

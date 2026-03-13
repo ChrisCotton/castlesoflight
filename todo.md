@@ -135,3 +135,14 @@
 - [x] Sidebar: add Email Templates nav item
 - [x] Vitest tests for template rendering and send procedure (90 total tests passing)
 - [x] Final checkpoint
+## UI Fixes & ASCII Animation (Mar 2026)
+- [x] A: Fix row/column spacing and checkbox cramping in services/case studies sections
+- [x] B: Add LOGIN button to nav (uses Manus OAuth), shows ADMIN button when logged in as admin
+- [x] C: Fix footer newsletter CTA — constrained to max-w-2xl hud-card, not full-width sprawl
+- [x] D: Add Ghostty-style ASCII canvas animation to hero background (AsciiBackground.tsx)
+- [x] Set CRM_API_KEY secret in project environment
+
+## Bug Fixes (Mar 2026 - Round 2)
+- [x] Fix nav elements bunched/stacked in upper-left corner
+- [x] Fix testimonial avatar letter vertical misalignment
+- [x] Fix mailto links to use chriscotton@castlesoflight.com

@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import AsciiBackground from "@/components/AsciiBackground";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -180,6 +183,44 @@ function HudStatusBar() {
   );
 }
 
+// ─── Nav Auth Buttons ────────────────────────────────────────────────────────
+function NavAuthButtons() {
+  const { user, isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  if (isAuthenticated && user) {
+    return (
+      <div className="hidden md:flex items-center gap-3">
+        {user.role === "admin" && (
+          <Link href="/admin">
+            <Button size="sm" variant="outline" className="border-[oklch(0.82_0.20_58_/_0.4)] text-[oklch(0.82_0.20_58)] hover:bg-[oklch(0.82_0.20_58_/_0.08)] font-mono text-xs">
+              ADMIN
+            </Button>
+          </Link>
+        )}
+        <Link href="/book">
+          <Button size="sm" className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-semibold glow-sm-amber transition-all">
+            Book a Call <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+  return (
+    <div className="hidden md:flex items-center gap-3">
+      <a href={getLoginUrl()}>
+        <Button size="sm" variant="outline" className="border-[oklch(0.78_0.18_195_/_0.3)] text-[oklch(0.78_0.18_195)] hover:bg-[oklch(0.78_0.18_195_/_0.08)] font-mono text-xs">
+          LOGIN
+        </Button>
+      </a>
+      <Link href="/book">
+        <Button size="sm" className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-semibold glow-sm-amber transition-all">
+          Book a Call <ArrowRight className="w-4 h-4 ml-1" />
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 function Nav() {
   const [open, setOpen] = useState(false);
@@ -192,9 +233,9 @@ function Nav() {
   }, []);
 
   return (
-    <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.04_0.005_260_/_0.95)] backdrop-blur-xl" : ""}`}>
-      <div className="container flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-2.5">
+    <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.04_0.005_260_/_0.95)] backdrop-blur-xl" : "bg-transparent"}`}>
+      <div className="container flex items-center justify-between h-16" style={{ minWidth: 0, width: '100%' }}>
+        <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-[oklch(0.82_0.20_58)] flex items-center justify-center glow-sm-amber">
             <Terminal className="w-4 h-4 text-[oklch(0.06_0.01_260)]" />
           </div>
@@ -203,7 +244,7 @@ function Nav() {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
           {[
             { label: "Case Studies", href: "#case-studies" },
             { label: "Services", href: "#services" },
@@ -220,13 +261,7 @@ function Nav() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/book">
-            <Button size="sm" className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-semibold glow-sm-amber transition-all">
-              Book a Call <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
-        </div>
+        <div className="shrink-0"><NavAuthButtons /></div>
 
         <button className="md:hidden text-foreground p-2" onClick={() => setOpen(!open)}>
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -259,6 +294,8 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
+      {/* ASCII canvas animation — sits behind the prismatic streaks */}
+      <AsciiBackground />
       <PrismaticBackground />
 
       <div className="container relative z-10">
@@ -512,7 +549,7 @@ function Services() {
               I arrive with 30 years of scar tissue and leave with your system transformed.
             </p>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-4 mb-8">
               {[
                 "Full infrastructure audit & threat model",
                 "IaC refactor with Terraform/Pulumi",
@@ -520,9 +557,9 @@ function Services() {
                 "Cost optimization implementation",
                 "30-day async support included",
               ].map((item) => (
-                <div key={item} className="flex items-start gap-3 text-sm text-[oklch(0.65_0.015_220)]">
+                <div key={item} className="flex items-start gap-3 py-1">
                   <CheckCircle2 className="w-4 h-4 text-[oklch(0.82_0.20_58)] shrink-0 mt-0.5" />
-                  {item}
+                  <span className="text-sm text-[oklch(0.65_0.015_220)] leading-relaxed">{item}</span>
                 </div>
               ))}
             </div>
@@ -548,7 +585,7 @@ function Services() {
               vision and your engineering team's execution — with the authority of someone who's done it at scale.
             </p>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-4 mb-8">
               {[
                 "Weekly architecture review calls",
                 "On-call Slack access (business hours)",
@@ -556,9 +593,9 @@ function Services() {
                 "Vendor negotiation & cost governance",
                 "Team mentoring & code review",
               ].map((item) => (
-                <div key={item} className="flex items-start gap-3 text-sm text-[oklch(0.65_0.015_220)]">
+                <div key={item} className="flex items-start gap-3 py-1">
                   <CheckCircle2 className="w-4 h-4 text-[oklch(0.78_0.18_195)] shrink-0 mt-0.5" />
-                  {item}
+                  <span className="text-sm text-[oklch(0.65_0.015_220)] leading-relaxed">{item}</span>
                 </div>
               ))}
             </div>
@@ -636,9 +673,9 @@ function Testimonials() {
               </blockquote>
 
               <div className="flex items-center gap-3 border-t border-[oklch(0.78_0.18_195_/_0.08)] pt-4">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center font-display font-bold text-sm"
-                  style={{ background: `${q.color}20`, border: `1px solid ${q.color}40`, color: q.color }}>
-                  {q.name[0]}
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center font-display font-bold text-sm shrink-0"
+                  style={{ background: `${q.color}20`, border: `1px solid ${q.color}40`, color: q.color, lineHeight: 1 }}>
+                  <span style={{ display: "block", lineHeight: 1 }}>{q.name[0]}</span>
                 </div>
                 <div>
                   <div className="font-semibold text-sm text-foreground">{q.name}</div>
@@ -922,7 +959,7 @@ function Footer() {
               AI-augmented infrastructure consulting. 30 years of scar tissue, deployed at the speed of thought.
             </p>
             <div className="flex items-center gap-4 text-xs font-mono text-[oklch(0.40_0.015_220)]">
-              <a href="mailto:chris@castlesoflight.com" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
+              <a href="mailto:chriscotton@castlesoflight.com" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5" /> Email
               </a>
               <a href="https://linkedin.com/in/christophercotton" target="_blank" rel="noopener noreferrer" className="hover:text-[oklch(0.78_0.18_195)] transition-colors flex items-center gap-1.5">
