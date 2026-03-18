@@ -551,21 +551,6 @@ echo "[7/9] Writing OpenClaw gateway configuration..."
 
 cat > "$OPENCLAW_BASE/openclaw.json" << OCJSON_EOF
 {
-  "agents": {
-    "defaults": {
-      "workspace": "~/.openclaw/workspace",
-      "userTimezone": "America/Chicago",
-      "timeFormat": "12"
-    },
-    "list": [
-      { "id": "scout",   "workspace": "~/.openclaw/workspace-scout",   "default": false },
-      { "id": "herald",  "workspace": "~/.openclaw/workspace-herald",  "default": false },
-      { "id": "closer",  "workspace": "~/.openclaw/workspace-closer",  "default": false },
-      { "id": "keeper",  "workspace": "~/.openclaw/workspace-keeper",  "default": false },
-      { "id": "tracker", "workspace": "~/.openclaw/workspace-tracker", "default": false },
-      { "id": "guardian","workspace": "~/.openclaw/workspace-guardian","default": true  }
-    ]
-  },
   "channels": {
     "slack": {
       "enabled": true,
@@ -588,21 +573,25 @@ cat > "$OPENCLAW_BASE/openclaw.json" << OCJSON_EOF
     { "agentId": "tracker",  "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/leads" } } },
     { "agentId": "guardian", "match": { "channel": "slack", "accountId": "*" } }
   ],
-  "models": {
-    "default": "anthropic/claude-3-5-sonnet-20241022",
-    "providers": {
-      "anthropic": {
-        "apiKey": "${ANTHROPIC_API_KEY}"
-      }
-    }
+  "agents": {
+    "defaults": {
+      "model": "anthropic/claude-3-5-sonnet-20241022",
+      "userTimezone": "America/Chicago",
+      "timeFormat": "12"
+    },
+    "list": [
+      { "id": "scout",   "workspace": "~/.openclaw/workspace-scout" },
+      { "id": "herald",  "workspace": "~/.openclaw/workspace-herald" },
+      { "id": "closer",  "workspace": "~/.openclaw/workspace-closer" },
+      { "id": "keeper",  "workspace": "~/.openclaw/workspace-keeper" },
+      { "id": "tracker", "workspace": "~/.openclaw/workspace-tracker" },
+      { "id": "guardian","workspace": "~/.openclaw/workspace-guardian", "default": true }
+    ]
   },
-  "cron": [
-    { "id": "scout-daily",    "agentId": "scout",   "schedule": "0 7 * * 1-5", "message": "Run your daily prospect search. Find 10-15 qualified leads matching the ICP. Add them to Nerve Center CRM." },
-    { "id": "herald-daily",   "agentId": "herald",  "schedule": "0 9 * * 1-5", "message": "Run your daily outreach sequence. Pull leads from Nerve Center, draft personalized emails, post to #herald-approvals for review." },
-    { "id": "keeper-daily",   "agentId": "keeper",  "schedule": "0 8 * * *",   "message": "Post your daily revenue digest to #revenue-pulse. Pull Stripe data and Nerve Center pipeline data." },
-    { "id": "tracker-weekly", "agentId": "tracker", "schedule": "0 8 * * 1",   "message": "Post your weekly stale lead report to #agent-alerts. Check all leads for overdue follow-ups." },
-    { "id": "guardian-check", "agentId": "guardian","schedule": "0 */6 * * *", "message": "Run a full health check on all agents and API integrations. Post status report to #agent-alerts." }
-  ]
+  "cron": {
+    "enabled": true,
+    "maxConcurrentRuns": 2
+  }
 }
 OCJSON_EOF
 
