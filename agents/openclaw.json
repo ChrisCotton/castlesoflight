@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.13",
+    "lastTouchedAt": "2026-03-19T05:49:19.505Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-19T03:15:00.410Z",
+    "lastRunVersion": "2026.3.13",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "agents": {
+    "defaults": {
+      "model": "openai/gpt-4.1",
+      "models": {
+        "anthropic/claude-3-5-sonnet-20241022": {
+          "params": {
+            "cacheRetention": "short"
+          }
+        }
+      },
+      "userTimezone": "America/Chicago",
+      "timeFormat": "12",
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h"
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "30m"
+      }
+    },
+    "list": [
+      {
+        "id": "scout",
+        "workspace": "~/.openclaw/workspace-scout"
+      },
+      {
+        "id": "herald",
+        "workspace": "~/.openclaw/workspace-herald"
+      },
+      {
+        "id": "closer",
+        "workspace": "~/.openclaw/workspace-closer"
+      },
+      {
+        "id": "keeper",
+        "workspace": "~/.openclaw/workspace-keeper"
+      },
+      {
+        "id": "tracker",
+        "workspace": "~/.openclaw/workspace-tracker"
+      },
+      {
+        "id": "guardian",
+        "default": true,
+        "workspace": "~/.openclaw/workspace-guardian"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "guardian",
+      "match": {
+        "channel": "slack",
+        "accountId": "*"
+      }
+    }
+  ],
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "cron": {
+    "enabled": true,
+    "maxConcurrentRuns": 2
+  },
+  "channels": {
+    "slack": {
+      "mode": "socket",
+      "webhookPath": "/slack/events",
+      "enabled": true,
+      "commands": {
+        "native": true
+      },
+      "botToken": "xoxb-10630914521988-10655861584720-vislSPcX2fFIFA265I8tplGu",
+      "appToken": "xapp-1-A0AK9PE4SM6-10631195175140-b7e3ae57509582427839ac39941a8badb35e5d35d18b59ac0325ac51c4d692a7",
+      "userTokenReadOnly": true,
+      "groupPolicy": "allowlist",
+      "streaming": "partial",
+      "nativeStreaming": true,
+      "dmPolicy": "allowlist",
+      "allowFrom": [
+        "*"
+      ]
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "5fe8bc2e4ed5a60a2eb63f9e5f9857497b3df08a5d547941"
+    }
+  }
+}
