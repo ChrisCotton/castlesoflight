@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "guardian-morning-check",
+      "agentId": "guardian",
+      "schedule": "0 45 7 * * *",
+      "prompt": "Run your morning health check. Check all APIs and system resources. Post the full status report to #agent-alerts.",
+      "enabled": true,
+      "description": "GUARDIAN morning status report — 07:45 CT daily"
+    },
+    {
+      "id": "guardian-health-check-1",
+      "agentId": "guardian",
+      "schedule": "0 0 13 * * *",
+      "prompt": "Run a health check on all APIs and system resources. Only post to #agent-alerts if there are any warnings or failures.",
+      "enabled": true,
+      "description": "GUARDIAN afternoon health check — 13:00 CT daily"
+    },
+    {
+      "id": "guardian-health-check-2",
+      "agentId": "guardian",
+      "schedule": "0 0 19 * * *",
+      "prompt": "Run a health check on all APIs and system resources. Only post to #agent-alerts if there are any warnings or failures.",
+      "enabled": true,
+      "description": "GUARDIAN evening health check — 19:00 CT daily"
+    },
+    {
+      "id": "guardian-health-check-3",
+      "agentId": "guardian",
+      "schedule": "0 0 1 * * *",
+      "prompt": "Run a health check on all APIs and system resources. Only post to #agent-alerts if there are any warnings or failures.",
+      "enabled": true,
+      "description": "GUARDIAN overnight health check — 01:00 CT daily"
+    },
+    {
+      "id": "scout-weekday-run",
+      "agentId": "scout",
+      "schedule": "0 0 7 * * 1-5",
+      "prompt": "Run your weekly prospect search. Search Apollo.io for qualified leads matching the ICP. Verify pain signals. Add qualified leads (score >= 7) to the Nerve Center CRM. Post results to #agent-alerts.",
+      "enabled": true,
+      "description": "SCOUT weekday prospect search — 07:00 CT Mon-Fri"
+    },
+    {
+      "id": "herald-weekday-run",
+      "agentId": "herald",
+      "schedule": "0 0 9 * * 1-5",
+      "prompt": "Run your outreach drafting workflow. Pull leads from Nerve Center CRM where stage is Prospect and last contact was more than 3 days ago. Draft personalized emails for up to 20 leads. Post each draft to #herald-approvals for Christopher's review. Do NOT send any emails without a checkmark reaction.",
+      "enabled": true,
+      "description": "HERALD weekday outreach drafting — 09:00 CT Mon-Fri"
+    },
+    {
+      "id": "keeper-daily-digest",
+      "agentId": "keeper",
+      "schedule": "0 0 8 * * *",
+      "prompt": "Run your daily revenue digest. Pull revenue data from Stripe and pipeline data from Nerve Center CRM. Calculate MRR progress, pipeline value, velocity metrics, and forecast. Post the full digest to #revenue-pulse.",
+      "enabled": true,
+      "description": "KEEPER daily revenue digest — 08:00 CT daily"
+    },
+    {
+      "id": "tracker-weekly-report",
+      "agentId": "tracker",
+      "schedule": "0 0 8 * * 1",
+      "prompt": "Run your weekly stale lead report. Pull all active leads from Nerve Center CRM. Identify leads that are past their stage-appropriate contact threshold. Post the full weekly report to #agent-alerts with recommended actions.",
+      "enabled": true,
+      "description": "TRACKER weekly stale lead report — 08:00 CT Monday"
+    },
+    {
+      "id": "tracker-realtime-check-1",
+      "agentId": "tracker",
+      "schedule": "0 0 14 * * *",
+      "prompt": "Run a real-time pipeline check. Look for any leads in Proposal, Discovery, or Replied stage that have exceeded their contact threshold. Post immediate alerts to #agent-alerts for any critical stalls. Do not post if everything is within threshold.",
+      "enabled": true,
+      "description": "TRACKER afternoon pipeline check — 14:00 CT daily"
+    },
+    {
+      "id": "tracker-realtime-check-2",
+      "agentId": "tracker",
+      "schedule": "0 0 20 * * *",
+      "prompt": "Run a real-time pipeline check. Look for any leads in Proposal, Discovery, or Replied stage that have exceeded their contact threshold. Post immediate alerts to #agent-alerts for any critical stalls. Do not post if everything is within threshold.",
+      "enabled": true,
+      "description": "TRACKER evening pipeline check — 20:00 CT daily"
+    }
+  ]
+}
