@@ -16,37 +16,37 @@ The `&` runs the agent in the background so you can reply to Slack immediately w
 
 | Command | Dispatch To | Reply Channel | Your Acknowledgment |
 |---------|-------------|---------------|---------------------|
-| `/scout` | scout | #agent-alerts | "⚡ SCOUT dispatched — prospect search running. Results will post to #agent-alerts shortly." |
-| `/revenue` | keeper | #revenue-pulse | "⚡ KEEPER dispatched — revenue digest running. Results will post to #revenue-pulse shortly." |
-| `/leads` | tracker | #agent-alerts | "⚡ TRACKER dispatched — pipeline check running. Results will post to #agent-alerts shortly." |
-| `/closer` | closer | #agent-alerts | "⚡ CLOSER dispatched — preparing pre-call brief. Results will post to #agent-alerts shortly." |
-| `/herald` | herald | #herald-approvals | "⚡ HERALD dispatched — drafting outreach emails. Drafts will post to #herald-approvals for your approval." |
+| `/scout` | scout | channel:C0AMNF77A12 | "⚡ SCOUT dispatched — prospect search running. Results will post to channel:C0AMNF77A12 shortly." |
+| `/revenue` | keeper | channel:C0AND6FP1S4 | "⚡ KEEPER dispatched — revenue digest running. Results will post to channel:C0AND6FP1S4 shortly." |
+| `/leads` | tracker | channel:C0AMNF77A12 | "⚡ TRACKER dispatched — pipeline check running. Results will post to channel:C0AMNF77A12 shortly." |
+| `/closer` | closer | channel:C0AMNN80BL4 | "⚡ CLOSER dispatched — preparing pre-call brief. Results will post to channel:C0AMNN80BL4 shortly." |
+| `/herald` | herald | channel:C0AMGS179K8 | "⚡ HERALD dispatched — drafting outreach emails. Drafts will post to channel:C0AMGS179K8 for your approval." |
 
 ### Exact Bash Commands to Run
 
 **`/scout`:**
 ```bash
-openclaw agent --agent scout --message "Run a prospect search. Find 10-20 fintech or healthcare CTOs matching our ICP (cloud cost, deployment velocity, or compliance problems). Score each lead 1-10. Add qualified leads (score 7+) to Nerve Center CRM. Post a summary of what you found to #agent-alerts." --deliver --reply-channel slack --reply-to "#agent-alerts" &
+openclaw agent --agent scout --message "Run a prospect search. Find 10-20 fintech or healthcare CTOs matching our ICP (cloud cost, deployment velocity, or compliance problems). Score each lead 1-10. Add qualified leads (score 7+) to Nerve Center CRM. Post a summary of what you found to channel:C0AMNF77A12." --deliver --reply-channel slack --reply-to "channel:C0AMNF77A12" &
 ```
 
 **`/revenue`:**
 ```bash
-openclaw agent --agent keeper --message "Run the revenue digest now. Pull current MRR, pipeline value, lead counts by stage, and velocity metrics from Nerve Center CRM. Post the full digest to #revenue-pulse." --deliver --reply-channel slack --reply-to "#revenue-pulse" &
+openclaw agent --agent keeper --message "Run the revenue digest now. Pull current MRR, pipeline value, lead counts by stage, and velocity metrics from Nerve Center CRM. Post the full digest to channel:C0AND6FP1S4." --deliver --reply-channel slack --reply-to "channel:C0AND6FP1S4" &
 ```
 
 **`/leads`:**
 ```bash
-openclaw agent --agent tracker --message "Run a pipeline check now. Pull all active leads from Nerve Center CRM. Identify any leads past their stage-appropriate contact threshold. Post the pipeline status report to #agent-alerts." --deliver --reply-channel slack --reply-to "#agent-alerts" &
+openclaw agent --agent tracker --message "Run a pipeline check now. Pull all active leads from Nerve Center CRM. Identify any leads past their stage-appropriate contact threshold. Post the pipeline status report to channel:C0AMNF77A12." --deliver --reply-channel slack --reply-to "channel:C0AMNF77A12" &
 ```
 
 **`/closer`:**
 ```bash
-openclaw agent --agent closer --message "A discovery call brief has been requested. Check Nerve Center CRM for the most recent lead in Discovery stage. Prepare a full pre-call intelligence brief and post it to #agent-alerts." --deliver --reply-channel slack --reply-to "#agent-alerts" &
+openclaw agent --agent closer --message "A discovery call brief has been requested. Check Nerve Center CRM for the most recent lead in Discovery stage. Prepare a full pre-call intelligence brief and post it to channel:C0AMNF77A12." --deliver --reply-channel slack --reply-to "channel:C0AMNN80BL4" &
 ```
 
 **`/herald`:**
 ```bash
-openclaw agent --agent herald --message "Draft outreach emails for all qualified leads in Nerve Center CRM that have not yet been contacted. Post each draft to #herald-approvals for approval. Do not send anything without approval." --deliver --reply-channel slack --reply-to "#herald-approvals" &
+openclaw agent --agent herald --message "Draft outreach emails for all qualified leads in Nerve Center CRM that have not yet been contacted. Post each draft to channel:C0AMGS179K8 for approval. Do not send anything without approval." --deliver --reply-channel slack --reply-to "channel:C0AMGS179K8" &
 ```
 
 ### Dispatch Steps (in order)
@@ -60,8 +60,8 @@ openclaw agent --agent herald --message "Draft outreach emails for all qualified
 
 ## Health Check Schedule
 
-- **Every 6 hours:** Full health check, post to #agent-alerts only if there are issues
-- **Daily at 07:45 Chicago time:** Morning status post to #agent-alerts (before KEEPER's 08:00 digest)
+- **Every 6 hours:** Full health check, post to channel:C0AMNF77A12 only if there are issues
+- **Daily at 07:45 Chicago time:** Morning status post to channel:C0AMNF77A12 (before KEEPER's 08:00 digest)
 - **On `/agentstatus` command:** Immediate full status report to the channel where command was issued
 
 ## Health Check Report Format
@@ -147,10 +147,10 @@ Success: HTTP 200.
 | Condition | Severity | Action |
 |-----------|----------|--------|
 | API response time > 5000ms | 🟡 Degraded | Include in next report |
-| API returns 4xx or 5xx | 🔴 Down | Post to #agent-alerts immediately |
+| API returns 4xx or 5xx | 🔴 Down | Post to channel:C0AMNF77A12 immediately |
 | VPS memory > 85% | 🟡 Warning | Include in next report |
-| VPS disk > 90% | 🔴 Critical | Post to #agent-alerts immediately |
-| OpenClaw process not found | 🔴 Critical | Post to #agent-alerts immediately |
+| VPS disk > 90% | 🔴 Critical | Post to channel:C0AMNF77A12 immediately |
+| OpenClaw process not found | 🔴 Critical | Post to channel:C0AMNF77A12 immediately |
 
 ## Immediate Alert Format
 
@@ -188,4 +188,4 @@ Recommended fix: [specific action]
 - Logs: `/tmp/openclaw/openclaw-*.log`
 - Nerve Center CRM: https://castlesai-uuszelr6.manus.space
 - CRM API Key: in NERVE_CENTER_API_KEY env var
-- Slack channels: #agent-alerts (C0AMNF77A12), #herald-approvals (C0AMGS179K8), #revenue-pulse (C0AND6FP1S4)
+- Slack channels: channel:C0AMNF77A12 (#agent-alerts), channel:C0AMGS179K8 (#herald-approvals), channel:C0AND6FP1S4 (#revenue-pulse), channel:C0AMNN80BL4 (#closer-briefs)

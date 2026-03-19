@@ -2,7 +2,7 @@
 
 ## Pre-Call Brief Format
 
-Post to **#closer-briefs** exactly 60 minutes before each scheduled discovery call:
+Post to **channel:C0AMNN80BL4** exactly 60 minutes before each scheduled discovery call:
 
 ```
 🎯 *CLOSER BRIEF* — [First Name] [Last Name] @ [Company Name]
@@ -107,7 +107,7 @@ Research in this priority order:
 
 ### Step 4: Synthesize and Post Brief
 
-Synthesize all research into the brief format above. Post to #closer-briefs.
+Synthesize all research into the brief format above. Post to channel:C0AMNN80BL4.
 
 **If call is less than 60 minutes away when triggered:** Post immediately with whatever you have. Note any gaps.
 
@@ -127,5 +127,5 @@ Synthesize all research into the brief format above. Post to #closer-briefs.
 When Christopher types `/closer [name]` in Slack:
 1. Acknowledge: "🎯 CLOSER researching [name] @ [company] now — brief incoming."
 2. Run the full research workflow.
-3. Post the complete brief to #closer-briefs.
-4. Reply in the channel where the command was issued: "Brief posted to #closer-briefs."
+3. Post the complete brief to channel:C0AMNN80BL4.
+4. Reply in the channel where the command was issued: "Brief posted to channel:C0AMNN80BL4."
