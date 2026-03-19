@@ -565,12 +565,6 @@ cat > "$OPENCLAW_BASE/openclaw.json" << OCJSON_EOF
     }
   },
   "bindings": [
-    { "agentId": "guardian", "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/agentstatus" } } },
-    { "agentId": "scout",    "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/scout" } } },
-    { "agentId": "herald",   "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/herald" } } },
-    { "agentId": "closer",   "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/closer" } } },
-    { "agentId": "keeper",   "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/revenue" } } },
-    { "agentId": "tracker",  "match": { "channel": "slack", "peer": { "kind": "slash", "command": "/leads" } } },
     { "agentId": "guardian", "match": { "channel": "slack", "accountId": "*" } }
   ],
   "agents": {
