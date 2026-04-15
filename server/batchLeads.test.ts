@@ -1,7 +1,7 @@
 /**
- * Tests for POST /api/leads/batch
- * Validates API key auth, Zod schema enforcement, and per-lead result reporting.
- * Uses a mock db.createLead to avoid real DB calls.
+ * Tests for the Agent CRM REST API (batchLeadsRouter)
+ * Covers: POST /api/leads/batch, GET /api/leads, GET /api/leads/:id,
+ *         PATCH /api/leads/:id, POST /api/leads/:id/interactions
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -12,6 +12,11 @@ import { batchLeadsRouter } from "./batchLeadsRouter";
 // ─── Mock the db module ────────────────────────────────────────────────────────
 vi.mock("./db", () => ({
   createLead: vi.fn(),
+  getLeads: vi.fn(),
+  getLeadById: vi.fn(),
+  updateLead: vi.fn(),
+  addInteraction: vi.fn(),
+  getLeadInteractions: vi.fn(),
 }));
 
 import * as db from "./db";
@@ -40,6 +45,21 @@ const validLead = {
   tags: ["fintech", "web3", "high-value"],
 };
 
+const mockLead = {
+  id: 1,
+  firstName: "Guillaume",
+  lastName: "Poncin",
+  email: "gponcin@alchemy.com",
+  company: "Alchemy",
+  jobTitle: "CTO",
+  stage: "new_lead",
+  source: "linkedin",
+  isArchived: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+// ─── POST /api/leads/batch ────────────────────────────────────────────────────
 describe("POST /api/leads/batch", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -166,5 +186,145 @@ describe("POST /api/leads/batch", () => {
       .set("X-API-Key", VALID_KEY);
     expect(res.status).toBe(200);
     expect(res.body.status).toBe("ok");
+  });
+});
+
+// ─── GET /api/leads ───────────────────────────────────────────────────────────
+describe("GET /api/leads", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns 401 without API key", async () => {
+    const app = buildApp(VALID_KEY);
+    const res = await request(app).get("/api/leads");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns leads array for valid key", async () => {
+    vi.mocked(db.getLeads).mockResolvedValueOnce([mockLead] as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .get("/api/leads")
+      .set("X-API-Key", VALID_KEY);
+    expect(res.status).toBe(200);
+    expect(res.body.leads).toHaveLength(1);
+    expect(res.body.total).toBe(1);
+    expect(res.body.leads[0].email).toBe("gponcin@alchemy.com");
+  });
+
+  it("returns empty array when no leads", async () => {
+    vi.mocked(db.getLeads).mockResolvedValueOnce([] as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .get("/api/leads")
+      .set("X-API-Key", VALID_KEY);
+    expect(res.status).toBe(200);
+    expect(res.body.leads).toHaveLength(0);
+    expect(res.body.total).toBe(0);
+  });
+});
+
+// ─── GET /api/leads/:id ───────────────────────────────────────────────────────
+describe("GET /api/leads/:id", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns 404 for unknown lead", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .get("/api/leads/9999")
+      .set("X-API-Key", VALID_KEY);
+    expect(res.status).toBe(404);
+  });
+
+  it("returns lead with timeline for valid id", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(mockLead as never);
+    vi.mocked(db.getLeadInteractions).mockResolvedValueOnce([] as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .get("/api/leads/1")
+      .set("X-API-Key", VALID_KEY);
+    expect(res.status).toBe(200);
+    expect(res.body.lead.id).toBe(1);
+    expect(res.body.timeline).toEqual([]);
+  });
+});
+
+// ─── PATCH /api/leads/:id ─────────────────────────────────────────────────────
+describe("PATCH /api/leads/:id", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns 404 for unknown lead", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .patch("/api/leads/9999")
+      .set("X-API-Key", VALID_KEY)
+      .send({ stage: "contacted" });
+    expect(res.status).toBe(404);
+  });
+
+  it("updates lead stage and auto-logs stage change", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(mockLead as never);
+    vi.mocked(db.addInteraction).mockResolvedValueOnce(undefined as never);
+    vi.mocked(db.updateLead).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .patch("/api/leads/1")
+      .set("X-API-Key", VALID_KEY)
+      .send({ stage: "contacted" });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(vi.mocked(db.addInteraction)).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "stage_change" })
+    );
+  });
+});
+
+// ─── POST /api/leads/:id/interactions ─────────────────────────────────────────
+describe("POST /api/leads/:id/interactions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns 404 for unknown lead", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .post("/api/leads/9999/interactions")
+      .set("X-API-Key", VALID_KEY)
+      .send({ type: "note", title: "Test note" });
+    expect(res.status).toBe(404);
+  });
+
+  it("adds an interaction and updates lastContactedAt for email type", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(mockLead as never);
+    vi.mocked(db.addInteraction).mockResolvedValueOnce(undefined as never);
+    vi.mocked(db.updateLead).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .post("/api/leads/1/interactions")
+      .set("X-API-Key", VALID_KEY)
+      .send({ type: "email", title: "First touch sent", body: "Sent intro email." });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(vi.mocked(db.updateLead)).toHaveBeenCalledWith(1, expect.objectContaining({ lastContactedAt: expect.any(Date) }));
+  });
+
+  it("adds a note without updating lastContactedAt", async () => {
+    vi.mocked(db.getLeadById).mockResolvedValueOnce(mockLead as never);
+    vi.mocked(db.addInteraction).mockResolvedValueOnce(undefined as never);
+    const app = buildApp(VALID_KEY);
+    const res = await request(app)
+      .post("/api/leads/1/interactions")
+      .set("X-API-Key", VALID_KEY)
+      .send({ type: "note", title: "Internal note" });
+    expect(res.status).toBe(200);
+    expect(vi.mocked(db.updateLead)).not.toHaveBeenCalled();
   });
 });
