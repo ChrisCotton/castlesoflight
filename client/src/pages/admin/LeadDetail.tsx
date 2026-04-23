@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ArrowLeft,
   Mail,
@@ -38,12 +39,12 @@ type Stage = "new_lead" | "contacted" | "qualified" | "proposal_sent" | "closed_
 type InteractionType = "note" | "email" | "call" | "meeting" | "booking" | "stage_change" | "system";
 
 const STAGES: { key: Stage; label: string; color: string; bg: string; border: string }[] = [
-  { key: "new_lead", label: "New Lead", color: "text-[oklch(0.65_0.18_200)]", bg: "bg-[oklch(0.65_0.18_200_/_0.1)]", border: "border-[oklch(0.65_0.18_200_/_0.3)]" },
-  { key: "contacted", label: "Contacted", color: "text-primary", bg: "bg-primary/10", border: "border-primary/30" },
-  { key: "qualified", label: "Qualified", color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]" },
-  { key: "proposal_sent", label: "Proposal Sent", color: "text-[oklch(0.7_0.2_30)]", bg: "bg-[oklch(0.7_0.2_30_/_0.1)]", border: "border-[oklch(0.7_0.2_30_/_0.3)]" },
-  { key: "closed_won", label: "Closed Won", color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]" },
-  { key: "closed_lost", label: "Closed Lost", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30" },
+  { key: "new_lead", label: "New Lead", color: "text-accent", bg: "bg-accent/10", border: "border-accent/20" },
+  { key: "contacted", label: "Contacted", color: "text-primary", bg: "bg-primary/10", border: "border-primary/20" },
+  { key: "qualified", label: "Qualified", color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20" },
+  { key: "proposal_sent", label: "Proposal Sent", color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
+  { key: "closed_won", label: "Closed Won", color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20" },
+  { key: "closed_lost", label: "Closed Lost", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20" },
 ];
 
 const INTERACTION_ICONS: Record<InteractionType, React.ReactNode> = {
@@ -57,13 +58,13 @@ const INTERACTION_ICONS: Record<InteractionType, React.ReactNode> = {
 };
 
 const INTERACTION_COLORS: Record<InteractionType, string> = {
-  note: "bg-secondary border-border text-muted-foreground",
-  email: "bg-primary/10 border-primary/30 text-primary",
-  call: "bg-[oklch(0.65_0.18_160_/_0.1)] border-[oklch(0.65_0.18_160_/_0.3)] text-[oklch(0.65_0.18_160)]",
-  meeting: "bg-[oklch(0.62_0.22_280_/_0.1)] border-[oklch(0.62_0.22_280_/_0.3)] text-[oklch(0.62_0.22_280)]",
-  booking: "bg-[oklch(0.7_0.2_30_/_0.1)] border-[oklch(0.7_0.2_30_/_0.3)] text-[oklch(0.7_0.2_30)]",
-  stage_change: "bg-primary/10 border-primary/30 text-primary",
-  system: "bg-secondary border-border text-muted-foreground",
+  note: "bg-secondary/50 border-border/40 text-muted-foreground",
+  email: "bg-primary/10 border-primary/20 text-primary",
+  call: "bg-emerald-500/10 border-emerald-500/20 text-emerald-500",
+  meeting: "bg-accent/10 border-accent/20 text-accent",
+  booking: "bg-primary/10 border-primary/20 text-primary",
+  stage_change: "bg-accent/10 border-accent/20 text-accent",
+  system: "bg-secondary/50 border-border/40 text-muted-foreground",
 };
 
 function StageChip({ stage }: { stage: Stage }) {
@@ -90,8 +91,11 @@ function AddInteractionForm({ leadId, onAdded }: { leadId: number; onAdded: () =
   });
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-foreground">Log Interaction</h3>
+    <Card className="rounded-xl p-5 space-y-4 shadow-xl mb-6 bg-card/40 border-border/40">
+      <CardHeader className="p-0 mb-4">
+        <CardTitle className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">// LOG INTERACTION</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0 space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {(["note", "email", "call", "meeting"] as InteractionType[]).map((t) => (
           <button
@@ -127,7 +131,8 @@ function AddInteractionForm({ leadId, onAdded }: { leadId: number; onAdded: () =
         {add.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Plus className="w-3.5 h-3.5 mr-1" />}
         Log {type}
       </Button>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -206,12 +211,12 @@ export default function LeadDetail() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Left: Contact card */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="rounded-xl border border-border bg-card p-6">
+          <Card className="lg:col-span-1 space-y-4 bg-card/40 border-border/40 rounded-xl p-6 shadow-xl">
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-display font-bold text-lg">
+              <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-display font-bold text-lg shadow-inner glow-sm-amber">
                 {lead.firstName[0]}{lead.lastName[0]}
               </div>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground" onClick={editing ? () => setEditing(false) : startEdit}>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-primary transition-colors" onClick={editing ? () => setEditing(false) : startEdit}>
                 {editing ? <X className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
               </Button>
             </div>
@@ -329,19 +334,19 @@ export default function LeadDetail() {
                 </div>
               </>
             )}
-          </div>
+          </Card>
 
           {/* Quick actions */}
-          <div className="rounded-xl border border-border bg-card p-4">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Quick Actions</h3>
+          <Card className="rounded-xl p-4 shadow-lg bg-card/40 border-border/40">
+            <h3 className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">// QUICK ACTIONS</h3>
             <div className="space-y-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start border-[oklch(0.78_0.18_195_/_0.3)] text-[oklch(0.78_0.18_195)] hover:bg-[oklch(0.78_0.18_195_/_0.08)] text-sm"
+                className="w-full justify-start border-primary/30 text-primary hover:bg-primary/10 text-xs font-mono font-bold uppercase tracking-widest"
                 onClick={() => setEmailDialogOpen(true)}
               >
-                <Mail className="w-3.5 h-3.5 mr-2" /> Send Email
+                <Mail className="w-3.5 h-3.5 mr-2" /> SEND EMAIL
               </Button>
               <SendEmailDialog
                 open={emailDialogOpen}
@@ -350,23 +355,23 @@ export default function LeadDetail() {
                 leadName={`${lead.firstName} ${lead.lastName}`}
                 leadEmail={lead.email}
               />
-              <Link href={`/book`} className="w-full">
-                <Button variant="outline" size="sm" className="w-full justify-start border-border text-foreground hover:bg-secondary text-sm">
-                  <Calendar className="w-3.5 h-3.5 mr-2 text-primary" /> Schedule Call
+              <Link href={`/book`} className="w-full block">
+                <Button variant="outline" size="sm" className="w-full justify-start border-border text-foreground hover:bg-secondary text-xs font-mono font-bold uppercase tracking-widest">
+                  <Calendar className="w-3.5 h-3.5 mr-2 text-primary" /> SCHEDULE CALL
                 </Button>
               </Link>
               {lead.stage !== "closed_won" && lead.stage !== "closed_lost" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start border-[oklch(0.65_0.18_160_/_0.5)] text-[oklch(0.65_0.18_160)] hover:bg-[oklch(0.65_0.18_160_/_0.1)] text-sm"
-                  onClick={() => update.mutate({ id: leadId, stage: "closed_won" })}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-2" /> Mark Closed Won
-                </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 text-xs font-mono font-bold uppercase tracking-widest"
+                    onClick={() => update.mutate({ id: leadId, stage: "closed_won" })}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-2" /> MARK CLOSED WON
+                  </Button>
               )}
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Right: Timeline */}
@@ -374,11 +379,11 @@ export default function LeadDetail() {
           <AddInteractionForm leadId={leadId} onAdded={() => utils.lead.get.invalidate({ id: leadId })} />
 
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4">Interaction Timeline</h3>
+            <h3 className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">// INTERACTION TIMELINE</h3>
             {timeline.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground text-sm">
-                No interactions yet. Log your first one above.
-              </div>
+              <Card className="border-border/30 border-dashed rounded-xl p-8 text-center text-muted-foreground font-mono text-[10px] uppercase tracking-widest bg-transparent">
+                NO CORE INTERACTIONS DETECTED.
+              </Card>
             ) : (
               <div className="space-y-3">
                 {timeline.map((item) => (
@@ -386,7 +391,7 @@ export default function LeadDetail() {
                     <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${INTERACTION_COLORS[item.type as InteractionType]}`}>
                       {INTERACTION_ICONS[item.type as InteractionType]}
                     </div>
-                    <div className="flex-1 rounded-xl border border-border bg-card p-4">
+                    <Card className="flex-1 border-border/40 rounded-xl p-4 shadow-sm bg-card/40">
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <p className="text-sm font-medium text-foreground">{item.title}</p>
                         <span className="text-xs text-muted-foreground shrink-0">
@@ -396,7 +401,7 @@ export default function LeadDetail() {
                       {item.body && (
                         <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
                       )}
-                    </div>
+                    </Card>
                   </div>
                 ))}
               </div>

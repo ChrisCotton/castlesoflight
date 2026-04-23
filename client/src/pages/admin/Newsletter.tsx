@@ -9,19 +9,20 @@ import {
   Users, Send, FileText, Plus, Trash2, Eye, Edit3,
   CheckCircle, Clock, AlertCircle, Mail
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Tab = "subscribers" | "compose" | "issues";
 
 const STATUS_STYLES: Record<string, string> = {
-  active: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
-  unsubscribed: "bg-red-500/10 text-red-400 border border-red-500/30",
-  bounced: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30",
+  active: "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20",
+  unsubscribed: "bg-destructive/10 text-destructive border border-destructive/20",
+  bounced: "bg-yellow-400/10 text-yellow-400 border border-yellow-400/20",
 };
 
 const ISSUE_STATUS_STYLES: Record<string, string> = {
-  draft: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30",
-  sent: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
-  scheduled: "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30",
+  draft: "bg-yellow-400/10 text-yellow-400 border border-yellow-400/20",
+  sent: "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20",
+  scheduled: "bg-primary/10 text-primary border border-primary/20",
 };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -122,12 +123,12 @@ export default function Newsletter() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-mono text-cyan-400 tracking-widest mb-1">// ADMIN MODULE</p>
-            <h1 className="text-2xl font-bold text-foreground">Newsletter Command</h1>
+            <p className="font-mono text-[10px] font-bold text-primary tracking-[0.3em] mb-1 uppercase opacity-60">// BROADCAST INTELLIGENCE</p>
+            <h1 className="text-4xl font-bold text-foreground font-display tracking-tight">Newsletter Command</h1>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-emerald-500/30 bg-emerald-500/5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-mono text-emerald-400">{subCount} ACTIVE SUBSCRIBERS</span>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-emerald-400/30 bg-emerald-400/5 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_var(--emerald-400)]" />
+            <span className="text-[10px] font-mono font-bold text-emerald-400 tracking-widest">{subCount} ACTIVE SUBSCRIBERS</span>
           </div>
         </div>
 
@@ -136,29 +137,29 @@ export default function Newsletter() {
           {[
             { label: "Active Subscribers", value: activeCount, icon: Users, color: "text-emerald-400" },
             { label: "Unsubscribed", value: unsubCount, icon: AlertCircle, color: "text-red-400" },
-            { label: "Issues Sent", value: sentIssues, icon: CheckCircle, color: "text-cyan-400" },
-            { label: "Drafts", value: draftIssues, icon: Clock, color: "text-amber-400" },
+            { label: "Issues Sent", value: sentIssues, icon: CheckCircle, color: "text-primary" },
+            { label: "Drafts", value: draftIssues, icon: Clock, color: "text-yellow-400" },
           ].map((stat) => (
-            <div key={stat.label} className="hud-card p-4">
+            <Card key={stat.label} className="p-5 shadow-lg border-border/40 bg-card/40">
               <div className="flex items-center gap-2 mb-2">
-                <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                <span className="text-xs font-mono text-muted-foreground">{stat.label.toUpperCase()}</span>
+                <stat.icon className={`w-3.5 h-3.5 ${stat.color} opacity-80`} />
+                <span className="text-[10px] font-mono font-bold text-foreground/40 tracking-widest uppercase">{stat.label.toUpperCase()}</span>
               </div>
-              <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-            </div>
+              <p className={`text-4xl font-bold font-display tracking-tight ${stat.color}`}>{stat.value}</p>
+            </Card>
           ))}
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 rounded-lg bg-muted/20 border border-border w-fit">
+        <div className="flex gap-1 p-1 rounded-lg bg-muted/20 border border-border/40 w-fit">
           {(["subscribers", "compose", "issues"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-md text-sm font-mono font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-xs font-mono font-bold tracking-widest transition-all ${
                 tab === t
-                  ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/20 text-primary border border-primary/30 shadow-[0_0_15px_var(--primary-glow)]"
+                  : "text-foreground/40 hover:text-foreground hover:bg-white/5"
               }`}
             >
               {t === "subscribers" && <Users className="inline w-3.5 h-3.5 mr-1.5" />}
@@ -171,9 +172,9 @@ export default function Newsletter() {
 
         {/* Subscribers Tab */}
         {tab === "subscribers" && (
-          <div className="hud-card overflow-hidden">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <p className="text-xs font-mono text-cyan-400 tracking-widest">// SUBSCRIBER LIST</p>
+          <Card className="overflow-hidden border-border/40 bg-card/40">
+            <div className="p-4 border-b border-border/40 bg-secondary/20 flex items-center justify-between">
+              <p className="font-mono text-[10px] font-bold text-primary tracking-[0.2em] uppercase opacity-70">// SUBSCRIBER REPOSITORY</p>
               <span className="text-xs text-muted-foreground">{subscribers.length} total</span>
             </div>
             {subsLoading ? (
@@ -199,8 +200,8 @@ export default function Newsletter() {
                   </thead>
                   <tbody>
                     {subscribers.map((sub) => (
-                      <tr key={sub.id} className="border-b border-border/50 hover:bg-muted/10 transition-colors">
-                        <td className="p-3 font-mono text-xs text-cyan-300">{sub.email}</td>
+                      <tr key={sub.id} className="border-b border-border/40 hover:bg-white/5 transition-colors group">
+                        <td className="p-4 font-mono text-xs text-primary">{sub.email}</td>
                         <td className="p-3 text-foreground">
                           {sub.firstName || sub.lastName
                             ? `${sub.firstName ?? ""} ${sub.lastName ?? ""}`.trim()
@@ -237,16 +238,16 @@ export default function Newsletter() {
                 </table>
               </div>
             )}
-          </div>
+          </Card>
         )}
 
         {/* Compose Tab */}
         {tab === "compose" && (
           <div className="space-y-4">
-            <div className="hud-card p-6 space-y-4">
+            <Card className="p-6 space-y-4 border-border/40 bg-card/40">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-mono text-cyan-400 tracking-widest">
-                  {editingIssueId ? `// EDITING ISSUE #${editingIssueId}` : "// NEW ISSUE"}
+                <p className="font-mono text-[10px] font-bold text-primary tracking-[0.2em] uppercase">
+                  {editingIssueId ? `// UPDATING BROADCAST ISSUE #${editingIssueId}` : "// COMPOSE NEW BROADCAST"}
                 </p>
                 {editingIssueId && (
                   <button
@@ -312,7 +313,7 @@ export default function Newsletter() {
                   {createIssue.isPending || updateIssue.isPending ? "SAVING..." : "SAVE DRAFT"}
                 </Button>
               </div>
-            </div>
+            </Card>
 
             {/* HTML Preview Modal */}
             {previewHtml && (
@@ -341,24 +342,24 @@ export default function Newsletter() {
             <div className="flex justify-end">
               <Button
                 onClick={() => { setEditingIssueId(null); setSubject(""); setPreviewText(""); setHtmlBody(""); setTab("compose"); }}
-                className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-widest text-[10px] px-6 h-10 shadow-[0_0_20px_var(--primary-glow)] transition-all"
               >
-                <Plus className="w-4 h-4 mr-2" /> NEW ISSUE
+                <Plus className="w-4 h-4 mr-2" /> COMPOSE NEW ISSUE
               </Button>
             </div>
 
             {issuesLoading ? (
-              <div className="hud-card p-8 text-center text-muted-foreground font-mono text-sm">LOADING...</div>
+              <Card className="p-8 text-center text-muted-foreground font-mono text-sm border-border/40 bg-card/40">LOADING...</Card>
             ) : issues.length === 0 ? (
-              <div className="hud-card p-12 text-center">
+              <Card className="p-12 text-center border-border/40 bg-card/40">
                 <FileText className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
                 <p className="text-muted-foreground font-mono text-sm">NO ISSUES YET</p>
                 <p className="text-muted-foreground/60 text-xs mt-1">Create your first newsletter issue</p>
-              </div>
+              </Card>
             ) : (
               <div className="space-y-3">
                 {issues.map((issue) => (
-                  <div key={issue.id} className="hud-card p-5">
+                  <Card key={issue.id} className="p-5 border-border/40 bg-card/40">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
@@ -408,7 +409,7 @@ export default function Newsletter() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             )}

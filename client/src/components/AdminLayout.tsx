@@ -17,8 +17,28 @@ import {
   Mail,
   TrendingUp,
   FileText,
+  ChevronRight,
+  User,
+  Settings,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -38,7 +58,7 @@ function HudTime() {
     return () => clearInterval(t);
   }, []);
   return (
-    <span className="font-mono text-[10px] text-[oklch(0.78_0.18_195_/_0.6)]">
+    <span className="font-mono text-[10px] text-accent/60">
       {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
     </span>
   );
@@ -49,10 +69,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [location] = useLocation();
 
   if (loading) return (
-    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
-        <div className="w-12 h-12 rounded-xl bg-[oklch(0.82_0.20_58_/_0.15)] border border-[oklch(0.82_0.20_58_/_0.3)] flex items-center justify-center mx-auto mb-4 glow-sm-amber">
-          <Loader2 className="w-6 h-6 animate-spin text-[oklch(0.82_0.20_58)]" />
+        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 glow-sm-amber">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
         <span className="hud-label opacity-50">AUTHENTICATING...</span>
       </div>
@@ -60,16 +80,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   if (!isAuthenticated) return (
-    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4">
-        <div className="w-16 h-16 rounded-2xl bg-[oklch(0.82_0.20_58_/_0.12)] border border-[oklch(0.82_0.20_58_/_0.3)] flex items-center justify-center mx-auto mb-5 glow-sm-amber">
-          <Terminal className="w-8 h-8 text-[oklch(0.82_0.20_58)]" />
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5 glow-sm-amber">
+          <Terminal className="w-8 h-8 text-primary" />
         </div>
         <div className="sys-online mx-auto w-fit mb-4">NERVE CENTER</div>
         <h1 className="font-display font-bold text-2xl text-foreground mb-2">Admin Access</h1>
-        <p className="text-[oklch(0.50_0.015_220)] text-sm mb-6">Sign in to access the command dashboard.</p>
+        <p className="text-muted-foreground text-sm mb-6">Sign in to access the command dashboard.</p>
         <a href={getLoginUrl()}>
-          <Button className="w-full bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-bold glow-sm-amber">
+          <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold glow-sm-amber">
             Sign In
           </Button>
         </a>
@@ -78,106 +98,143 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   if (user?.role !== "admin") return (
-    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4">
         <ShieldAlert className="w-12 h-12 text-destructive mx-auto mb-4" />
         <h1 className="font-display font-bold text-2xl text-foreground mb-2">Access Denied</h1>
-        <p className="text-[oklch(0.50_0.015_220)] text-sm mb-6">You don't have admin clearance for this area.</p>
+        <p className="text-muted-foreground text-sm mb-6">You don't have admin clearance for this area.</p>
         <Link href="/">
-          <Button variant="outline" className="border-[oklch(0.78_0.18_195_/_0.3)] text-[oklch(0.78_0.18_195)]">Return to Public Site</Button>
+          <Button variant="outline" className="border-border text-muted-foreground">Return to Public Site</Button>
         </Link>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex">
-      {/* Sidebar */}
-      <aside className="w-56 shrink-0 border-r border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.055_0.008_250)] flex flex-col">
-        {/* Logo */}
-        <div className="p-4 border-b border-[oklch(0.78_0.18_195_/_0.10)]">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[oklch(0.82_0.20_58)] flex items-center justify-center glow-sm-amber">
-              <Terminal className="w-3.5 h-3.5 text-[oklch(0.06_0.01_260)]" />
-            </div>
-            <div>
-              <div className="font-display font-bold text-sm text-foreground leading-none">Nerve Center</div>
-              <div className="hud-label text-[9px] opacity-40 mt-0.5">COMMAND DASHBOARD</div>
-            </div>
-          </Link>
-        </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen w-full bg-background">
+        <Sidebar variant="inset" collapsible="icon" className="border-r border-border/50">
+          <SidebarHeader className="p-4">
+            <Link href="/" className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_15px_var(--primary-glow)] shrink-0">
+                <Terminal className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                <span className="font-display font-bold text-sm text-foreground leading-none">Nerve Center</span>
+                <span className="text-[9px] font-mono text-muted-foreground/40 mt-0.5 tracking-widest uppercase">CASTLES OF LIGHT</span>
+              </div>
+            </Link>
+          </SidebarHeader>
 
-        {/* Status */}
-        <div className="px-4 py-2.5 border-b border-[oklch(0.78_0.18_195_/_0.08)] flex items-center justify-between">
-          <span className="sys-online text-[9px]">SYS.ONLINE</span>
-          <HudTime />
-        </div>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel className="px-4 py-2 group-data-[collapsible=icon]:hidden">COMMAND CENTER</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {NAV_ITEMS.map((item) => {
+                    const active = item.exact ? location === item.href : location.startsWith(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton 
+                          asChild 
+                          isActive={active}
+                          tooltip={item.label}
+                          className={active ? "bg-primary/10 text-primary hover:bg-primary/15" : ""}
+                        >
+                          <Link href={item.href} className="flex items-center gap-3">
+                            <item.icon className={`w-4 h-4 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                            <span className="font-medium">{item.label}</span>
+                            {active && (
+                               <div className="ml-auto w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_var(--primary-glow)] group-data-[collapsible=icon]:hidden" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
 
-        {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5">
-          {NAV_ITEMS.map((item) => {
-            const active = item.exact ? location === item.href : location.startsWith(item.href);
-            return (
-              <Link key={item.href} href={item.href}>
-                <div className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                  active
-                    ? "bg-[oklch(0.82_0.20_58_/_0.15)] text-[oklch(0.82_0.20_58)] border border-[oklch(0.82_0.20_58_/_0.25)]"
-                    : "text-[oklch(0.55_0.015_220)] hover:bg-[oklch(0.78_0.18_195_/_0.06)] hover:text-[oklch(0.78_0.18_195)]"
-                }`}>
-                  <item.icon className="w-4 h-4 shrink-0" />
-                  {item.label}
-                  {active && (
-                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[oklch(0.82_0.20_58)]" style={{ boxShadow: "0 0 6px oklch(0.82 0.20 58 / 0.8)" }} />
-                  )}
-                </div>
-              </Link>
-            );
-          })}
-        </nav>
+            <Separator className="mx-4 my-2 opacity-50" />
 
-        {/* Footer */}
-        <div className="p-3 border-t border-[oklch(0.78_0.18_195_/_0.10)] space-y-1">
-          <Link href="/">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-[oklch(0.45_0.015_220)] hover:bg-[oklch(0.78_0.18_195_/_0.06)] hover:text-[oklch(0.78_0.18_195)] cursor-pointer transition-all">
-              <ExternalLink className="w-3.5 h-3.5" />
-              View Public Site
-            </div>
-          </Link>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg">
-            <div className="w-6 h-6 rounded-md bg-[oklch(0.82_0.20_58_/_0.15)] border border-[oklch(0.82_0.20_58_/_0.3)] flex items-center justify-center text-[oklch(0.82_0.20_58)] text-xs font-bold font-display">
-              {user?.name?.[0] ?? "A"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs text-[oklch(0.65_0.015_220)] truncate font-medium">{user?.name ?? "Admin"}</div>
-              <div className="hud-label text-[9px] opacity-40">ADMIN</div>
-            </div>
-          </div>
-          <button
-            onClick={() => logout()}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-[oklch(0.45_0.015_220)] hover:text-destructive hover:bg-destructive/10 transition-all"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            Sign Out
-          </button>
-        </div>
-      </aside>
+            <SidebarGroup>
+              <SidebarGroupLabel className="px-4 py-2 group-data-[collapsible=icon]:hidden">SYSTEM</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="View Site">
+                      <Link href="/" className="flex items-center gap-3">
+                        <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                        <span>Public Site</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto min-h-screen">
-        {/* Top bar */}
-        <div className="sticky top-0 z-10 border-b border-[oklch(0.78_0.18_195_/_0.10)] bg-[oklch(0.04_0.005_260_/_0.95)] backdrop-blur-xl px-6 h-10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="w-3.5 h-3.5 text-[oklch(0.78_0.18_195_/_0.5)]" />
-            <span className="hud-label opacity-40">CASTLES OF LIGHT // NERVE CENTER</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hud-label opacity-30">OPERATOR: {user?.name?.toUpperCase() ?? "ADMIN"}</span>
-          </div>
-        </div>
-        <div className="p-6 md:p-8 max-w-7xl">
-          {children}
-        </div>
-      </main>
-    </div>
+          <SidebarFooter className="p-4 border-t border-border/50">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                 <div className="flex items-center gap-3 px-2 py-2 group-data-[collapsible=icon]:justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-secondary border border-border flex items-center justify-center shrink-0">
+                       <User className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex flex-col min-w-0 group-data-[collapsible=icon]:hidden">
+                       <span className="text-xs font-semibold text-foreground truncate">{user?.name ?? "Admin"}</span>
+                       <span className="text-[10px] text-muted-foreground truncate uppercase tracking-tighter opacity-60">Master Operator</span>
+                    </div>
+                 </div>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={() => logout()} 
+                  className="w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  tooltip="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="group-data-[collapsible=icon]:hidden">Sign Out</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
+          <SidebarRail />
+        </Sidebar>
+
+        <SidebarInset className="flex flex-col flex-1 overflow-hidden">
+          {/* Header */}
+          <header className="flex h-12 items-center justify-between border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 shrink-0 sticky top-0 z-20">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="h-4" />
+              <div className="flex items-center gap-2">
+                 <Activity className="w-3.5 h-3.5 text-accent/50" />
+                 <span className="text-[10px] font-mono text-muted-foreground/40 tracking-widest hidden sm:inline">CLUSTER_ID: COL-SF-01</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                 <span className="sys-online text-[9px]">SYS.ONLINE</span>
+                 <HudTime />
+              </div>
+              <Separator orientation="vertical" className="h-4" />
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                 <Settings className="w-4 h-4" />
+              </Button>
+            </div>
+          </header>
+
+          {/* Main Content Area */}
+          <main className="flex-1 overflow-auto bg-background/50">
+            <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto">
+              {children}
+            </div>
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 }

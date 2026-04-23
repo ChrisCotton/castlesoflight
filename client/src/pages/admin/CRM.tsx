@@ -30,16 +30,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 
 type Stage = "new_lead" | "contacted" | "qualified" | "proposal_sent" | "closed_won" | "closed_lost";
 
 const STAGES: { key: Stage; label: string; color: string; bg: string; border: string }[] = [
-  { key: "new_lead", label: "New Lead", color: "text-[oklch(0.65_0.18_200)]", bg: "bg-[oklch(0.65_0.18_200_/_0.1)]", border: "border-[oklch(0.65_0.18_200_/_0.3)]" },
-  { key: "contacted", label: "Contacted", color: "text-primary", bg: "bg-primary/10", border: "border-primary/30" },
-  { key: "qualified", label: "Qualified", color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]" },
-  { key: "proposal_sent", label: "Proposal Sent", color: "text-[oklch(0.7_0.2_30)]", bg: "bg-[oklch(0.7_0.2_30_/_0.1)]", border: "border-[oklch(0.7_0.2_30_/_0.3)]" },
-  { key: "closed_won", label: "Closed Won", color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]" },
-  { key: "closed_lost", label: "Closed Lost", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30" },
+  { key: "new_lead", label: "New Lead", color: "text-accent", bg: "bg-accent/10", border: "border-accent/20" },
+  { key: "contacted", label: "Contacted", color: "text-primary", bg: "bg-primary/10", border: "border-primary/20" },
+  { key: "qualified", label: "Qualified", color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20" },
+  { key: "proposal_sent", label: "Proposal Sent", color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20" },
+  { key: "closed_won", label: "Closed Won", color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/20" },
+  { key: "closed_lost", label: "Closed Lost", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20" },
 ];
 
 const OFFER_LABELS: Record<string, string> = {
@@ -205,15 +206,20 @@ export default function CRM() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">CRM Pipeline</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {leads?.length ?? 0} leads · Pipeline value:{" "}
-            <span className="text-primary font-semibold">${totalPipeline.toLocaleString()}</span>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="sys-online">CRM.CORE</span>
+            <span className="hud-label opacity-40 text-[10px]">// PIPELINE MONITORING</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold text-foreground">Infrastructure Pipeline</h1>
+          <p className="text-sm text-muted-foreground mt-1.5 flex items-center gap-3">
+            <span>{leads?.length ?? 0} active leads</span>
+            <span className="opacity-20">|</span>
+            <span className="text-primary font-bold tracking-tight">${(totalPipeline / 1000).toFixed(0)}k Projected</span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <AddLeadDialog onAdded={() => utils.lead.list.invalidate()} />
         </div>
       </div>
@@ -256,19 +262,19 @@ export default function CRM() {
             const stageLeads = byStage(stage.key);
             const stageValue = stageLeads.reduce((s, l) => s + Number(l.dealValue ?? 0), 0);
             return (
-              <div key={stage.key} className="shrink-0 w-64">
-                <div className={`flex items-center justify-between mb-3 px-3 py-2 rounded-lg ${stage.bg} border ${stage.border}`}>
-                  <span className={`text-xs font-semibold ${stage.color}`}>{stage.label}</span>
-                  <div className="flex items-center gap-2">
+              <div key={stage.key} className="shrink-0 w-72">
+                <div className={`flex items-center justify-between mb-4 px-4 py-2.5 rounded-xl ${stage.bg} border ${stage.border} shadow-sm`}>
+                  <span className={`text-[10px] font-bold font-mono tracking-wider uppercase ${stage.color}`}>{stage.label}</span>
+                  <div className="flex items-center gap-2.5">
                     {stageValue > 0 && (
-                      <span className="text-xs text-muted-foreground">${(stageValue / 1000).toFixed(0)}k</span>
+                      <span className="text-[10px] font-mono opacity-50 font-semibold">${(stageValue / 1000).toFixed(0)}k</span>
                     )}
-                    <span className={`text-xs font-bold ${stage.color}`}>{stageLeads.length}</span>
+                    <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold border ${stage.border} ${stage.bg} ${stage.color}`}>{stageLeads.length}</span>
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {stageLeads.map((lead) => (
-                    <div key={lead.id} className="rounded-xl border border-border bg-card p-4 hover:border-primary/40 transition-all group">
+                    <Card key={lead.id} className="rounded-xl border border-border/40 bg-card/50 p-4 hover:border-primary/40 transition-all group shadow-sm hover:shadow-md">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex-1 min-w-0">
                           <Link href={`/admin/leads/${lead.id}`}>
@@ -277,7 +283,7 @@ export default function CRM() {
                             </p>
                           </Link>
                           {lead.company && (
-                            <p className="text-xs text-muted-foreground truncate">{lead.company}</p>
+                            <p className="text-xs text-muted-foreground truncate font-mono uppercase text-[10px] tracking-wider mt-0.5">{lead.company}</p>
                           )}
                         </div>
                         <DropdownMenu>
@@ -299,17 +305,17 @@ export default function CRM() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground font-mono">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/20">
+                        <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-tight">
                           {OFFER_LABELS[lead.offerInterest] ?? "—"}
                         </span>
                         {lead.dealValue && (
-                          <span className="text-xs text-primary font-semibold">
+                          <span className="text-xs text-primary font-bold font-mono">
                             ${Number(lead.dealValue).toLocaleString()}
                           </span>
                         )}
                       </div>
-                    </div>
+                    </Card>
                   ))}
                   {stageLeads.length === 0 && (
                     <div className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground">

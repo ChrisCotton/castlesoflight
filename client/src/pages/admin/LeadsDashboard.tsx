@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const STAGE_LABELS: Record<string, string> = {
@@ -28,15 +29,22 @@ const STAGE_LABELS: Record<string, string> = {
 const STAGE_ORDER = ["new_lead", "contacted", "qualified", "proposal_sent", "closed_won", "closed_lost"];
 
 const STAGE_COLORS: Record<string, string> = {
-  new_lead: "#22d3ee",
-  contacted: "#f59e0b",
-  qualified: "#a78bfa",
-  proposal_sent: "#34d399",
-  closed_won: "#10b981",
-  closed_lost: "#ef4444",
+  new_lead: "var(--brand-cyan)",
+  contacted: "var(--primary)",
+  qualified: "var(--brand-violet)",
+  proposal_sent: "#fbbf24",
+  closed_won: "var(--brand-emerald)",
+  closed_lost: "var(--destructive)",
 };
 
-const SOURCE_COLORS = ["#22d3ee", "#f59e0b", "#a78bfa", "#34d399", "#f472b6", "#fb923c"];
+const SOURCE_COLORS = [
+  "var(--primary)",
+  "var(--brand-cyan)",
+  "var(--brand-violet)",
+  "var(--brand-emerald)",
+  "var(--brand-blue)",
+  "var(--accent)",
+];
 
 const OFFER_LABELS: Record<string, string> = {
   sprint: "The Sprint ($15K)",
@@ -98,12 +106,12 @@ function StageDropdown({
   isPending: boolean;
 }) {
   const colors: Record<string, string> = {
-    new_lead: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30",
-    contacted: "bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30",
-    qualified: "bg-violet-500/20 text-violet-300 border-violet-500/40 hover:bg-violet-500/30",
-    proposal_sent: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30",
-    closed_won: "bg-green-500/20 text-green-300 border-green-500/40 hover:bg-green-500/30",
-    closed_lost: "bg-red-500/20 text-red-300 border-red-500/40 hover:bg-red-500/30",
+    new_lead: "bg-accent/10 text-accent border-accent/30 hover:bg-accent/20",
+    contacted: "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20",
+    qualified: "bg-violet-400/10 text-violet-400 border-violet-400/30 hover:bg-violet-400/20",
+    proposal_sent: "bg-yellow-400/10 text-yellow-400 border-yellow-400/30 hover:bg-yellow-400/20",
+    closed_won: "bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20",
+    closed_lost: "bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20",
   };
 
   return (
@@ -139,25 +147,27 @@ function KpiCard({
   label: string; value: string; sub?: string; icon: React.ElementType; accent?: string;
 }) {
   const accents: Record<string, string> = {
-    cyan: "border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.08)]",
-    amber: "border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.08)]",
-    violet: "border-violet-500/30 shadow-[0_0_20px_rgba(167,139,250,0.08)]",
-    green: "border-green-500/30 shadow-[0_0_20px_rgba(16,185,129,0.08)]",
-    emerald: "border-emerald-500/30 shadow-[0_0_20px_rgba(52,211,153,0.08)]",
+    cyan: "border-accent/30 shadow-accent/5",
+    amber: "border-primary/30 shadow-primary/5",
+    violet: "border-violet-400/30 shadow-violet-400/5",
+    green: "border-emerald-500/30 shadow-emerald-500/5",
+    emerald: "border-emerald-500/30 shadow-emerald-500/5",
   };
   const iconColors: Record<string, string> = {
-    cyan: "text-cyan-400", amber: "text-amber-400", violet: "text-violet-400",
-    green: "text-green-400", emerald: "text-emerald-400",
+    cyan: "text-accent", amber: "text-primary", violet: "text-violet-400",
+    green: "text-emerald-500", emerald: "text-emerald-500",
   };
   return (
-    <div className={`bg-black/60 border rounded-lg p-5 ${accents[accent]}`}>
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-white/50 font-mono text-xs uppercase tracking-widest">{label}</span>
+    <Card className={`bg-card/40 border rounded-lg p-5 ${accents[accent]}`}>
+      <CardHeader className="p-0 mb-3 flex flex-row items-start justify-between">
+        <CardTitle className="text-foreground/50 font-mono text-[10px] font-bold uppercase tracking-[0.2em]">{label}</CardTitle>
         <Icon className={`w-4 h-4 ${iconColors[accent]}`} />
-      </div>
-      <div className="text-2xl font-bold text-white font-mono">{value}</div>
-      {sub && <div className="text-white/40 text-xs mt-1 font-mono">{sub}</div>}
-    </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="text-3xl font-bold text-foreground font-display tracking-tight leading-none">{value}</div>
+        {sub && <div className="text-foreground/40 text-[10px] mt-2 font-mono uppercase tracking-widest opacity-60">{sub}</div>}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -165,10 +175,14 @@ function KpiCard({
 function HudTooltip({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-black/90 border border-cyan-500/30 rounded p-3 font-mono text-xs">
-      {label && <div className="text-white/60 mb-1">{label}</div>}
+    <div className="hud-card bg-background/95 border border-primary/30 rounded p-3 font-mono text-xs shadow-2xl backdrop-blur-md">
+      {label && <div className="text-foreground/60 mb-2 font-bold uppercase tracking-widest text-[9px] border-b border-border pb-1">{label}</div>}
       {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color }}>{p.name}: {typeof p.value === "number" && p.value > 1000 ? fmt(p.value) : p.value}</div>
+        <div key={i} className="flex items-center gap-2 mb-0.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.color }} />
+          <span className="text-foreground/80">{p.name}:</span>
+          <span className="font-bold text-foreground ml-auto">{typeof p.value === "number" && p.value > 1000 ? fmt(p.value) : p.value}</span>
+        </div>
       ))}
     </div>
   );
@@ -251,7 +265,7 @@ export default function LeadsDashboard() {
 
   function SortIcon({ field }: { field: SortField }) {
     if (sortField !== field) return <ChevronUp className="w-3 h-3 opacity-20" />;
-    return sortDir === "asc" ? <ChevronUp className="w-3 h-3 text-cyan-400" /> : <ChevronDown className="w-3 h-3 text-cyan-400" />;
+    return sortDir === "asc" ? <ChevronUp className="w-3 h-3 text-primary" /> : <ChevronDown className="w-3 h-3 text-primary" />;
   }
 
   // ── Chart data ──
@@ -285,21 +299,21 @@ export default function LeadsDashboard() {
         {/* ── Header ── */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-mono text-xs text-cyan-400 tracking-widest mb-1">// LEAD INTELLIGENCE</div>
-            <h1 className="text-2xl font-bold text-white">Pipeline Dashboard</h1>
+            <div className="font-mono text-[10px] font-bold text-primary tracking-[0.3em] mb-1 uppercase opacity-60">// LEAD INTELLIGENCE.CORE</div>
+            <h1 className="text-4xl font-bold text-foreground font-display tracking-tight">Strategy Pipeline</h1>
           </div>
           <div className="flex items-center gap-3">
             {staleCount > 0 && (
               <div
-                className="font-mono text-xs text-red-400 border border-red-500/30 bg-red-500/10 rounded px-3 py-1.5 cursor-pointer hover:bg-red-500/20 transition-colors"
+                className="font-mono text-[10px] font-bold text-destructive border border-destructive/30 bg-destructive/5 rounded-lg px-4 py-2 cursor-pointer hover:bg-destructive/15 transition-all shadow-sm"
                 onClick={() => { setSortField("daysSince"); setSortDir("desc"); }}
                 title="Click to sort by staleness"
               >
                 ⚠ {staleCount} STALE LEAD{staleCount !== 1 ? "S" : ""}
               </div>
             )}
-            <div className="font-mono text-xs text-white/30 border border-white/10 rounded px-3 py-1.5">
-              {leads?.length ?? 0} TOTAL LEADS
+            <div className="font-mono text-[10px] font-bold text-foreground/40 border border-border rounded-lg px-4 py-2 bg-secondary/30">
+              {leads?.length ?? 0} NODES ACTIVE
             </div>
           </div>
         </div>
@@ -307,7 +321,7 @@ export default function LeadsDashboard() {
         {/* ── KPI Cards ── */}
         {statsLoading ? (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <div key={i} className="bg-white/5 border border-white/10 rounded-lg h-24 animate-pulse" />
             ))}
           </div>
@@ -323,170 +337,181 @@ export default function LeadsDashboard() {
 
         {/* ── Charts Row ── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Stage Funnel */}
-          <div className="lg:col-span-2 bg-black/60 border border-white/10 rounded-lg p-5">
-            <div className="font-mono text-xs text-white/50 uppercase tracking-widest mb-4">Pipeline by Stage</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={stageFunnelData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="stage" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 10, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
-                <Tooltip content={<HudTooltip />} />
-                <Bar dataKey="count" name="Leads" radius={[4, 4, 0, 0]}>
-                  {stageFunnelData.map((entry, index) => (
-                    <Cell key={index} fill={STAGE_COLORS[STAGE_ORDER[index]] ?? "#22d3ee"} fillOpacity={0.8} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Source Breakdown */}
-          <div className="bg-black/60 border border-white/10 rounded-lg p-5">
-            <div className="font-mono text-xs text-white/50 uppercase tracking-widest mb-4">Lead Sources</div>
-            {sourceData.length === 0 ? (
-              <div className="flex items-center justify-center h-[200px] text-white/30 font-mono text-xs">NO DATA YET</div>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie data={sourceData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
-                    {sourceData.map((_, index) => (
-                      <Cell key={index} fill={SOURCE_COLORS[index % SOURCE_COLORS.length]} />
-                    ))}
-                  </Pie>
+          <Card className="lg:col-span-2 rounded-xl p-6 shadow-2xl bg-card/40 border-border/40">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">// PIPELINE BY STAGE</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={stageFunnelData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <XAxis dataKey="stage" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 10, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "rgba(255,255,255,0.2)", fontSize: 10, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
                   <Tooltip content={<HudTooltip />} />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    formatter={(value) => <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, fontFamily: "JetBrains Mono" }}>{value}</span>}
-                  />
-                </PieChart>
+                  <Bar dataKey="count" name="Leads" radius={[4, 4, 0, 0]}>
+                    {stageFunnelData.map((entry, index) => (
+                      <Cell key={index} fill={STAGE_COLORS[STAGE_ORDER[index]] ?? "var(--primary)"} fillOpacity={0.8} />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
-            )}
-          </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-xl p-6 shadow-2xl bg-card/40 border-border/40">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">// LEAD SOURCES</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {sourceData.length === 0 ? (
+                <div className="flex items-center justify-center h-[240px] text-foreground/20 font-mono text-[10px] uppercase">// NO SOURCE DATA FOUND</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={240}>
+                  <PieChart>
+                    <Pie data={sourceData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value" stroke="none">
+                      {sourceData.map((_, index) => (
+                        <Cell key={index} fill={SOURCE_COLORS[index % SOURCE_COLORS.length]} fillOpacity={0.8} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<HudTooltip />} />
+                    <Legend
+                      iconType="rect"
+                      iconSize={8}
+                      formatter={(value) => <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 9, fontFamily: "JetBrains Mono", textTransform: 'uppercase', letterSpacing: '0.05em' }}>{value}</span>}
+                      wrapperStyle={{ paddingTop: '20px' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* ── Velocity + Offer Value ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* 30-day velocity */}
-          <div className="bg-black/60 border border-white/10 rounded-lg p-5">
-            <div className="font-mono text-xs text-white/50 uppercase tracking-widest mb-4">Lead Velocity — Last 30 Days</div>
-            {velocityData.length === 0 ? (
-              <div className="flex items-center justify-center h-[160px] text-white/30 font-mono text-xs">NO LEADS IN LAST 30 DAYS</div>
-            ) : (
-              <ResponsiveContainer width="100%" height={160}>
-                <LineChart data={velocityData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                  <Tooltip content={<HudTooltip />} />
-                  <Line type="monotone" dataKey="count" name="Leads Added" stroke="#22d3ee" strokeWidth={2} dot={{ fill: "#22d3ee", r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+          <Card className="rounded-xl p-6 shadow-2xl bg-card/40 border-border/40">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">// VELOCITY MONITOR [30D]</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {velocityData.length === 0 ? (
+                <div className="flex items-center justify-center h-[180px] text-foreground/20 font-mono text-[10px] uppercase">// INSUFFICIENT VELOCITY DATA</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={180}>
+                  <LineChart data={velocityData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.2)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: "rgba(255,255,255,0.2)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <Tooltip content={<HudTooltip />} />
+                    <Line type="monotone" dataKey="count" name="Leads" stroke="var(--primary)" strokeWidth={3} dot={{ fill: "var(--primary)", r: 4, strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
 
-          {/* Offer pipeline value */}
-          <div className="bg-black/60 border border-white/10 rounded-lg p-5">
-            <div className="font-mono text-xs text-white/50 uppercase tracking-widest mb-4">Pipeline Value by Offer</div>
-            {offerData.length === 0 ? (
-              <div className="flex items-center justify-center h-[160px] text-white/30 font-mono text-xs">NO OFFER DATA YET</div>
-            ) : (
-              <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={offerData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis type="number" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}K`} />
-                  <YAxis type="category" dataKey="name" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} width={120} />
-                  <Tooltip content={<HudTooltip />} />
-                  <Bar dataKey="value" name="Pipeline Value" fill="#f59e0b" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+          <Card className="rounded-xl p-6 shadow-2xl bg-card/40 border-border/40">
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">// REVENUE ATTRIBUTION BY OFFER</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {offerData.length === 0 ? (
+                <div className="flex items-center justify-center h-[180px] text-foreground/20 font-mono text-[10px] uppercase">// NO ATTRIBUTION DATA</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={offerData} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" horizontal={false} />
+                    <XAxis type="number" tick={{ fill: "rgba(255,255,255,0.2)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}K`} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} width={120} />
+                    <Tooltip content={<HudTooltip />} />
+                    <Bar dataKey="value" name="Pipeline Value" fill="var(--primary)" radius={[0, 4, 4, 0]} fillOpacity={0.8} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* ── Lead Table ── */}
-        <div className="bg-black/60 border border-white/10 rounded-lg overflow-hidden">
-          {/* Table header + filters */}
-          <div className="p-4 border-b border-white/10 flex flex-wrap gap-3 items-center">
-            <div className="font-mono text-xs text-white/50 uppercase tracking-widest mr-2">Lead Intel</div>
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
+        <Card className="rounded-xl overflow-hidden shadow-2xl border-border/40 bg-card/40">
+          <div className="p-5 border-b border-border bg-secondary/20 flex flex-wrap gap-4 items-center">
+            <div className="font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mr-4">// LEAD INTEL ACCESS</div>
+            <div className="relative flex-1 min-w-[300px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/30" />
               <Input
-                placeholder="Search name, company, email..."
+                placeholder="AUTHENTICATE SEARCH QUERY..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="pl-8 h-8 bg-white/5 border-white/10 text-white text-xs font-mono placeholder:text-white/20 focus:border-cyan-500/50"
+                className="pl-9 h-10 bg-background/50 border-border text-foreground font-mono text-[11px] placeholder:text-foreground/20 focus:border-primary/50 transition-all rounded-lg"
               />
             </div>
             <Select value={stageFilter} onValueChange={setStageFilter}>
-              <SelectTrigger className="w-36 h-8 bg-white/5 border-white/10 text-white text-xs font-mono">
-                <Filter className="w-3 h-3 mr-1 text-white/30" />
-                <SelectValue placeholder="Stage" />
+              <SelectTrigger className="w-40 h-10 bg-background/50 border-border text-foreground text-[11px] font-mono rounded-lg">
+                <Filter className="w-3.5 h-3.5 mr-2 text-foreground/30" />
+                <SelectValue placeholder="STAGE" />
               </SelectTrigger>
-              <SelectContent className="bg-black border-white/10">
-                <SelectItem value="all" className="text-white/70 text-xs font-mono">All Stages</SelectItem>
-                {STAGE_ORDER.map(s => <SelectItem key={s} value={s} className="text-white/70 text-xs font-mono">{STAGE_LABELS[s]}</SelectItem>)}
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all" className="text-foreground/70 text-[11px] font-mono">ALL STAGES</SelectItem>
+                {STAGE_ORDER.map(s => <SelectItem key={s} value={s} className="text-foreground/70 text-[11px] font-mono">{STAGE_LABELS[s].toUpperCase()}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={sourceFilter} onValueChange={setSourceFilter}>
-              <SelectTrigger className="w-32 h-8 bg-white/5 border-white/10 text-white text-xs font-mono">
-                <SelectValue placeholder="Source" />
+              <SelectTrigger className="w-36 h-10 bg-background/50 border-border text-foreground text-[11px] font-mono rounded-lg">
+                <SelectValue placeholder="SOURCE" />
               </SelectTrigger>
-              <SelectContent className="bg-black border-white/10">
-                <SelectItem value="all" className="text-white/70 text-xs font-mono">All Sources</SelectItem>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all" className="text-foreground/70 text-[11px] font-mono">ALL SOURCES</SelectItem>
                 {["linkedin", "website_contact", "book_download", "booking", "referral", "other"].map(s => (
-                  <SelectItem key={s} value={s} className="text-white/70 text-xs font-mono">{s.replace("_", " ")}</SelectItem>
+                  <SelectItem key={s} value={s} className="text-foreground/70 text-[11px] font-mono">{s.replace("_", " ").toUpperCase()}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={offerFilter} onValueChange={setOfferFilter}>
-              <SelectTrigger className="w-36 h-8 bg-white/5 border-white/10 text-white text-xs font-mono">
-                <SelectValue placeholder="Offer" />
+              <SelectTrigger className="w-40 h-10 bg-background/50 border-border text-foreground text-[11px] font-mono rounded-lg">
+                <SelectValue placeholder="OFFER" />
               </SelectTrigger>
-              <SelectContent className="bg-black border-white/10">
-                <SelectItem value="all" className="text-white/70 text-xs font-mono">All Offers</SelectItem>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="all" className="text-foreground/70 text-[11px] font-mono">ALL OFFERS</SelectItem>
                 {Object.entries(OFFER_LABELS).map(([k, v]) => (
-                  <SelectItem key={k} value={k} className="text-white/70 text-xs font-mono">{v}</SelectItem>
+                  <SelectItem key={k} value={k} className="text-foreground/70 text-[11px] font-mono">{v.toUpperCase()}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <div className="text-white/30 font-mono text-xs ml-auto">{filteredLeads.length} results</div>
+            <div className="text-foreground/30 font-mono text-[10px] ml-auto uppercase font-bold">{filteredLeads.length} RESULTS FOUND</div>
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-border bg-secondary/10">
                   {[
-                    { label: "Name", field: "name" as SortField },
-                    { label: "Company", field: "company" as SortField },
-                    { label: "Stage", field: "stage" as SortField },
-                    { label: "Deal Value", field: "dealValue" as SortField },
-                    { label: "Added", field: "createdAt" as SortField },
-                    { label: "Last Contact", field: "lastContactedAt" as SortField },
-                    { label: "Stale", field: "daysSince" as SortField },
+                    { label: "Identity", field: "name" as SortField },
+                    { label: "Entity", field: "company" as SortField },
+                    { label: "Status", field: "stage" as SortField },
+                    { label: "Valuation", field: "dealValue" as SortField },
+                    { label: "Entry", field: "createdAt" as SortField },
+                    { label: "X-Contact", field: "lastContactedAt" as SortField },
+                    { label: "Drift", field: "daysSince" as SortField },
                   ].map(col => (
                     <th
                       key={col.field}
-                      className="px-4 py-3 text-left font-mono text-xs text-white/40 uppercase tracking-widest cursor-pointer hover:text-white/70 transition-colors"
+                      className="px-6 py-4 text-left font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors"
                       onClick={() => toggleSort(col.field)}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         {col.label}
                         <SortIcon field={col.field} />
                       </div>
                     </th>
                   ))}
-                  <th className="px-4 py-3 text-left font-mono text-xs text-white/40 uppercase tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left font-mono text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">Cmds</th>
                 </tr>
               </thead>
               <tbody>
                 {leadsLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
+                  [...Array(5)].map((_, i) => (
                     <tr key={i} className="border-b border-white/5">
-                      {Array.from({ length: 8 }).map((_, j) => (
+                      {[...Array(8)].map((_, j) => (
                         <td key={j} className="px-4 py-3">
                           <div className="h-4 bg-white/5 rounded animate-pulse" />
                         </td>
@@ -505,18 +530,17 @@ export default function LeadsDashboard() {
                     return (
                       <tr
                         key={lead.id}
-                        className={`border-b border-white/5 hover:bg-white/[0.03] transition-colors group ${isStale ? "border-l-2 border-l-red-500/40" : ""}`}
+                        className={`border-b border-border/40 hover:bg-primary/5 transition-colors group ${isStale ? "border-l-2 border-l-destructive/40" : ""}`}
                       >
-                        <td className="px-4 py-3">
-                          <div className="text-white font-medium text-sm">{lead.firstName} {lead.lastName}</div>
-                          <div className="text-white/40 text-xs font-mono">{lead.email}</div>
+                        <td className="px-6 py-4">
+                          <div className="text-foreground font-semibold text-sm font-display tracking-tight">{lead.firstName} {lead.lastName}</div>
+                          <div className="text-foreground/40 text-[10px] font-mono uppercase tracking-widest mt-0.5">{lead.email}</div>
                         </td>
-                        <td className="px-4 py-3">
-                          <div className="text-white/70 text-sm">{lead.company ?? "—"}</div>
-                          <div className="text-white/30 text-xs">{lead.jobTitle ?? ""}</div>
+                        <td className="px-6 py-4">
+                          <div className="text-foreground/70 text-sm font-medium">{lead.company ?? "—"}</div>
+                          <div className="text-foreground/30 text-[10px] font-mono uppercase tracking-tighter mt-1">{lead.jobTitle ?? "N/A"}</div>
                         </td>
-                        {/* One-click stage dropdown */}
-                        <td className="px-4 py-3">
+                        <td className="px-6 py-4">
                           <StageDropdown
                             leadId={lead.id}
                             currentStage={lead.stage}
@@ -524,30 +548,29 @@ export default function LeadsDashboard() {
                             isPending={updatingId === lead.id}
                           />
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="text-amber-400 font-mono font-bold text-sm">
+                        <td className="px-6 py-4">
+                          <span className="text-primary font-mono font-bold text-sm">
                             {lead.dealValue ? fmt(parseFloat(lead.dealValue)) : "—"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-white/40 font-mono text-xs">
+                        <td className="px-6 py-4 text-foreground/40 font-mono text-[11px]">
                           {new Date(lead.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="px-4 py-3 text-white/40 font-mono text-xs">
-                          {lead.lastContactedAt ? new Date(lead.lastContactedAt).toLocaleDateString() : <span className="text-red-400/60">Never</span>}
+                        <td className="px-6 py-4 text-foreground/40 font-mono text-[11px]">
+                          {lead.lastContactedAt ? new Date(lead.lastContactedAt).toLocaleDateString() : <span className="text-destructive/60 font-bold uppercase text-[9px]">NEVER</span>}
                         </td>
-                        {/* Days since last contact */}
-                        <td className="px-4 py-3">
+                        <td className="px-6 py-4">
                           <DaysSinceCell date={lead.lastContactedAt} />
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-6 py-4">
                           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-7 px-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 font-mono text-xs"
+                              className="h-8 px-3 text-primary hover:text-primary hover:bg-primary/10 font-mono text-[10px] font-bold uppercase tracking-widest rounded-lg border border-transparent hover:border-primary/30 transition-all"
                               onClick={() => navigate(`/admin/crm/${lead.id}`)}
                             >
-                              View <ArrowRight className="w-3 h-3 ml-1" />
+                              ENCRYPTED VIEW <ArrowRight className="w-3 h-3 ml-1.5" />
                             </Button>
                             {lead.linkedIn && (
                               <a href={lead.linkedIn} target="_blank" rel="noopener noreferrer">
@@ -568,22 +591,23 @@ export default function LeadsDashboard() {
 
           {/* Table footer */}
           {filteredLeads.length > 0 && (
-            <div className="px-4 py-3 border-t border-white/10 flex items-center justify-between">
-              <div className="font-mono text-xs text-white/30">
-                TOTAL FILTERED PIPELINE: <span className="text-amber-400 font-bold">
+            <div className="px-6 py-4 border-t border-border/40 bg-secondary/10 flex items-center justify-between">
+              <div className="font-mono text-[10px] font-bold text-foreground/40 tracking-[0.1em] uppercase">
+                AGGREGATE VELOCITY VALUE: <span className="text-primary ml-2">
                   {fmt(filteredLeads.reduce((sum, l) => sum + parseFloat(l.dealValue ?? "0"), 0))}
                 </span>
               </div>
-              <div className="font-mono text-xs text-white/20 flex items-center gap-4">
+              <div className="font-mono text-[10px] font-bold text-foreground/20 flex items-center gap-6 uppercase tracking-widest">
                 {staleCount > 0 && (
-                  <span className="text-red-400/70">{staleCount} STALE</span>
+                  <span className="text-red-400/70">// {staleCount} DRIFT NODES</span>
                 )}
                 <span>{filteredLeads.filter(l => l.stage === "closed_won").length} WON · {filteredLeads.filter(l => l.stage === "closed_lost").length} LOST</span>
               </div>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </AdminLayout>
   );
 }
+

@@ -13,6 +13,13 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const STAGE_LABELS: Record<string, string> = {
   new_lead: "New Lead",
@@ -37,135 +44,164 @@ export default function Dashboard() {
   const recentLeads = (leads ?? []).slice(0, 5);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Welcome */}
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">
-          Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {user?.name?.split(" ")[0] ?? "Christopher"} 👋
-        </h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Here's your pipeline at a glance.</p>
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="sys-online">ACTIVE SESSION</span>
+            <span className="hud-label opacity-40 text-[10px]">// OPERATOR: {user?.role?.toUpperCase()}</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold text-foreground">
+            Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, {user?.name?.split(" ")[0] ?? "Christopher"}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Nerve Center / Pipeline Overview</p>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-md border border-border">
+          <Clock className="w-3.5 h-3.5" />
+          {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })} PT
+        </div>
       </div>
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
-          { icon: Users, label: "Total Leads", value: analyticsLoading ? "—" : totalLeads, color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]" },
-          { icon: DollarSign, label: "Pipeline Value", value: analyticsLoading ? "—" : `$${(pipelineVal / 1000).toFixed(0)}k`, color: "text-primary", bg: "bg-primary/10", border: "border-primary/30" },
-          { icon: Calendar, label: "Pending Bookings", value: bookingsLoading ? "—" : pendingBookings, color: "text-[oklch(0.7_0.2_30)]", bg: "bg-[oklch(0.7_0.2_30_/_0.1)]", border: "border-[oklch(0.7_0.2_30_/_0.3)]" },
-          { icon: Mail, label: "Email Captures", value: analyticsLoading ? "—" : emailCount, color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]" },
+          { icon: Users, label: "Total Leads", value: analyticsLoading ? "—" : totalLeads, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", glow: "glow-sm-amber" },
+          { icon: DollarSign, label: "Pipeline Value", value: analyticsLoading ? "—" : `$${(pipelineVal / 1000).toFixed(0)}k`, color: "text-accent", bg: "bg-accent/5", border: "border-accent/20", glow: "glow-sm-cyan" },
+          { icon: Calendar, label: "Pending Bookings", value: bookingsLoading ? "—" : pendingBookings, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", glow: "glow-sm-amber" },
+          { icon: Mail, label: "Email Captures", value: analyticsLoading ? "—" : emailCount, color: "text-accent", bg: "bg-accent/5", border: "border-accent/20", glow: "glow-sm-cyan" },
         ].map((stat) => (
-          <div key={stat.label} className={`rounded-xl border ${stat.border} ${stat.bg} p-5`}>
-            <div className={`w-9 h-9 rounded-lg bg-background/50 flex items-center justify-center mb-3 ${stat.color}`}>
-              <stat.icon className="w-4.5 h-4.5" />
-            </div>
-            <div className={`text-2xl font-display font-bold ${stat.color}`}>{stat.value}</div>
-            <div className="text-xs text-muted-foreground mt-0.5">{stat.label}</div>
-          </div>
+          <Card key={stat.label} className={`border ${stat.border} ${stat.bg} ${stat.glow} transition-all duration-300 hover:translate-y-[-2px]`}>
+            <CardHeader className="pb-2">
+              <div className={`w-10 h-10 rounded-lg bg-background/60 flex items-center justify-center ${stat.color} border ${stat.border}`}>
+                <stat.icon className="w-5 h-5" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-display font-bold ${stat.color} tracking-tight`}>{stat.value}</div>
+              <p className="text-[10px] font-mono mt-1 opacity-60 tracking-[0.2em] font-semibold uppercase">{stat.label}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent leads */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display font-semibold text-foreground">Recent Leads</h2>
+        <Card className="bg-secondary/5 border-border/40 shadow-2xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="font-display font-bold text-lg text-foreground">Recent Leads</CardTitle>
+              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// LATEST TRANSMISSIONS</p>
+            </div>
             <Link href="/admin/crm">
-              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-7">
-                View all <ArrowRight className="w-3 h-3 ml-1" />
+              <Button variant="outline" size="sm" className="text-[10px] font-mono uppercase tracking-wider h-8 border-border hover:bg-muted">
+                Open CRM <ArrowRight className="w-3 h-3 ml-2" />
               </Button>
             </Link>
-          </div>
-          {leadsLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-          ) : recentLeads.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No leads yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {recentLeads.map((lead) => (
-                <Link key={lead.id} href={`/admin/leads/${lead.id}`}>
-                  <div className="flex items-center justify-between p-3 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary text-xs font-bold">
-                        {lead.firstName[0]}{lead.lastName[0]}
+          </CardHeader>
+          <CardContent>
+            {leadsLoading ? (
+              <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary opacity-50" /></div>
+            ) : recentLeads.length === 0 ? (
+              <div className="text-center py-12"><p className="text-sm text-muted-foreground font-mono">NO LEADS DETECTED</p></div>
+            ) : (
+              <div className="space-y-3">
+                {recentLeads.map((lead) => (
+                  <Link key={lead.id} href={`/admin/leads/${lead.id}`}>
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-background/40 hover:bg-background/80 transition-all cursor-pointer border border-border/30 hover:border-primary/40 group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-secondary/50 border border-border flex items-center justify-center text-primary text-xs font-bold shadow-inner uppercase font-mono">
+                          {lead.firstName[0]}{lead.lastName[0]}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                            {lead.firstName} {lead.lastName}
+                          </p>
+                          <p className="text-[11px] font-mono text-muted-foreground mt-0.5">{lead.company?.toUpperCase() ?? lead.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                          {lead.firstName} {lead.lastName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{lead.company ?? lead.email}</p>
+                      <div className="text-right">
+                        <Badge variant="outline" className="text-[9px] font-mono font-bold opacity-60 border-border/50">
+                          {STAGE_LABELS[lead.stage]?.toUpperCase()}
+                        </Badge>
+                        {lead.dealValue && (
+                          <p className="text-xs text-primary font-bold mt-1.5 font-mono">${Number(lead.dealValue).toLocaleString()}</p>
+                        )}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground">{STAGE_LABELS[lead.stage]}</p>
-                      {lead.dealValue && (
-                        <p className="text-xs text-primary font-semibold">${Number(lead.dealValue).toLocaleString()}</p>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Pending bookings */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display font-semibold text-foreground">Pending Bookings</h2>
+        <Card className="bg-secondary/5 border-border/40 shadow-2xl">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="font-display font-bold text-lg text-foreground">Pending Bookings</CardTitle>
+              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// SCHEDULED ENGAGEMENTS</p>
+            </div>
             <Link href="/admin/bookings">
-              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-7">
-                View all <ArrowRight className="w-3 h-3 ml-1" />
+              <Button variant="outline" size="sm" className="text-[10px] font-mono uppercase tracking-wider h-8 border-border hover:bg-muted">
+                View Calendar <ArrowRight className="w-3 h-3 ml-2" />
               </Button>
             </Link>
-          </div>
-          {bookingsLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-          ) : !bookings?.length ? (
-            <div className="text-center py-6 text-muted-foreground">
-              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-40" />
-              <p className="text-sm">No pending bookings.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {bookings.slice(0, 4).map((booking) => (
-                <div key={booking.id} className="flex items-center justify-between p-3 rounded-lg border border-primary/20 bg-primary/5">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{booking.firstName} {booking.lastName}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                      <Calendar className="w-3 h-3" />
-                      {new Date(booking.scheduledDate + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      <Clock className="w-3 h-3 ml-1" />
-                      {booking.scheduledTime} PT
+          </CardHeader>
+          <CardContent>
+            {bookingsLoading ? (
+              <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary opacity-50" /></div>
+            ) : !bookings?.length ? (
+              <div className="text-center py-12">
+                <CheckCircle2 className="w-10 h-10 mx-auto mb-3 opacity-20 text-accent" />
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">SCHEDULE CLEAR</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {bookings.slice(0, 4).map((booking) => (
+                  <div key={booking.id} className="flex items-center justify-between p-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{booking.firstName} {booking.lastName}</p>
+                      <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground mt-1.5">
+                        <span className="flex items-center gap-1 uppercase"><Calendar className="w-3 h-3 text-primary" /> {new Date(booking.scheduledDate + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()}</span>
+                        <span className="flex items-center gap-1 uppercase"><Clock className="w-3 h-3 text-primary" /> {booking.scheduledTime} PT</span>
+                      </div>
                     </div>
+                    <Link href="/admin/bookings">
+                      <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-[10px] font-bold h-7 uppercase tracking-wider px-4">
+                        Review
+                      </Button>
+                    </Link>
                   </div>
-                  <Link href="/admin/bookings">
-                    <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs h-7 font-semibold">
-                      Review
-                    </Button>
-                  </Link>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Pipeline stage summary */}
+      <Card className="bg-secondary/5 border-border/40 shadow-2xl">
+        <CardHeader>
+          <CardTitle className="font-display font-bold text-lg text-foreground">Pipeline Stage Summary</CardTitle>
+          <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// QUANTITATIVE ANALYSIS</p>
+        </CardHeader>
+        <CardContent>
+          {analyticsLoading ? (
+            <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-primary opacity-50" /></div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+              {analytics?.leadCounts.map((l) => (
+                <div key={l.stage} className="text-center p-4 rounded-xl bg-background/50 border border-border shadow-inner">
+                  <div className="text-2xl font-display font-bold text-foreground mb-1">{l.count}</div>
+                  <div className="text-[9px] font-mono font-bold text-muted-foreground uppercase leading-tight tracking-[0.1em]">{STAGE_LABELS[l.stage]}</div>
                 </div>
               ))}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Pipeline stage summary */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="font-display font-semibold text-foreground mb-5">Pipeline Stage Summary</h2>
-        {analyticsLoading ? (
-          <Loader2 className="w-5 h-5 animate-spin text-primary" />
-        ) : (
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {analytics?.leadCounts.map((l) => (
-              <div key={l.stage} className="text-center p-3 rounded-lg bg-secondary border border-border">
-                <div className="text-2xl font-display font-bold text-foreground">{l.count}</div>
-                <div className="text-xs text-muted-foreground mt-0.5 leading-tight">{STAGE_LABELS[l.stage]}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

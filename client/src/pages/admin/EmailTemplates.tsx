@@ -18,6 +18,7 @@ import {
   ChevronRight,
   RefreshCw,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -55,12 +56,12 @@ const CATEGORY_LABELS: Record<Category, string> = {
 };
 
 const CATEGORY_COLORS: Record<Category, string> = {
-  first_touch: "text-[oklch(0.78_0.18_195)] border-[oklch(0.78_0.18_195_/_0.3)] bg-[oklch(0.78_0.18_195_/_0.08)]",
-  follow_up: "text-[oklch(0.82_0.20_58)] border-[oklch(0.82_0.20_58_/_0.3)] bg-[oklch(0.82_0.20_58_/_0.08)]",
-  proposal: "text-[oklch(0.72_0.20_290)] border-[oklch(0.72_0.20_290_/_0.3)] bg-[oklch(0.72_0.20_290_/_0.08)]",
-  closed_won: "text-[oklch(0.72_0.18_155)] border-[oklch(0.72_0.18_155_/_0.3)] bg-[oklch(0.72_0.18_155_/_0.08)]",
-  re_engagement: "text-[oklch(0.65_0.15_25)] border-[oklch(0.65_0.15_25_/_0.3)] bg-[oklch(0.65_0.15_25_/_0.08)]",
-  custom: "text-[oklch(0.55_0.015_220)] border-[oklch(0.55_0.015_220_/_0.3)] bg-[oklch(0.55_0.015_220_/_0.08)]",
+  first_touch: "text-primary border-primary/20 bg-primary/10",
+  follow_up: "text-yellow-400 border-yellow-400/20 bg-yellow-400/10",
+  proposal: "text-emerald-500 border-emerald-500/20 bg-emerald-500/10",
+  closed_won: "text-emerald-500 border-emerald-500/20 bg-emerald-500/10",
+  re_engagement: "text-destructive border-destructive/20 bg-destructive/10",
+  custom: "text-muted-foreground border-border/40 bg-secondary/20",
 };
 
 // ─── Blank form state ─────────────────────────────────────────────────────────
@@ -92,7 +93,7 @@ function VariableChips({
         {variables.map((v) => (
           <span
             key={v}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-[oklch(0.78_0.18_195_/_0.12)] text-[oklch(0.78_0.18_195)] border border-[oklch(0.78_0.18_195_/_0.25)]"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-primary/10 text-primary border border-primary/20"
           >
             {`{{${v}}}`}
             <button
@@ -111,7 +112,7 @@ function VariableChips({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
           placeholder="variableName (press Enter)"
-          className="h-7 text-xs font-mono bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground"
+          className="h-7 text-xs font-mono bg-background/50 border-border text-foreground"
         />
         <Button type="button" size="sm" variant="outline" onClick={add} className="h-7 text-xs">
           Add
@@ -148,17 +149,17 @@ function PreviewPanel({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4 border-b border-[oklch(0.78_0.18_195_/_0.12)]">
+      <div className="flex items-center justify-between p-4 border-b border-border/40">
         <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-[oklch(0.78_0.18_195)]" />
-          <span className="hud-label text-[oklch(0.78_0.18_195)]">LIVE PREVIEW</span>
+          <Eye className="w-4 h-4 text-primary" />
+          <span className="font-mono text-[10px] font-bold text-primary tracking-[0.2em] uppercase">LIVE PREVIEW</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
             size="sm"
             variant="ghost"
             onClick={() => refetch()}
-            className="h-7 w-7 p-0 text-[oklch(0.55_0.015_220)] hover:text-foreground"
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </Button>
@@ -166,7 +167,7 @@ function PreviewPanel({
             size="sm"
             variant="ghost"
             onClick={onClose}
-            className="h-7 w-7 p-0 text-[oklch(0.55_0.015_220)] hover:text-foreground"
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -174,24 +175,24 @@ function PreviewPanel({
       </div>
 
       {/* Variable overrides */}
-      <div className="p-4 border-b border-[oklch(0.78_0.18_195_/_0.08)] bg-[oklch(0.055_0.008_250)]">
-        <p className="hud-label text-[9px] opacity-50 mb-2">TEST VALUES (edit to preview merge)</p>
+      <div className="p-4 border-b border-border/40 bg-secondary/10">
+        <p className="text-[9px] opacity-50 mb-2 font-mono uppercase tracking-widest">// TEST VALUES (edit to preview merge)</p>
         <div className="grid grid-cols-2 gap-1.5">
           {Object.entries(overrides).map(([k, v]) => (
             <div key={k} className="flex items-center gap-1.5">
-              <span className="text-[10px] font-mono text-[oklch(0.78_0.18_195_/_0.7)] w-28 shrink-0 truncate">{`{{${k}}}`}</span>
+              <span className="text-[10px] font-mono text-primary/70 w-28 shrink-0 truncate">{`{{${k}}}`}</span>
               <Input
                 value={v}
                 onChange={(e) =>
                   setOverrides((prev) => ({ ...prev, [k]: e.target.value }))
                 }
-                className="h-6 text-[10px] bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.15)] text-foreground"
+                className="h-6 text-[10px] bg-background/50 border-border text-foreground"
               />
             </div>
           ))}
         </div>
         {data?.missingVars && data.missingVars.length > 0 && (
-          <p className="text-[10px] text-[oklch(0.82_0.20_58)] mt-2">
+          <p className="text-[10px] text-red-400 mt-2">
             ⚠ Missing: {data.missingVars.map((v) => `{{${v}}}`).join(", ")}
           </p>
         )}
@@ -200,17 +201,17 @@ function PreviewPanel({
       {/* Rendered preview */}
       <div className="flex-1 overflow-auto p-4">
         {isLoading ? (
-          <div className="flex items-center justify-center h-32 text-[oklch(0.55_0.015_220)]">
+          <div className="flex items-center justify-center h-32 text-muted-foreground">
             <RefreshCw className="w-4 h-4 animate-spin mr-2" />
             Rendering…
           </div>
         ) : data ? (
           <>
-            <div className="mb-3 p-3 rounded-lg bg-[oklch(0.06_0.008_250)] border border-[oklch(0.78_0.18_195_/_0.12)]">
-              <p className="hud-label text-[9px] opacity-40 mb-1">SUBJECT</p>
+            <div className="mb-3 p-3 rounded-lg bg-secondary/20 border border-border">
+              <p className="font-mono text-[9px] font-bold text-foreground/40 uppercase tracking-widest mb-1">SUBJECT</p>
               <p className="text-sm text-foreground font-medium">{data.subject}</p>
             </div>
-            <div className="rounded-lg border border-[oklch(0.78_0.18_195_/_0.12)] overflow-hidden">
+            <div className="rounded-lg border border-border overflow-hidden shadow-2xl">
               <iframe
                 srcDoc={`<html><head><style>body{margin:0;padding:0;background:#050508;font-family:'Segoe UI',Arial,sans-serif;color:#E5E7EB;font-size:15px;line-height:1.7;}p{margin:0 0 1em 0;}ul,ol{margin:0 0 1em 0;padding-left:1.5em;}li{margin-bottom:0.25em;}strong{color:#F9FAFB;}</style></head><body style="padding:24px">${data.bodyHtml}</body></html>`}
                 className="w-full h-96 border-0"
@@ -243,9 +244,9 @@ function TemplateForm({
   return (
     <div className="space-y-4">
       {isBuiltIn && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-[oklch(0.82_0.20_58_/_0.08)] border border-[oklch(0.82_0.20_58_/_0.2)]">
-          <Lock className="w-3.5 h-3.5 text-[oklch(0.82_0.20_58)]" />
-          <span className="text-xs text-[oklch(0.82_0.20_58)]">Built-in template — edits create a copy</span>
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-400/10 border border-yellow-400/20">
+          <Lock className="w-3.5 h-3.5 text-yellow-400" />
+          <span className="text-xs text-yellow-400">Built-in template — edits create a copy</span>
         </div>
       )}
 
@@ -256,7 +257,7 @@ function TemplateForm({
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             placeholder="e.g. LinkedIn First Touch"
-            className="bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground"
+            className="bg-card/40 border-border/40 text-foreground"
           />
         </div>
         <div>
@@ -265,7 +266,7 @@ function TemplateForm({
             value={form.category}
             onValueChange={(v) => setForm((f) => ({ ...f, category: v as Category }))}
           >
-            <SelectTrigger className="bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground">
+            <SelectTrigger className="bg-card/40 border-border/40 text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -285,7 +286,7 @@ function TemplateForm({
           value={form.subject}
           onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
           placeholder="Use {{variable}} for merge fields"
-          className="bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground font-mono text-sm"
+          className="bg-card/40 border-border/40 text-foreground font-mono text-sm"
         />
       </div>
 
@@ -296,7 +297,7 @@ function TemplateForm({
           onChange={(e) => setForm((f) => ({ ...f, bodyHtml: e.target.value }))}
           rows={12}
           placeholder="<p>Hi {{firstName}},</p>..."
-          className="bg-[oklch(0.06_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground font-mono text-xs resize-none"
+          className="bg-card/40 border-border/40 text-foreground font-mono text-xs resize-none"
         />
       </div>
 
@@ -312,7 +313,7 @@ function TemplateForm({
         <Button
           onClick={() => onSave(form)}
           disabled={isSaving || !form.name || !form.subject || !form.bodyHtml}
-          className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-bold"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold"
         >
           {isSaving ? (
             <RefreshCw className="w-3.5 h-3.5 animate-spin mr-2" />
@@ -321,7 +322,7 @@ function TemplateForm({
           )}
           {isBuiltIn ? "Save as New Template" : "Save Template"}
         </Button>
-        <Button variant="ghost" onClick={onCancel} className="text-[oklch(0.55_0.015_220)]">
+        <Button variant="ghost" onClick={onCancel} className="text-muted-foreground">
           <X className="w-3.5 h-3.5 mr-1" />
           Cancel
         </Button>
@@ -406,10 +407,10 @@ export default function EmailTemplates() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <FileText className="w-5 h-5 text-[oklch(0.78_0.18_195)]" />
-              <h1 className="font-display font-bold text-xl text-foreground">Email Templates</h1>
+              <FileText className="w-5 h-5 text-primary" />
+              <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">Email Templates</h1>
             </div>
-            <p className="text-sm text-[oklch(0.55_0.015_220)]">
+            <p className="text-sm text-muted-foreground">
               {templates.length} template{templates.length !== 1 ? "s" : ""} · Personalized outreach with merge variables
             </p>
           </div>
@@ -420,7 +421,7 @@ export default function EmailTemplates() {
                 variant="outline"
                 onClick={() => seedMutation.mutate()}
                 disabled={seedMutation.isPending}
-                className="border-[oklch(0.78_0.18_195_/_0.3)] text-[oklch(0.78_0.18_195)] hover:bg-[oklch(0.78_0.18_195_/_0.08)]"
+                className="border-border/40 text-muted-foreground hover:bg-secondary/20"
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${seedMutation.isPending ? "animate-spin" : ""}`} />
                 Seed Built-ins
@@ -429,10 +430,10 @@ export default function EmailTemplates() {
             <Button
               size="sm"
               onClick={() => setMode("create")}
-              className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-bold"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-widest text-[10px] px-6 h-10 shadow-[0_0_20px_var(--primary-glow)] transition-all"
             >
-              <Plus className="w-3.5 h-3.5 mr-1.5" />
-              New Template
+              <Plus className="w-4 h-4 mr-2" />
+              NEW TEMPLATE
             </Button>
           </div>
         </div>
@@ -441,18 +442,18 @@ export default function EmailTemplates() {
         {mode === "list" ? (
           <div className="flex-1 overflow-auto space-y-2">
             {isLoading ? (
-              <div className="flex items-center justify-center h-32 text-[oklch(0.55_0.015_220)]">
+              <div className="flex items-center justify-center h-32 text-muted-foreground">
                 <RefreshCw className="w-4 h-4 animate-spin mr-2" /> Loading templates…
               </div>
             ) : templates.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 text-center">
-                <Mail className="w-10 h-10 text-[oklch(0.55_0.015_220_/_0.4)] mb-3" />
-                <p className="text-[oklch(0.55_0.015_220)] text-sm">No templates yet.</p>
+                <Mail className="w-10 h-10 text-muted-foreground/40 mb-3" />
+                <p className="text-muted-foreground text-sm">No templates yet.</p>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => seedMutation.mutate()}
-                  className="mt-2 text-[oklch(0.78_0.18_195)]"
+                  className="mt-2 text-primary"
                 >
                   Seed built-in templates
                 </Button>
@@ -464,9 +465,9 @@ export default function EmailTemplates() {
                   (typeof mode === "object" && "preview" in mode && (mode as { preview: number }).preview === t.id) ||
                   (typeof mode === "object" && "edit" in mode && (mode as { edit: number }).edit === t.id);
                 return (
-                  <div
+                  <Card
                     key={t.id}
-                    className={`hud-card rounded-xl p-4 transition-all ${isActive ? "border-[oklch(0.82_0.20_58_/_0.4)] bg-[oklch(0.82_0.20_58_/_0.04)]" : "hover:border-[oklch(0.78_0.18_195_/_0.2)]"}`}
+                    className={`rounded-xl p-4 transition-all bg-card/40 ${isActive ? "border-primary/40 bg-primary/5" : "hover:border-primary/40"}`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -475,17 +476,17 @@ export default function EmailTemplates() {
                             {CATEGORY_LABELS[cat]}
                           </span>
                           {t.isBuiltIn && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] text-[oklch(0.55_0.015_220)] border border-[oklch(0.55_0.015_220_/_0.2)]">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] text-muted-foreground border border-border/40">
                               <Lock className="w-2.5 h-2.5" /> BUILT-IN
                             </span>
                           )}
                         </div>
                         <p className="font-semibold text-foreground text-sm truncate">{t.name}</p>
-                        <p className="text-xs text-[oklch(0.55_0.015_220)] truncate mt-0.5 font-mono">{t.subject}</p>
+                        <p className="text-xs text-muted-foreground truncate mt-0.5 font-mono">{t.subject}</p>
                         {(t.variables as string[])?.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {(t.variables as string[]).map((v) => (
-                              <span key={v} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[oklch(0.78_0.18_195_/_0.08)] text-[oklch(0.78_0.18_195_/_0.7)] border border-[oklch(0.78_0.18_195_/_0.15)]">
+                              <span key={v} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                                 {`{{${v}}}`}
                               </span>
                             ))}
@@ -497,7 +498,7 @@ export default function EmailTemplates() {
                           size="sm"
                           variant="ghost"
                           onClick={() => setMode({ preview: t.id })}
-                          className="h-7 w-7 p-0 text-[oklch(0.55_0.015_220)] hover:text-[oklch(0.78_0.18_195)]"
+                          className="h-7 w-7 p-0 text-foreground/40 hover:text-primary transition-colors"
                           title="Preview"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -506,7 +507,7 @@ export default function EmailTemplates() {
                           size="sm"
                           variant="ghost"
                           onClick={() => setMode({ edit: t.id })}
-                          className="h-7 w-7 p-0 text-[oklch(0.55_0.015_220)] hover:text-[oklch(0.82_0.20_58)]"
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-primary"
                           title={t.isBuiltIn ? "Edit (creates copy)" : "Edit"}
                         >
                           <Pencil className="w-3.5 h-3.5" />
@@ -516,16 +517,16 @@ export default function EmailTemplates() {
                             size="sm"
                             variant="ghost"
                             onClick={() => setDeleteId(t.id)}
-                            className="h-7 w-7 p-0 text-[oklch(0.55_0.015_220)] hover:text-destructive"
+                            className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </Button>
                         )}
-                        <ChevronRight className="w-3.5 h-3.5 text-[oklch(0.35_0.01_220)]" />
+                        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/30" />
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 );
               })
             )}
@@ -537,11 +538,11 @@ export default function EmailTemplates() {
                 size="sm"
                 variant="ghost"
                 onClick={() => setMode("list")}
-                className="text-[oklch(0.55_0.015_220)] hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ← Back
               </Button>
-              <span className="hud-label text-[oklch(0.78_0.18_195)]">NEW TEMPLATE</span>
+              <span className="hud-label text-primary font-mono">// NEW TEMPLATE</span>
             </div>
             <TemplateForm
               initial={BLANK_FORM}
@@ -557,12 +558,12 @@ export default function EmailTemplates() {
                 size="sm"
                 variant="ghost"
                 onClick={() => setMode("list")}
-                className="text-[oklch(0.55_0.015_220)] hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ← Back
               </Button>
-              <span className="hud-label text-[oklch(0.82_0.20_58)]">
-                {editingTemplate.isBuiltIn ? "EDIT COPY" : "EDIT TEMPLATE"}
+              <span className="hud-label text-primary font-mono">
+                // {editingTemplate.isBuiltIn ? "EDIT COPY" : "EDIT TEMPLATE"}
               </span>
             </div>
             <TemplateForm
@@ -585,25 +586,25 @@ export default function EmailTemplates() {
 
       {/* Right panel: live preview */}
       {previewTemplateId && (
-        <div className="w-[480px] shrink-0 hud-card rounded-xl overflow-hidden flex flex-col">
+        <Card className="w-[480px] shrink-0 bg-card/40 border-border/40 rounded-xl overflow-hidden flex flex-col shadow-2xl">
           <PreviewPanel
             templateId={previewTemplateId}
             onClose={() => setMode("list")}
           />
-        </div>
+        </Card>
       )}
 
       {/* Delete confirmation */}
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="bg-[oklch(0.07_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)]">
+        <AlertDialogContent className="bg-card border-border/40">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Delete Template?</AlertDialogTitle>
-            <AlertDialogDescription className="text-[oklch(0.55_0.015_220)]">
+            <AlertDialogDescription className="text-muted-foreground">
               This action cannot be undone. The template will be permanently removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[oklch(0.78_0.18_195_/_0.2)] text-[oklch(0.78_0.18_195)]">
+            <AlertDialogCancel className="border-border/40 text-muted-foreground">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

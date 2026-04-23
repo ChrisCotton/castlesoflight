@@ -1,5 +1,6 @@
 import { trpc } from "@/lib/trpc";
 import { Loader2, TrendingUp, Users, Calendar, Mail, DollarSign, Target } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const STAGE_LABELS: Record<string, string> = {
@@ -12,19 +13,19 @@ const STAGE_LABELS: Record<string, string> = {
 };
 
 const STAGE_COLORS: Record<string, string> = {
-  new_lead: "oklch(0.65 0.18 200)",
-  contacted: "oklch(0.78 0.18 55)",
-  qualified: "oklch(0.62 0.22 280)",
-  proposal_sent: "oklch(0.7 0.2 30)",
-  closed_won: "oklch(0.65 0.18 160)",
-  closed_lost: "oklch(0.55 0.22 25)",
+  new_lead: "var(--brand-cyan)",
+  contacted: "var(--primary)",
+  qualified: "var(--brand-violet)",
+  proposal_sent: "#fbbf24", // keep gold
+  closed_won: "var(--brand-emerald)",
+  closed_lost: "var(--destructive)",
 };
 
 const BOOKING_COLORS: Record<string, string> = {
-  pending: "oklch(0.78 0.18 55)",
-  confirmed: "oklch(0.65 0.18 160)",
-  completed: "oklch(0.62 0.22 280)",
-  cancelled: "oklch(0.55 0.22 25)",
+  pending: "var(--primary)",
+  confirmed: "var(--brand-cyan)",
+  completed: "var(--brand-emerald)",
+  cancelled: "var(--destructive)",
 };
 
 function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
@@ -35,16 +36,23 @@ function StatCard({ icon: Icon, label, value, sub, color = "text-primary" }: {
   color?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center ${color}`}>
-          <Icon className="w-5 h-5" />
-        </div>
+    <Card className="rounded-xl border border-border/40 bg-card/40 p-6 shadow-2xl relative overflow-hidden group">
+      <div className="absolute top-0 right-0 p-3 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+        <Icon className="w-12 h-12 rotate-12" />
       </div>
-      <div className={`text-3xl font-display font-bold mb-1 ${color}`}>{value}</div>
-      <div className="text-sm font-medium text-foreground">{label}</div>
-      {sub && <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>}
-    </div>
+      <CardHeader className="p-0 mb-4">
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-lg bg-secondary/50 border border-border flex items-center justify-center ${color}`}>
+            <Icon className="w-4 h-4" />
+          </div>
+          <CardTitle className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em]">{label}</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className={`text-3xl font-display font-bold mb-1 ${color}`}>{value}</div>
+        {sub && <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider opacity-60">{sub}</div>}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -85,106 +93,135 @@ export default function Analytics() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Analytics</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Pipeline performance and conversion metrics.</p>
+      <div className="flex items-center gap-4 pb-6 border-b border-border/40">
+        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary glow-sm-amber">
+          <TrendingUp className="w-6 h-6" />
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="sys-online uppercase font-mono tracking-tighter">ANALYTICS.ENGAGEMENT</span>
+            <span className="hud-label opacity-40 text-[10px]">// REAL-TIME METRICS</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold text-foreground">Infrastructure Intelligence</h1>
+        </div>
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatCard icon={Users} label="Total Leads" value={totalLeads} sub="All time" />
-        <StatCard icon={DollarSign} label="Pipeline Value" value={`$${(pipelineVal / 1000).toFixed(0)}k`} sub="Active deals" color="text-primary" />
-        <StatCard icon={Target} label="Conversion Rate" value={`${convRate}%`} sub="Lead to Closed Won" color="text-[oklch(0.65_0.18_160)]" />
-        <StatCard icon={Calendar} label="Total Bookings" value={totalBookings} sub="All time" color="text-[oklch(0.62_0.22_280)]" />
-        <StatCard icon={Mail} label="Email Captures" value={emailCount} sub="Book downloads" color="text-[oklch(0.7_0.2_30)]" />
-        <StatCard icon={TrendingUp} label="Closed Won" value={wonCount} sub="Deals closed" color="text-[oklch(0.65_0.18_160)]" />
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatCard icon={Users} label="Total Pipeline Leads" value={totalLeads} sub="QUANTITATIVE BASE" />
+        <StatCard icon={DollarSign} label="Projected Revenue" value={`$${(pipelineVal / 1000).toFixed(0)}k`} sub="LOCKED PIPELINE" color="text-primary" />
+        <StatCard icon={Target} label="Success Velocity" value={`${convRate}%`} sub="CONVERSION EFFICIENCY" color="text-accent" />
+        <StatCard icon={Calendar} label="Deployment Bookings" value={totalBookings} sub="SCHEDULED CAPACITY" color="text-accent" />
+        <StatCard icon={Mail} label="Intels Captured" value={emailCount} sub="WHITEPAPER INTEREST" color="text-primary" />
+        <StatCard icon={TrendingUp} label="Deployments Won" value={wonCount} sub="CLOSED CONTRACTS" color="text-emerald-500" />
       </div>
 
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Lead pipeline bar */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h3 className="font-display font-semibold text-foreground mb-6">Lead Pipeline</h3>
-          {leadChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={leadChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.22 0.02 260)" />
-                <XAxis dataKey="name" tick={{ fill: "oklch(0.55 0.02 260)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "oklch(0.55 0.02 260)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ background: "oklch(0.11 0.015 260)", border: "1px solid oklch(0.22 0.02 260)", borderRadius: "8px", color: "oklch(0.95 0.01 260)" }}
-                  cursor={{ fill: "oklch(0.22 0.02 260 / 0.3)" }}
-                />
-                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                  {leadChartData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[220px] flex items-center justify-center text-muted-foreground text-sm">No lead data yet.</div>
-          )}
-        </div>
+        <Card className="rounded-xl border border-border/40 bg-card/40 p-6 shadow-2xl">
+          <CardHeader className="p-0 mb-6">
+            <CardTitle className="font-display font-bold text-lg text-foreground">Pipeline Progression</CardTitle>
+            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// STAGE DISTRIBUTION ANALYSIS</p>
+          </CardHeader>
+          <CardContent className="p-0">
+            {leadChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={leadChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "12px", color: "var(--foreground)", fontSize: "12px", fontFamily: "inherit" }}
+                    cursor={{ fill: "rgba(var(--primary-rgb), 0.05)" }}
+                  />
+                  <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={40}>
+                    {leadChartData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[260px] flex items-center justify-center text-muted-foreground font-mono text-xs uppercase tracking-widest">No intelligence gathered.</div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Lead stage pie */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h3 className="font-display font-semibold text-foreground mb-6">Stage Distribution</h3>
-          {pieData.length > 0 ? (
-            <div className="flex items-center gap-6">
-              <ResponsiveContainer width="50%" height={200}>
-                <PieChart>
-                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="count" paddingAngle={3}>
-                    {pieData.map((entry, i) => (
-                      <Cell key={i} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: "oklch(0.11 0.015 260)", border: "1px solid oklch(0.22 0.02 260)", borderRadius: "8px", color: "oklch(0.95 0.01 260)" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex-1 space-y-2">
-                {pieData.map((d) => (
-                  <div key={d.name} className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.fill }} />
-                      <span className="text-muted-foreground text-xs">{d.name}</span>
-                    </div>
-                    <span className="font-semibold text-foreground text-xs">{d.count}</span>
+        <Card className="rounded-xl border border-border/40 bg-card/40 p-6 shadow-2xl">
+          <CardHeader className="p-0 mb-6">
+            <CardTitle className="font-display font-bold text-lg text-foreground">Portfolio Composition</CardTitle>
+            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// SEGMENTATION OVERVIEW</p>
+          </CardHeader>
+          <CardContent className="p-0">
+            {pieData.length > 0 ? (
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="relative w-full sm:w-1/2">
+                  <ResponsiveContainer width="100%" height={240}>
+                    <PieChart>
+                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} dataKey="count" paddingAngle={5}>
+                        {pieData.map((entry, i) => (
+                          <Cell key={i} fill={entry.fill} stroke="transparent" />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "12px", color: "var(--foreground)", fontSize: "12px" }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+                    <div className="text-3xl font-display font-bold text-foreground">{totalLeads}</div>
+                    <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-tighter">Total</div>
                   </div>
-                ))}
+                </div>
+                <div className="flex-1 w-full space-y-3">
+                  {pieData.map((d) => (
+                    <div key={d.name} className="flex items-center justify-between group p-2 rounded-lg hover:bg-secondary/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)]" style={{ backgroundColor: d.fill }} />
+                        <span className="text-muted-foreground font-mono text-[11px] font-bold uppercase tracking-wider">{d.name}</span>
+                      </div>
+                      <span className="font-display font-bold text-foreground text-sm">{d.count}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="h-[200px] flex items-center justify-center text-muted-foreground text-sm">No data yet.</div>
-          )}
-        </div>
+            ) : (
+              <div className="h-[240px] flex items-center justify-center text-muted-foreground font-mono text-xs uppercase tracking-widest">Data buffer empty.</div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Bookings status */}
-        <div className="rounded-xl border border-border bg-card p-6 lg:col-span-2">
-          <h3 className="font-display font-semibold text-foreground mb-6">Booking Status Overview</h3>
-          {bookingChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={160}>
-              <BarChart data={bookingChartData} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.22 0.02 260)" horizontal={false} />
-                <XAxis type="number" tick={{ fill: "oklch(0.55 0.02 260)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="name" tick={{ fill: "oklch(0.55 0.02 260)", fontSize: 11 }} axisLine={false} tickLine={false} width={80} />
-                <Tooltip
-                  contentStyle={{ background: "oklch(0.11 0.015 260)", border: "1px solid oklch(0.22 0.02 260)", borderRadius: "8px", color: "oklch(0.95 0.01 260)" }}
-                  cursor={{ fill: "oklch(0.22 0.02 260 / 0.3)" }}
-                />
-                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-                  {bookingChartData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[160px] flex items-center justify-center text-muted-foreground text-sm">No booking data yet.</div>
-          )}
-        </div>
+        <Card className="rounded-xl border border-border/40 bg-card/40 p-6 shadow-2xl lg:col-span-2">
+          <CardHeader className="p-0 mb-6">
+            <CardTitle className="font-display font-bold text-lg text-foreground">Operational Status</CardTitle>
+            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">// DEPLOYMENT LIFECYCLE MONITORING</p>
+          </CardHeader>
+          <CardContent className="p-0">
+            {bookingChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={bookingChartData} layout="vertical" margin={{ top: 0, right: 30, left: 30, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="name" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} width={100} />
+                  <Tooltip
+                    contentStyle={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "12px", color: "var(--foreground)", fontSize: "12px" }}
+                    cursor={{ fill: "rgba(var(--primary-rgb), 0.05)" }}
+                  />
+                  <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24}>
+                    {bookingChartData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[200px] flex items-center justify-center text-muted-foreground font-mono text-xs uppercase tracking-widest">No operational telemetry found.</div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

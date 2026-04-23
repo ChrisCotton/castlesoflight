@@ -58,14 +58,14 @@ function StepCallType({
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-20">
-      <Loader2 className="w-8 h-8 animate-spin text-[oklch(0.82_0.20_58)]" />
+      <Loader2 className="w-8 h-8 animate-spin text-primary" />
     </div>
   );
 
   return (
     <div>
       <h2 className="text-2xl font-display font-bold text-foreground mb-2">Select a Call Type</h2>
-      <p className="text-[oklch(0.50_0.015_220)] mb-8">Choose the engagement that best fits your needs.</p>
+      <p className="text-muted-foreground/60 mb-8">Choose the engagement that best fits your needs.</p>
       <div className="grid gap-4">
         {callTypes?.map((ct) => {
           const isPaid = Number(ct.price) > 0;
@@ -75,8 +75,8 @@ function StepCallType({
               onClick={() => onSelect(ct.id)}
               className={`w-full text-left rounded-xl border p-6 transition-all ${
                 selected === ct.id
-                  ? "border-[oklch(0.82_0.20_58_/_0.6)] bg-[oklch(0.82_0.20_58_/_0.08)]"
-                  : "border-[oklch(0.78_0.18_195_/_0.15)] bg-[oklch(0.06_0.01_260)] hover:border-[oklch(0.82_0.20_58_/_0.3)] hover:bg-[oklch(0.82_0.20_58_/_0.04)]"
+                  ? "border-primary/60 bg-primary/10 shadow-[0_0_15px_var(--primary-glow)]"
+                  : "border-border/40 bg-secondary/10 hover:border-primary/30 hover:bg-primary/5"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -88,24 +88,24 @@ function StepCallType({
                     />
                     <span className="font-display font-semibold text-foreground">{ct.name}</span>
                     {!isPaid && (
-                      <Badge className="bg-[oklch(0.65_0.18_160_/_0.15)] text-[oklch(0.65_0.18_160)] border-[oklch(0.65_0.18_160_/_0.3)] text-xs">
+                      <Badge className="bg-accent/10 text-accent border-accent/20 text-xs">
                         Free
                       </Badge>
                     )}
                     {isPaid && (
-                      <Badge className="bg-[oklch(0.82_0.20_58_/_0.12)] text-[oklch(0.82_0.20_58)] border-[oklch(0.82_0.20_58_/_0.3)] text-xs">
+                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                         <CreditCard className="w-3 h-3 mr-1" /> Paid
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-[oklch(0.50_0.015_220)] leading-relaxed">{ct.description}</p>
+                  <p className="text-sm text-muted-foreground/60 leading-relaxed">{ct.description}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="flex items-center gap-1 text-[oklch(0.45_0.015_220)] text-sm mb-1">
+                  <div className="flex items-center gap-1 text-muted-foreground/40 text-sm mb-1">
                     <Clock className="w-3.5 h-3.5" />
                     {ct.durationMinutes} min
                   </div>
-                  <div className={`flex items-center gap-1 text-sm font-bold ${isPaid ? "text-[oklch(0.82_0.20_58)]" : "text-[oklch(0.65_0.18_160)]"}`}>
+                  <div className={`flex items-center gap-1 text-sm font-bold ${isPaid ? "text-primary" : "text-accent"}`}>
                     {isPaid ? <DollarSign className="w-3.5 h-3.5" /> : null}
                     {formatPrice(ct.price)}
                   </div>
@@ -171,26 +171,26 @@ function StepDateTime({
   return (
     <div>
       <h2 className="text-2xl font-display font-bold text-foreground mb-2">Pick a Date & Time</h2>
-      <p className="text-[oklch(0.50_0.015_220)] mb-8">All times shown in Pacific Time (PT).</p>
+      <p className="text-muted-foreground/60 mb-8 font-mono text-xs uppercase tracking-widest">// ALL TIMES SHOWN IN PACIFIC TIME (PT)</p>
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Calendar */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-[oklch(0.78_0.18_195_/_0.08)] text-[oklch(0.45_0.015_220)] hover:text-foreground transition-colors">
+            <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-secondary/50 text-muted-foreground/40 hover:text-foreground transition-colors">
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="font-display font-semibold text-foreground">
               {MONTHS[viewMonth]} {viewYear}
             </span>
-            <button onClick={nextMonth} className="p-2 rounded-lg hover:bg-[oklch(0.78_0.18_195_/_0.08)] text-[oklch(0.45_0.015_220)] hover:text-foreground transition-colors">
+            <button onClick={nextMonth} className="p-2 rounded-lg hover:bg-secondary/50 text-muted-foreground/40 hover:text-foreground transition-colors">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-1 mb-2">
             {DAYS.map((d) => (
-              <div key={d} className="text-center text-xs text-[oklch(0.45_0.015_220)] font-medium py-1">{d}</div>
+              <div key={d} className="text-center text-xs text-muted-foreground/30 font-mono py-1">{d}</div>
             ))}
           </div>
 
@@ -207,10 +207,10 @@ function StepDateTime({
                   onClick={() => setPickedDate(dateStr)}
                   className={`aspect-square rounded-lg text-sm font-medium transition-all ${
                     isSelected
-                      ? "bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] font-bold"
+                      ? "bg-primary text-primary-foreground font-bold shadow-[0_0_12px_var(--primary-glow)]"
                       : selectable
-                      ? "hover:bg-[oklch(0.78_0.18_195_/_0.08)] text-foreground"
-                      : "text-[oklch(0.30_0.01_220)] cursor-not-allowed"
+                      ? "hover:bg-secondary/50 text-foreground"
+                      : "text-muted-foreground/20 cursor-not-allowed"
                   }`}
                 >
                   {day}
@@ -229,7 +229,7 @@ function StepDateTime({
             </div>
           ) : slotsLoading ? (
             <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-6 h-6 animate-spin text-[oklch(0.82_0.20_58)]" />
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
           ) : slotData?.isBlocked ? (
             <div className="text-center text-[oklch(0.45_0.015_220)] py-8">
@@ -243,7 +243,7 @@ function StepDateTime({
             </div>
           ) : (
             <div>
-              <p className="text-sm text-[oklch(0.45_0.015_220)] mb-4 font-medium">
+              <p className="text-sm text-primary font-mono tracking-widest uppercase mb-4">
                 {formatDate(pickedDate)}
               </p>
               <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
@@ -253,8 +253,8 @@ function StepDateTime({
                     onClick={() => onSelect(pickedDate, slot)}
                     className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-all ${
                       selectedTime === slot && selectedDate === pickedDate
-                        ? "border-[oklch(0.82_0.20_58_/_0.6)] bg-[oklch(0.82_0.20_58_/_0.12)] text-[oklch(0.82_0.20_58)]"
-                        : "border-[oklch(0.78_0.18_195_/_0.15)] bg-[oklch(0.06_0.01_260)] text-foreground hover:border-[oklch(0.82_0.20_58_/_0.3)]"
+                        ? "border-primary/60 bg-primary/10 text-primary shadow-[0_0_10px_var(--primary-glow)]"
+                        : "border-border/40 bg-secondary/10 text-foreground hover:border-primary/30"
                     }`}
                   >
                     {formatTime(slot)}
@@ -280,7 +280,7 @@ function StepContactInfo({
   return (
     <div>
       <h2 className="text-2xl font-display font-bold text-foreground mb-2">Your Details</h2>
-      <p className="text-[oklch(0.50_0.015_220)] mb-8">Just a few details so I can prepare for our call.</p>
+      <p className="text-muted-foreground/60 mb-8">Just a few details so I can prepare for our call.</p>
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -337,7 +337,7 @@ function StepContactInfo({
           <Textarea
             value={form.message}
             onChange={(e) => onChange("message", e.target.value)}
-            className="bg-[oklch(0.06_0.01_260)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground min-h-[100px]"
+            className="bg-background/40 border-border/40 text-foreground"
             placeholder="Describe your current pain points, goals, or what you'd like to accomplish..."
           />
         </div>
@@ -367,7 +367,7 @@ function StepReview({
   return (
     <div>
       <h2 className="text-2xl font-display font-bold text-foreground mb-2">Review & {isPaid ? "Pay" : "Confirm"}</h2>
-      <p className="text-[oklch(0.50_0.015_220)] mb-8">
+      <p className="text-muted-foreground/60 mb-8">
         {isPaid
           ? "Review your booking details, then proceed to secure payment."
           : "Review your booking details and confirm."}
@@ -375,28 +375,28 @@ function StepReview({
 
       <div className="space-y-4 mb-8">
         {/* Booking summary */}
-        <div className="rounded-xl border border-[oklch(0.78_0.18_195_/_0.15)] bg-[oklch(0.06_0.01_260)] p-5">
-          <div className="hud-label text-[10px] mb-3 opacity-50">BOOKING SUMMARY</div>
+        <div className="rounded-xl border border-border/40 bg-secondary/10 p-5">
+          <div className="text-[10px] font-mono text-muted-foreground/40 mb-3 tracking-widest uppercase">// BOOKING SUMMARY</div>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-[oklch(0.50_0.015_220)] text-sm">Call Type</span>
+              <span className="text-muted-foreground/60 text-sm">Call Type</span>
               <span className="text-foreground font-medium text-sm">{callType?.name}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[oklch(0.50_0.015_220)] text-sm">Duration</span>
+              <span className="text-muted-foreground/60 text-sm">Duration</span>
               <span className="text-foreground font-medium text-sm">{callType?.durationMinutes} minutes</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[oklch(0.50_0.015_220)] text-sm">Date</span>
+              <span className="text-muted-foreground/60 text-sm">Date</span>
               <span className="text-foreground font-medium text-sm">{selectedDate ? formatDate(selectedDate) : "—"}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[oklch(0.50_0.015_220)] text-sm">Time</span>
+              <span className="text-muted-foreground/60 text-sm">Time</span>
               <span className="text-foreground font-medium text-sm">{selectedTime ? formatTime(selectedTime) + " PT" : "—"}</span>
             </div>
-            <div className="border-t border-[oklch(0.78_0.18_195_/_0.1)] pt-3 flex justify-between items-center">
-              <span className="text-[oklch(0.50_0.015_220)] text-sm font-medium">Total</span>
-              <span className={`font-bold text-lg ${isPaid ? "text-[oklch(0.82_0.20_58)]" : "text-[oklch(0.65_0.18_160)]"}`}>
+            <div className="border-t border-border/10 pt-3 flex justify-between items-center">
+              <span className="text-muted-foreground/60 text-sm font-medium">Total</span>
+              <span className={`font-bold text-lg ${isPaid ? "text-primary" : "text-accent"}`}>
                 {formatPrice(callType?.price)}
               </span>
             </div>
@@ -438,8 +438,7 @@ function StepReview({
       </div>
 
       <Button
-        className="w-full bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-bold h-12 text-base"
-        style={{ boxShadow: "0 0 24px oklch(0.82 0.20 58 / 0.3)" }}
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 text-base shadow-[0_0_24px_var(--primary-glow)]"
         onClick={onSubmit}
         disabled={isPending}
       >
@@ -557,27 +556,7 @@ export default function Book() {
   const isPending = createBooking.isPending || createCheckoutSession.isPending;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Top nav */}
-      <nav className="border-b border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.04_0.005_260_/_0.9)] backdrop-blur-xl">
-        <div className="container flex items-center h-16 gap-4">
-          <Link href="/" className="flex items-center gap-2 text-[oklch(0.45_0.015_220)] hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Back</span>
-          </Link>
-          <div className="flex items-center gap-2 ml-2">
-            <div className="w-7 h-7 rounded-lg bg-[oklch(0.82_0.20_58)] flex items-center justify-center" style={{ boxShadow: "0 0 12px oklch(0.82 0.20 58 / 0.4)" }}>
-              <Terminal className="w-3.5 h-3.5 text-[oklch(0.06_0.01_260)]" />
-            </div>
-            <span className="font-display font-bold text-foreground">Book a Call</span>
-          </div>
-          <div className="ml-auto">
-            <span className="sys-online text-[10px]">SYS.ONLINE</span>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container py-12 max-w-3xl">
+    <div className="container py-24 max-w-3xl">
         {confirmed ? (
           <StepConfirmed callTypeName={confirmedCallTypeName} wasPaid={wasPaid} />
         ) : (
@@ -695,7 +674,6 @@ export default function Book() {
             </div>
           </>
         )}
-      </div>
     </div>
   );
 }

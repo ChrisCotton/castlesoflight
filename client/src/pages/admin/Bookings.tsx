@@ -22,16 +22,17 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 type PaymentStatus = "free" | "pending" | "paid" | "failed" | "refunded";
 
 const PAYMENT_STYLES: Record<PaymentStatus, { icon: React.ReactNode; color: string; bg: string; border: string; label: string }> = {
-  free: { icon: <Gift className="w-3 h-3" />, color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]", label: "Free" },
-  pending: { icon: <CreditCard className="w-3 h-3" />, color: "text-[oklch(0.82_0.20_58)]", bg: "bg-[oklch(0.82_0.20_58_/_0.1)]", border: "border-[oklch(0.82_0.20_58_/_0.3)]", label: "Payment Pending" },
-  paid: { icon: <DollarSign className="w-3 h-3" />, color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]", label: "Paid" },
-  failed: { icon: <AlertCircle className="w-3 h-3" />, color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30", label: "Payment Failed" },
-  refunded: { icon: <CreditCard className="w-3 h-3" />, color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]", label: "Refunded" },
+  free: { icon: <Gift className="w-3 h-3" />, color: "text-primary", bg: "bg-primary/10", border: "border-primary/20", label: "FREE" },
+  pending: { icon: <CreditCard className="w-3 h-3" />, color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20", label: "PENDING" },
+  paid: { icon: <DollarSign className="w-3 h-3" />, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", label: "PAID" },
+  failed: { icon: <AlertCircle className="w-3 h-3" />, color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20", label: "FAILED" },
+  refunded: { icon: <CreditCard className="w-3 h-3" />, color: "text-accent", bg: "bg-accent/10", border: "border-accent/20", label: "REFUNDED" },
 };
 
 function PaymentChip({ status, priceCents }: { status: PaymentStatus; priceCents?: number }) {
@@ -44,16 +45,16 @@ function PaymentChip({ status, priceCents }: { status: PaymentStatus; priceCents
 }
 
 const STATUS_STYLES: Record<BookingStatus, { color: string; bg: string; border: string; label: string }> = {
-  pending: { color: "text-primary", bg: "bg-primary/10", border: "border-primary/30", label: "Pending" },
-  confirmed: { color: "text-[oklch(0.65_0.18_160)]", bg: "bg-[oklch(0.65_0.18_160_/_0.1)]", border: "border-[oklch(0.65_0.18_160_/_0.3)]", label: "Confirmed" },
-  cancelled: { color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30", label: "Cancelled" },
-  completed: { color: "text-[oklch(0.62_0.22_280)]", bg: "bg-[oklch(0.62_0.22_280_/_0.1)]", border: "border-[oklch(0.62_0.22_280_/_0.3)]", label: "Completed" },
+  pending: { color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20", label: "PENDING" },
+  confirmed: { color: "text-primary", bg: "bg-primary/10", border: "border-primary/20", label: "CONFIRMED" },
+  cancelled: { color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20", label: "CANCELLED" },
+  completed: { color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", label: "COMPLETED" },
 };
 
 function StatusChip({ status }: { status: BookingStatus }) {
   const s = STATUS_STYLES[status];
   return (
-    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${s.bg} ${s.color} border ${s.border}`}>
+    <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded border shadow-sm ${s.bg} ${s.color} ${s.border}`}>
       {s.label}
     </span>
   );
@@ -82,15 +83,18 @@ function BookingCard({ booking, callTypes, onUpdate }: {
   const status = booking.status as BookingStatus;
 
   return (
-    <div className={`rounded-xl border ${STATUS_STYLES[status].border} bg-card p-5`}>
+    <Card className={`rounded-xl border ${STATUS_STYLES[status].border} bg-card/40 p-5 shadow-2xl relative overflow-hidden transition-all hover:border-primary/40`}>
+      <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+        <Calendar className="w-16 h-16 rotate-12" />
+      </div>
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <StatusChip status={status} />
             <PaymentChip status={(booking.paymentStatus ?? "free") as PaymentStatus} priceCents={booking.priceCents} />
             {ct && (
-              <span className="text-xs text-[oklch(0.45_0.015_220)] font-mono flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ct.color ?? "#6366f1" }} />
+              <span className="text-xs text-muted-foreground font-mono flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ct.color ?? "var(--primary)" }} />
                 {ct.name} · {ct.durationMinutes} min
               </span>
             )}
@@ -143,7 +147,7 @@ function BookingCard({ booking, callTypes, onUpdate }: {
             <>
               <Button
                 size="sm"
-                className="bg-[oklch(0.65_0.18_160)] text-white hover:bg-[oklch(0.65_0.18_160_/_0.8)] font-semibold text-xs"
+                className="bg-emerald-500 text-white hover:bg-emerald-600 font-semibold text-xs"
                 onClick={() => update.mutate({ id: booking.id, status: "confirmed", adminNotes })}
                 disabled={update.isPending}
               >
@@ -163,7 +167,7 @@ function BookingCard({ booking, callTypes, onUpdate }: {
           {status === "confirmed" && (
             <Button
               size="sm"
-              className="bg-[oklch(0.62_0.22_280)] text-white hover:bg-[oklch(0.62_0.22_280_/_0.8)] font-semibold text-xs"
+              className="bg-purple-500 text-white hover:bg-purple-600 font-semibold text-xs"
               onClick={() => update.mutate({ id: booking.id, status: "completed" })}
               disabled={update.isPending}
             >
@@ -200,7 +204,7 @@ function BookingCard({ booking, callTypes, onUpdate }: {
           </Dialog>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -221,24 +225,32 @@ export default function Bookings() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Bookings</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Manage all incoming consultation requests.</p>
+      <div className="flex items-center gap-4 pb-6 border-b border-border/40">
+        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary glow-sm-amber">
+          <Calendar className="w-6 h-6" />
+        </div>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="sys-online uppercase font-mono tracking-tighter">BOOKINGS.CORE</span>
+            <span className="hud-label opacity-40 text-[10px]">// CAPACITY MONITORING</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold text-foreground">Infrastructure Consultations</h1>
+        </div>
       </div>
 
       {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2.5">
         {(["all", "pending", "confirmed", "completed", "cancelled"] as const).map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all capitalize ${
+            className={`px-4 py-2 rounded-xl text-[10px] font-mono font-bold tracking-widest uppercase transition-all shadow-sm ${
               statusFilter === s
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground border border-border hover:border-primary/50"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                : "bg-secondary/50 text-muted-foreground border border-border/40 hover:border-primary/40"
             }`}
           >
-            {s} {s === "all" ? `(${counts.all})` : `(${counts[s as keyof typeof counts]})`}
+            {s} <span className="opacity-40 ml-1">{s === "all" ? counts.all : counts[s as keyof typeof counts]}</span>
           </button>
         ))}
       </div>

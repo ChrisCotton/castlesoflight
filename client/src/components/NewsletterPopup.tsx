@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { X, Mail, Zap, Terminal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const SESSION_KEY = "col_newsletter_popup_dismissed";
 const SCROLL_THRESHOLD = 0.6; // 60% of page
@@ -85,7 +86,7 @@ export default function NewsletterPopup() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[90] bg-background/80 backdrop-blur-sm"
             onClick={dismiss}
             aria-hidden
           />
@@ -100,42 +101,26 @@ export default function NewsletterPopup() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 380, damping: 32 }}
-            className="fixed z-[100] bottom-6 right-6 w-full max-w-sm mx-auto"
-            style={{ right: "clamp(1rem, 4vw, 2rem)", bottom: "clamp(1rem, 4vw, 1.5rem)" }}
+            className="fixed z-[100]"
+            style={{ bottom: "1.5rem", right: "1.5rem", width: "380px", maxWidth: "calc(100vw - 2rem)" }}
           >
-            <div
-              className="relative rounded-2xl overflow-hidden border"
-              style={{
-                background: "oklch(0.06 0.008 240)",
-                borderColor: "oklch(0.82 0.20 58 / 0.35)",
-                boxShadow: "0 0 0 1px oklch(0.82 0.20 58 / 0.12), 0 24px 64px oklch(0 0 0 / 0.7), 0 0 40px oklch(0.82 0.20 58 / 0.08)",
-              }}
-            >
-              {/* Amber top glow strip */}
-              <div
-                className="absolute top-0 left-0 right-0 h-px"
-                style={{ background: "linear-gradient(90deg, transparent, oklch(0.82 0.20 58 / 0.8), transparent)" }}
-              />
+            <div className="relative rounded-2xl overflow-hidden border border-primary/20 bg-card shadow-2xl shadow-primary/5">
+              {/* Top glow strip */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
               {/* Ambient glow */}
-              <div
-                className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
-                style={{ background: "radial-gradient(circle, oklch(0.82 0.20 58 / 0.12) 0%, transparent 70%)" }}
-              />
+              <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none bg-primary/5 blur-3xl" />
 
               {/* Close button */}
               <button
                 onClick={dismiss}
-                className="absolute top-3 right-3 z-10 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                style={{ color: "oklch(0.45 0.015 220)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.70 0.015 220)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.45 0.015 220)")}
+                className="absolute top-3 right-3 z-10 w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
                 aria-label="Close popup"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              <div className="relative z-10 p-6">
+              <div className="relative z-10 p-6 pt-8">
                 {submitted ? (
                   /* Success state */
                   <motion.div
@@ -143,97 +128,75 @@ export default function NewsletterPopup() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-center py-4"
                   >
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                      style={{ background: "oklch(0.68 0.20 160 / 0.12)", border: "1px solid oklch(0.68 0.20 160 / 0.35)" }}
-                    >
-                      <Zap className="w-7 h-7" style={{ color: "oklch(0.68 0.20 160)" }} />
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-primary/10 border border-primary/20 shadow-[0_0_20px_var(--primary-glow)]">
+                      <Zap className="w-8 h-8 text-primary" />
                     </div>
-                    <p
-                      className="text-xs font-mono tracking-widest mb-2"
-                      style={{ color: "oklch(0.68 0.20 160)" }}
-                    >
+                    <p className="text-[10px] font-mono tracking-widest mb-2 text-primary/60 uppercase">
                       // TRANSMISSION RECEIVED
                     </p>
-                    <h3 className="text-lg font-bold text-white mb-2">You're in the system.</h3>
-                    <p className="text-sm" style={{ color: "oklch(0.55 0.015 220)" }}>
+                    <h3 className="text-xl font-display font-bold text-foreground mb-2">You're in the system.</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       Check your inbox — your welcome transmission is on its way.
                     </p>
                     <button
                       onClick={dismiss}
-                      className="mt-5 text-xs font-mono transition-colors"
-                      style={{ color: "oklch(0.40 0.015 220)" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.60 0.015 220)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.40 0.015 220)")}
+                      className="mt-6 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
                     >
-                      [CLOSE]
+                      [ DISMISS ]
                     </button>
                   </motion.div>
                 ) : (
                   /* Signup form */
                   <>
                     {/* Header */}
-                    <div className="flex items-center gap-2.5 mb-4">
-                      <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                        style={{ background: "oklch(0.82 0.20 58 / 0.15)", border: "1px solid oklch(0.82 0.20 58 / 0.30)" }}
-                      >
-                        <Terminal className="w-4.5 h-4.5" style={{ color: "oklch(0.82 0.20 58)" }} />
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-primary/10 border border-primary/20 shadow-[0_0_15px_var(--primary-glow)]">
+                        <Terminal className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <p
-                          className="text-[10px] font-mono tracking-widest"
-                          style={{ color: "oklch(0.82 0.20 58)" }}
-                        >
-                          // FREE NEWSLETTER
-                        </p>
-                        <p className="text-xs font-bold text-white leading-tight">HARDCORE INFRASTRUCTURE</p>
+                        <Badge variant="outline" className="text-[9px] uppercase tracking-[0.2em] mb-1 py-0 px-1.5 border-primary/30 text-primary bg-primary/5">
+                          FREE NEWSLETTER
+                        </Badge>
+                        <p className="text-sm font-display font-bold text-foreground leading-tight tracking-tight">HARDCORE INFRASTRUCTURE</p>
                       </div>
                     </div>
 
-                    <p className="text-sm mb-5 leading-relaxed" style={{ color: "oklch(0.55 0.015 220)" }}>
+                    <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
                       Weekly AI + DevOps tactics from 30 years in the trenches. No fluff.{" "}
-                      <span style={{ color: "oklch(0.82 0.20 58)" }}>Free forever.</span>
+                      <span className="text-primary font-semibold">Free forever.</span>
                     </p>
 
-                    <form onSubmit={handleSubmit} className="space-y-2.5">
-                      <Input
-                        type="text"
-                        placeholder="First name (optional)"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="h-10 text-sm font-mono"
-                        style={{
-                          background: "oklch(0.09 0.008 240)",
-                          borderColor: "oklch(0.82 0.20 58 / 0.20)",
-                          color: "white",
-                        }}
-                      />
-                      <Input
-                        type="email"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="h-10 text-sm font-mono"
-                        style={{
-                          background: "oklch(0.09 0.008 240)",
-                          borderColor: "oklch(0.82 0.20 58 / 0.20)",
-                          color: "white",
-                        }}
-                      />
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                      <div className="space-y-1">
+                         <label className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest ml-1">IDENTITY</label>
+                         <Input
+                           type="text"
+                           placeholder="First name (optional)"
+                           value={firstName}
+                           onChange={(e) => setFirstName(e.target.value)}
+                           className="h-10 text-sm font-mono bg-background/50 border-border/40 focus:border-primary/50"
+                         />
+                      </div>
+                      <div className="space-y-1">
+                         <label className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest ml-1">ADDRESS</label>
+                         <Input
+                           type="email"
+                           placeholder="your@email.com"
+                           value={email}
+                           onChange={(e) => setEmail(e.target.value)}
+                           required
+                           className="h-10 text-sm font-mono bg-background/50 border-border/40 focus:border-accent/50"
+                         />
+                      </div>
+                      
                       <Button
                         type="submit"
                         disabled={subscribe.isPending}
-                        className="w-full h-10 font-bold text-sm"
-                        style={{
-                          background: "oklch(0.82 0.20 58)",
-                          color: "oklch(0.06 0.01 260)",
-                        }}
+                        className="w-full h-11 font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_var(--primary-glow)] transition-all mt-2"
                       >
                         {subscribe.isPending ? (
                           <span className="flex items-center gap-2">
-                            <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                             JOINING...
                           </span>
                         ) : (
@@ -247,10 +210,7 @@ export default function NewsletterPopup() {
 
                     <button
                       onClick={dismiss}
-                      className="mt-3 w-full text-center text-[11px] font-mono transition-colors"
-                      style={{ color: "oklch(0.32 0.015 220)" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.50 0.015 220)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.32 0.015 220)")}
+                      className="mt-4 w-full text-center text-[10px] font-mono text-muted-foreground/50 hover:text-muted-foreground transition-colors uppercase tracking-widest"
                     >
                       No thanks, I'll figure it out myself
                     </button>

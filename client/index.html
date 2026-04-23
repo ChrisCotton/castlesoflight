@@ -15,10 +15,20 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <script>
+      // Umami Analytics — only loads when env vars are defined
+      (function() {
+        var endpoint = '%VITE_ANALYTICS_ENDPOINT%';
+        var websiteId = '%VITE_ANALYTICS_WEBSITE_ID%';
+        if (endpoint && !endpoint.includes('VITE_ANALYTICS') && websiteId && !websiteId.includes('VITE_ANALYTICS')) {
+          var s = document.createElement('script');
+          s.defer = true;
+          s.src = endpoint + '/umami';
+          s.setAttribute('data-website-id', websiteId);
+          document.head.appendChild(s);
+        }
+      })();
+    </script>
   </body>
 
 </html>
