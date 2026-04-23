@@ -1,0 +1,49 @@
+{
+  "projectName": "NerveCenter CRM",
+  "screens": [
+    {
+      "id": "1",
+      "urlPath": "/admin",
+      "title": "Admin Dashboard",
+      "description": "High-level overview of system metrics",
+      "imagePath": "/assets/screens/1-admin.png",
+      "width": 1440,
+      "height": 900,
+      "duration": 4
+    },
+    {
+      "id": "2",
+      "urlPath": "/admin/leads",
+      "title": "Leads Pipeline",
+      "description": "Track and manage sales leads",
+      "imagePath": "/assets/screens/2-pipeline.png",
+      "width": 1440,
+      "height": 900,
+      "duration": 4,
+      "scrollStartPercent": 20,
+      "scrollEndPercent": 60
+    },
+    {
+      "id": "3",
+      "urlPath": "/admin/crm",
+      "title": "Outreach Intelligence",
+      "description": "AI-driven insights for outreach",
+      "imagePath": "/assets/screens/3-outreach.png",
+      "width": 1440,
+      "height": 900,
+      "duration": 4
+    },
+    {
+      "id": "4",
+      "urlPath": "/admin/analytics",
+      "title": "Pipeline Control",
+      "description": "Granular control over pipeline stages",
+      "imagePath": "/assets/screens/4-control.png",
+      "width": 1440,
+      "height": 900,
+      "duration": 4,
+      "scrollStartPercent": 50,
+      "scrollEndPercent": 100
+    }
+  ]
+}
