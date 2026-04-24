@@ -23,7 +23,7 @@ export const CALL_TYPE_PRICES: Record<string, { priceCents: number; name: string
   },
   "architecture-sprint": {
     priceCents: 1500000, // $15,000
-    name: "48-Hour Architecture Sprint",
+    name: "3-day Architecture Sprint",
     description: "Weekend intensive to fix your infrastructure bottleneck",
   },
   "advisory-session": {

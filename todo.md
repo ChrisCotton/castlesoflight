@@ -7,7 +7,7 @@
 - [x] Navigation (public top nav + admin sidebar)
 
 ## Phase 2: Public Sales Machine
-- [x] Hero section ("3-Month Infrastructure in 48 Hours")
+- [x] Hero section ("3-Month Infrastructure in 3 days")
 - [x] Social proof / logos bar (Spotify, Google, Raytheon, etc.)
 - [x] Velocity Case Studies section (LearnLab, Clapself, Raytheon)
 - [x] Two-tier offer section (The Sprint $15k, The Advisory $10k/mo)

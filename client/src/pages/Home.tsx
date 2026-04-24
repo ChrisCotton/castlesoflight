@@ -189,7 +189,7 @@ function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
             <Link href="/book?type=sprint">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base px-8 glow-amber transition-all">
-                Book Your 48-Hour Sprint
+                Book Your 3-Day Sprint
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -207,7 +207,7 @@ function Hero() {
               { value: "30+", label: "YRS EXPERIENCE", color: "var(--brand-orange)" },
               { value: "80%", label: "COST REDUCTION", color: "var(--brand-cyan)" },
               { value: "99%", label: "DEPLOY SPEEDUP", color: "var(--brand-violet)" },
-              { value: "48H", label: "SPRINT DELIVERY", color: "var(--brand-emerald)" },
+              { value: "3D", label: "SPRINT DELIVERY", color: "var(--brand-emerald)" },
             ].map((stat) => (
               <div key={stat.label} className="hud-card p-4 rounded-lg">
                 <div className="font-display font-bold text-2xl mb-1" style={{ color: stat.color }}>
@@ -240,7 +240,7 @@ function Hero() {
         <div className="amber-card rounded-lg p-4 w-52" style={{ animationDelay: "2s" }}>
           <div className="text-[10px] font-mono text-primary/60 mb-2 tracking-widest uppercase">// CURRENT OFFER</div>
           <div className="text-primary font-display font-bold text-lg">The Sprint</div>
-          <div className="text-muted-foreground text-xs font-mono mt-1">$15,000 · 48-hour delivery</div>
+          <div className="text-muted-foreground text-xs font-mono mt-1">$15,000 · 3-day delivery</div>
           <div className="mt-3">
             <Link href="/book?type=sprint">
               <Button size="sm" className="w-full bg-primary text-primary-foreground font-bold text-xs h-7">
@@ -408,7 +408,7 @@ function Services() {
                 TIER 01 // THE SPRINT
               </Badge>
               <CardTitle className="font-display font-bold text-5xl text-primary">$15,000</CardTitle>
-              <CardDescription className="text-muted-foreground font-mono text-sm">One-time · 48-hour delivery</CardDescription>
+              <CardDescription className="text-muted-foreground font-mono text-sm">One-time · 3-day delivery</CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-8">
@@ -509,7 +509,7 @@ function Testimonials() {
       color: "oklch(0.45 0.15 250)",
     },
     {
-      quote: "We were burning $45k/month on AWS. After Christopher's 48-hour sprint, we're at $9k. Same performance. Better observability. He literally paid for himself 3x over in the first month.",
+      quote: "We were burning $45k/month on AWS. After Christopher's 3-Day Sprint, we're at $9k. Same performance. Better observability. He literally paid for himself 3x over in the first month.",
       name: "David Park",
       title: "Co-Founder",
       company: "AI Startup",

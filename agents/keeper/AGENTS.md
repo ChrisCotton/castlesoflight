@@ -53,7 +53,7 @@ Key endpoints:
 
 ## Revenue Model Reference
 
-**The Sprint:** $15,000 one-time. 48-hour infrastructure assessment + roadmap.
+**The Sprint:** $15,000 one-time. 3-day infrastructure assessment + roadmap.
 **The Advisory:** $10,000/month recurring. Fractional CTO retainer.
 **Sprint-to-Advisory path:** Sprint client converts to Advisory. Worth $120K/year.
 

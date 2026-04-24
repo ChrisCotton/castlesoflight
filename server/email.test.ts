@@ -31,7 +31,7 @@ const paidBooking: BookingEmailData = {
   email: "marcus@fintech.com",
   company: "FinTech Capital",
   phone: "+1 212 555 0200",
-  message: "Need a 48-hour infrastructure sprint for our Series B launch.",
+  message: "Need a 3-Day Infrastructure Sprint for our Series B launch.",
   callTypeName: "The Sprint",
   durationMinutes: 480,
   scheduledDate: "2026-04-20",
@@ -177,7 +177,7 @@ describe("buildAdminLeadAlertEmail", () => {
 
   it("includes the client message in a styled quote block", () => {
     const html = buildAdminLeadAlertEmail(paidBooking);
-    expect(html).toContain("Need a 48-hour infrastructure sprint");
+    expect(html).toContain("Need a 3-Day Infrastructure Sprint");
   });
 
   it("includes a 'Reply to Lead' mailto CTA", () => {

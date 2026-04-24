@@ -60,7 +60,7 @@ At 30 emails/week with a 10% reply rate, that is 3 replies/week. At 50% call boo
 **Company:** Castles of Light (castlesoflight.com)
 **From address:** chriscotton@castlesoflight.com
 **Offers:**
-- The Sprint: $15,000 one-time, 48-hour infrastructure assessment
+- The Sprint: $15,000 one-time, 3-day infrastructure assessment
 - The Advisory: $10,000/month fractional CTO retainer
 **ICP:** Series A-C fintech and healthcare, 20-200 employees, US-based CTOs/VP Engineering
 **Goal:** $50K MRR in 90 days

@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerAdminBypassRoute } from "./adminBypass";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -45,6 +46,7 @@ async function startServer() {
   app.use(batchLeadsRouter);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  registerAdminBypassRoute(app);
   // tRPC API
   app.use(
     "/api/trpc",

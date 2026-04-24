@@ -33,9 +33,9 @@ Key endpoints:
 ## Offer Reference
 
 **The Sprint — $15,000 one-time**
-- Deliverable: 48-hour infrastructure assessment + prioritized roadmap
+- Deliverable: 3-day infrastructure assessment + prioritized roadmap
 - Best for: Companies that just raised money and need to scale fast; companies that just had an outage; companies approaching a compliance audit
-- Positioning: "You get a prioritized action plan in 48 hours. Not a 60-page report nobody reads — a ranked list of what to fix first and why."
+- Positioning: "You get a prioritized action plan in 3 days. Not a 60-page report nobody reads — a ranked list of what to fix first and why."
 - Typical objection: "We have someone internal who can do this." Counter: "Your internal team is the one who built the current system. You need an outside perspective."
 
 **The Advisory — $10,000/month**

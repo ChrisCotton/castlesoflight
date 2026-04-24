@@ -40,7 +40,7 @@ Subject: [Company]'s [DevOps/Platform/SRE] search
 
 Saw you're hiring a [job title] — usually means the team is moving faster than the infrastructure can keep up.
 
-I do 48-hour infrastructure assessments for Series [A/B/C] [fintech/healthcare] companies at exactly this inflection point. You get a prioritized roadmap, not a 60-page report nobody reads.
+I do 3-day infrastructure assessments for Series [A/B/C] [fintech/healthcare] companies at exactly this inflection point. You get a prioritized roadmap, not a 60-page report nobody reads.
 
 Would a 20-minute call this week make sense?
 
@@ -59,7 +59,7 @@ Subject: Congrats on the [Series X] — quick question
 
 Congrats on the [amount] round. The next 90 days are usually when infrastructure debt becomes infrastructure crisis — right when you need to move fastest.
 
-I do 48-hour infrastructure assessments for [fintech/healthcare] companies post-raise. Prioritized roadmap, delivered fast, so your team can execute.
+I do 3-day infrastructure assessments for [fintech/healthcare] companies post-raise. Prioritized roadmap, delivered fast, so your team can execute.
 
 Worth 20 minutes this week?
 
@@ -78,7 +78,7 @@ Subject: [Specific reference to their pain signal]
 
 [Specific reference: "Read your post about migrating to Kubernetes" / "Noticed the Glassdoor reviews mentioning deployment speed" / "Saw your tweet about cloud costs last week."]
 
-That's exactly the problem I solve. 48-hour infrastructure assessment — I come in, diagnose the root cause, and give you a prioritized action plan. No fluff.
+That's exactly the problem I solve. 3-day infrastructure assessment — I come in, diagnose the root cause, and give you a prioritized action plan. No fluff.
 
 20 minutes this week?
 
@@ -97,7 +97,7 @@ Subject: [Company]'s compliance infrastructure
 
 [Healthcare companies at your stage / Companies approaching SOC 2] usually hit the same wall: the infrastructure that got you to [Series X] isn't the infrastructure that passes an audit.
 
-I do 48-hour assessments specifically for [digital health/healthtech] companies. Compliance posture, deployment velocity, cost optimization — prioritized roadmap in 48 hours.
+I do 3-day assessments specifically for [digital health/healthtech] companies. Compliance posture, deployment velocity, cost optimization — prioritized roadmap in 3 days.
 
 Would a quick call make sense?
 

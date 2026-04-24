@@ -539,7 +539,7 @@ export async function seedBuiltInTemplates(): Promise<void> {
       isBuiltIn: true,
       bodyHtml: `<p>Hi {{firstName}},</p>
 <p>I came across your profile and noticed {{company}} is scaling fast — congrats on the growth.</p>
-<p>I'm Christopher Cotton, an infrastructure architect with 30 years across Spotify, Google ProServe, and Raytheon. I specialize in one thing: compressing 3-month infrastructure buildouts into 48 hours using AI-augmented DevOps.</p>
+<p>I'm Christopher Cotton, an infrastructure architect with 30 years across Spotify, Google ProServe, and Raytheon. I specialize in one thing: compressing 3-month infrastructure buildouts into 3 days using AI-augmented DevOps.</p>
 <p>I work with engineering leaders who are tired of watching {{painPoint}} slow down their roadmap. If that resonates, I'd love to show you what's possible in a 30-minute call — no pitch, just a diagnostic conversation.</p>
 <p>Worth a quick chat?</p>
 <p>— Christopher</p>`,
@@ -552,7 +552,7 @@ export async function seedBuiltInTemplates(): Promise<void> {
       isBuiltIn: true,
       bodyHtml: `<p>Hi {{firstName}},</p>
 <p>I sent a note last week about infrastructure acceleration at {{company}} — wanted to follow up in case it got buried.</p>
-<p>I'll keep this short: I help engineering teams ship infrastructure 10x faster using AI-augmented DevOps. My last three clients cut deployment lag by 80–99% within 48 hours of engagement.</p>
+<p>I'll keep this short: I help engineering teams ship infrastructure 10x faster using AI-augmented DevOps. My last three clients cut deployment lag by 80–99% within 3 days of engagement.</p>
 <p>If the timing isn't right, no worries at all. But if you're dealing with slow deploys, cloud cost overruns, or a backlog that keeps growing — I'd love to talk.</p>
 <p>15 minutes this week?</p>
 <p>— Christopher</p>`,
@@ -565,7 +565,7 @@ export async function seedBuiltInTemplates(): Promise<void> {
       isBuiltIn: true,
       bodyHtml: `<p>Hi {{firstName}},</p>
 <p>I wanted to follow up on the proposal I sent for {{company}}. I know decisions like this take time, and I want to make sure you have everything you need.</p>
-<p>To recap what's on the table: {{sprintScope}} — delivered in 48 hours, guaranteed. The investment is {{proposalValue}}.</p>
+<p>To recap what's on the table: {{sprintScope}} — delivered in 3 days, guaranteed. The investment is {{proposalValue}}.</p>
 <p>A few things I can offer to make this easier:</p>
 <ul>
   <li>A 30-minute technical deep-dive call to walk through the exact deliverables</li>

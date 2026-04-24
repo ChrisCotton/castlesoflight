@@ -3,7 +3,7 @@
 ## Business Context
 - Owner: Christopher Cotton, 30+ years infrastructure experience
 - Primary Goal: $50K MRR
-- Offers: The Sprint ($15K one-time, 48-hr delivery) | The Advisory ($10K/mo fractional CTO)
+- Offers: The Sprint ($15K one-time, 3-day delivery) | The Advisory ($10K/mo fractional CTO)
 - ICP: Fintech + Healthcare CTOs with cloud cost, deployment velocity, or compliance problems
 - Site: castlesai-uuszelr6.manus.space | GitHub: github.com/ChrisCotton/castlesoflight
 - Email: chriscotton@castlesoflight.com

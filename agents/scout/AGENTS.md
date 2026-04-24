@@ -53,7 +53,7 @@ At 15 leads/week with a 20% discovery call conversion rate, that is 3 calls/week
 **Operator:** Christopher Cotton
 **Company:** Castles of Light (castlesoflight.com)
 **Offers:**
-- The Sprint: $15,000 one-time, 48-hour infrastructure assessment
+- The Sprint: $15,000 one-time, 3-day infrastructure assessment
 - The Advisory: $10,000/month fractional CTO retainer
 **ICP:** Series A-C fintech and healthcare, 20-200 employees, US-based CTOs/VP Engineering
 **Goal:** $50K MRR in 90 days
