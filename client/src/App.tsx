@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
+import Success from "./pages/Success";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -47,6 +48,9 @@ function Router() {
       </Route>
       <Route path="/unsubscribe">
         {() => <PublicRoute component={Unsubscribe} />}
+      </Route>
+      <Route path="/book/success">
+        {() => <PublicRoute component={Success} />}
       </Route>
 
       {/* Admin routes */}
