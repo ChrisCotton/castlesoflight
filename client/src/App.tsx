@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import Success from "./pages/Success";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -18,7 +17,7 @@ import Newsletter from "./pages/admin/Newsletter";
 import LeadsDashboard from "./pages/admin/LeadsDashboard";
 import Unsubscribe from "./pages/Unsubscribe";
 import EmailTemplates from "./pages/admin/EmailTemplates";
-import { PageShell } from "./components/PageShell";
+import OperatorConsole from "./pages/OperatorConsole";
 
 function AdminRoute({ component: Component }: { component: React.ComponentType }) {
   return (
@@ -28,30 +27,12 @@ function AdminRoute({ component: Component }: { component: React.ComponentType }
   );
 }
 
-function PublicRoute({ component: Component }: { component: React.ComponentType }) {
-  return (
-    <PageShell>
-      <Component />
-    </PageShell>
-  );
-}
-
 function Router() {
   return (
     <Switch>
       {/* Public routes */}
-      <Route path="/">
-        {() => <PublicRoute component={Home} />}
-      </Route>
-      <Route path="/book">
-        {() => <PublicRoute component={Book} />}
-      </Route>
-      <Route path="/unsubscribe">
-        {() => <PublicRoute component={Unsubscribe} />}
-      </Route>
-      <Route path="/book/success">
-        {() => <PublicRoute component={Success} />}
-      </Route>
+      <Route path="/" component={Home} />
+      <Route path="/book" component={Book} />
 
       {/* Admin routes */}
       <Route path="/admin">
@@ -82,13 +63,15 @@ function Router() {
         {() => <AdminRoute component={EmailTemplates} />}
       </Route>
 
+      {/* Secret operator console */}
+      <Route path="/operator-console" component={OperatorConsole} />
+
+      {/* Public utility routes */}
+      <Route path="/unsubscribe" component={Unsubscribe} />
+
       {/* Fallback */}
-      <Route path="/404">
-        {() => <PublicRoute component={NotFound} />}
-      </Route>
-      <Route>
-        {() => <PublicRoute component={NotFound} />}
-      </Route>
+      <Route path="/404" component={NotFound} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
@@ -107,4 +90,3 @@ function App() {
 }
 
 export default App;
-

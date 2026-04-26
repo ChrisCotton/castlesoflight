@@ -97,7 +97,7 @@ export default function SendEmailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl bg-[oklch(0.07_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground p-0 overflow-hidden">
+      <DialogContent className="w-[85vw] max-w-[85vw] !max-w-[85vw] bg-[oklch(0.07_0.008_250)] border-[oklch(0.78_0.18_195_/_0.2)] text-foreground p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-5 pb-4 border-b border-[oklch(0.78_0.18_195_/_0.12)]">
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Mail className="w-4 h-4 text-[oklch(0.78_0.18_195)]" />

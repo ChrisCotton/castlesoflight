@@ -36,6 +36,20 @@
       "when": 1772527576849,
       "tag": "0004_nebulous_butterfly",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1777145270114,
+      "tag": "0005_tricky_preak",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1777239236602,
+      "tag": "0006_low_abomination",
+      "breakpoints": true
     }
   ]
 }

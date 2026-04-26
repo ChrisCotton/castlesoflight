@@ -14,7 +14,10 @@ import {
   newsletterSubscribers,
   users,
   type EmailTemplate,
-  type InsertEmailTemplate,
+  type  InsertEmailTemplate,
+  blogPosts,
+  type BlogPost,
+  type InsertBlogPost,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -611,4 +614,49 @@ export async function seedBuiltInTemplates(): Promise<void> {
   for (const t of templates) {
     await db.insert(emailTemplates).values(t);
   }
+}
+
+// ─── Blog Posts ──────────────────────────────────────────────────────────────
+export async function getBlogPosts(status?: BlogPost["status"]) {
+  const db = await getDb();
+  if (!db) return [];
+  const conditions = status ? [eq(blogPosts.status, status)] : [];
+  return db
+    .select()
+    .from(blogPosts)
+    .where(conditions.length ? and(...conditions) : undefined)
+    .orderBy(desc(blogPosts.createdAt));
+}
+
+export async function getBlogPostById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+  return result[0];
+}
+
+export async function createBlogPost(data: InsertBlogPost) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(blogPosts).values(data);
+  return result[0];
+}
+
+export async function updateBlogPost(id: number, data: Partial<InsertBlogPost>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(blogPosts).set(data).where(eq(blogPosts.id, id));
+}
+
+export async function deleteBlogPost(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(blogPosts).where(eq(blogPosts.id, id));
 }

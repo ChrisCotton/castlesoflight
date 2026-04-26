@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
+import AsciiBackground from "@/components/AsciiBackground";
 import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +50,7 @@ const NAV_ITEMS = [
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
   { href: "/admin/leads", label: "Lead Intel", icon: TrendingUp },
   { href: "/admin/email-templates", label: "Email Templates", icon: FileText },
+  { href: "/admin/blog", label: "Blog Engine", icon: FileText },
 ];
 
 function HudTime() {
@@ -80,8 +82,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   if (!isAuthenticated) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4">
+    <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
+      <AsciiBackground />
+      <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4 relative z-10">
         <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5 glow-sm-amber">
           <Terminal className="w-8 h-8 text-primary" />
         </div>
@@ -99,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (user?.role !== "admin") return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4">
+      <div className="hud-card rounded-2xl p-10 text-center max-w-sm w-full mx-4 relative z-10">
         <ShieldAlert className="w-12 h-12 text-destructive mx-auto mb-4" />
         <h1 className="font-display font-bold text-2xl text-foreground mb-2">Access Denied</h1>
         <p className="text-muted-foreground text-sm mb-6">You don't have admin clearance for this area.</p>

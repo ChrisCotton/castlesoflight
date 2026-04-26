@@ -17,6 +17,7 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
+  password: varchar("password", { length: 255 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -245,3 +246,23 @@ export const emailTemplates = mysqlTable("emailTemplates", {
 
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
+
+// ─── Blog Posts ──────────────────────────────────────────────────────────────
+export const blogPosts = mysqlTable("blogPosts", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 512 }).notNull(),
+  slug: varchar("slug", { length: 512 }).notNull().unique(),
+  description: text("description"),
+  content: text("content").notNull(), // Markdown
+  targetLeadId: int("targetLeadId"),
+  status: mysqlEnum("status", ["draft", "published", "private"])
+    .default("draft")
+    .notNull(),
+  viewCount: int("viewCount").default(0).notNull(),
+  publishedAt: timestamp("publishedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = typeof blogPosts.$inferInsert;

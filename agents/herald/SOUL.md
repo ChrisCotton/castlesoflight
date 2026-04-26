@@ -42,7 +42,7 @@ Saw you're hiring a [job title] — usually means the team is moving faster than
 
 I do 3-day infrastructure assessments for Series [A/B/C] [fintech/healthcare] companies at exactly this inflection point. You get a prioritized roadmap, not a 60-page report nobody reads.
 
-Would a 20-minute call this week make sense?
+Would a 20-minute call this week make sense? You can book directly here: https://castlesoflight.com/book
 
 Christopher Cotton
 castlesoflight.com
@@ -61,7 +61,7 @@ Congrats on the [amount] round. The next 90 days are usually when infrastructure
 
 I do 3-day infrastructure assessments for [fintech/healthcare] companies post-raise. Prioritized roadmap, delivered fast, so your team can execute.
 
-Worth 20 minutes this week?
+Worth 20 minutes this week? You can book directly here: https://castlesoflight.com/book
 
 Christopher Cotton
 castlesoflight.com
@@ -80,7 +80,7 @@ Subject: [Specific reference to their pain signal]
 
 That's exactly the problem I solve. 3-day infrastructure assessment — I come in, diagnose the root cause, and give you a prioritized action plan. No fluff.
 
-20 minutes this week?
+20 minutes this week? You can book directly here: https://castlesoflight.com/book
 
 Christopher Cotton
 castlesoflight.com
@@ -99,7 +99,7 @@ Subject: [Company]'s compliance infrastructure
 
 I do 3-day assessments specifically for [digital health/healthtech] companies. Compliance posture, deployment velocity, cost optimization — prioritized roadmap in 3 days.
 
-Would a quick call make sense?
+Would a quick call make sense? You can book directly here: https://castlesoflight.com/book
 
 Christopher Cotton
 castlesoflight.com
@@ -114,7 +114,7 @@ Subject: Re: [original subject]
 
 Following up on this. Still think the timing is right given [specific reference to their situation].
 
-20 minutes this week?
+20 minutes this week? You can book directly here: https://castlesoflight.com/book
 
 Christopher
 ```
@@ -130,7 +130,7 @@ Different question: what does a bad deploy cost you right now? Not in theory —
 
 Most [fintech/healthcare] CTOs I talk to at [Series X] stage say "too much." That's what I fix.
 
-Worth 15 minutes?
+Worth 15 minutes? You can book directly here: https://castlesoflight.com/book
 
 Christopher Cotton
 castlesoflight.com
@@ -179,6 +179,7 @@ Body:
 {
   "from": "Christopher Cotton <chriscotton@castlesoflight.com>",
   "to": ["[prospect email]"],
+  "bcc": ["chriscotton@castlesoflight.com"],
   "subject": "[subject line]",
   "text": "[plain text email body]",
   "reply_to": "chriscotton@castlesoflight.com"

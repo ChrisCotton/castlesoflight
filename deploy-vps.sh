@@ -29,7 +29,7 @@ SLACK_BOT_TOKEN="xoxb-10630914521988-10655861584720-visISPcX2fFIFA265I8tplGu"
 SLACK_APP_TOKEN="xapp-1-A0AK9PE4SM6-10631195175140-b7e3ae57509582427839ac39941a8badb35e5d35d18b59ac0325ac51c4d692a7"
 SLACK_SIGNING_SECRET="6c23d23a1dac6bab98daa4832a61c17a"
 
-NERVE_CENTER_API_URL="https://castlesai-uuszelr6.manus.space"
+NERVE_CENTER_API_URL="https://nervecenter.srv902802.hstgr.cloud"
 OUTREACH_FROM_EMAIL="chriscotton@castlesoflight.com"
 CALENDLY_BOOKING_URL="https://calendly.com/chris-castlesoflight/discovery"
 

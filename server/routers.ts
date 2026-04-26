@@ -8,6 +8,8 @@ import { notifyOwner } from "./_core/notification";
 import * as db from "./db";
 import { stripe } from "./stripe";
 import { emailTemplateRouter } from "./emailTemplateRouter";
+import { blogRouter } from "./blogRouter";
+import { authRouter } from "./authRouter";
 import { sendClientConfirmation, sendAdminLeadAlert, sendAdminNewLeadAlert, sendNewsletterWelcome, sendNewsletterBroadcast } from "./email";
 
 // ─── Admin guard ──────────────────────────────────────────────────────────────
@@ -638,6 +640,7 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+    loginWithPassword: authRouter._def.procedures.loginWithPassword,
   }),
   lead: leadRouter,
   booking: bookingRouter,
@@ -645,6 +648,7 @@ export const appRouter = router({
   analytics: analyticsRouter,
   newsletter: newsletterRouter,
   emailTemplate: emailTemplateRouter,
+  blog: blogRouter,
 });
 
 export type AppRouter = typeof appRouter;
