@@ -30,7 +30,7 @@ warn()    { echo -e "${YELLOW}[WARN]${RESET}  $*"; }
 error()   { echo -e "${RED}[ERROR]${RESET} $*" >&2; exit 1; }
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-VPS_HOST="31.97.99.86"
+VPS_HOST="100.116.144.24" # Tailscale IP
 VPS_USER="root"
 VPS_PASS="N8NR0ck&12345"
 VPS_SSH_PORT="22"
@@ -40,11 +40,19 @@ VPS_DB_USER="nervecenter"
 VPS_DB_PASS="castles-nc-db-2026"
 VPS_DB_PORT="3306"
 
-LOCAL_DB_NAME="nervecenter"
+LOCAL_DB_NAME="castlesoflight"
 LOCAL_DB_USER="root"          # ← change to your local MySQL user if different
 LOCAL_DB_PASS=""              # ← change to your local MySQL password if set
 LOCAL_DB_HOST="127.0.0.1"
 LOCAL_DB_PORT="3306"
+
+# Detect DBngin MySQL client if global one is missing
+if ! command -v mysql &>/dev/null; then
+  DBNGIN_MYSQL="/Users/Shared/DBngin/mysql/8.0.27/bin/mysql"
+  if [ -f "$DBNGIN_MYSQL" ]; then
+    export PATH="/Users/Shared/DBngin/mysql/8.0.27/bin:$PATH"
+  fi
+fi
 
 DUMP_FILE="/tmp/nervecenter_vps_dump_$(date +%Y%m%d_%H%M%S).sql"
 

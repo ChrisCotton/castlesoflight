@@ -21,6 +21,8 @@ import {
   CreditCard,
   Lock,
 } from "lucide-react";
+import AsciiBackground from "@/components/AsciiBackground";
+import InteractiveCard from "@/components/InteractiveCard";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
@@ -70,48 +72,53 @@ function StepCallType({
         {callTypes?.map((ct) => {
           const isPaid = Number(ct.price) > 0;
           return (
-            <button
+            <InteractiveCard
               key={ct.id}
-              onClick={() => onSelect(ct.id)}
-              className={`w-full text-left rounded-xl border p-6 transition-all ${
+              containerClassName="rounded-xl w-full"
+              className={`w-full text-left rounded-xl border p-6 transition-all bg-opacity-30 backdrop-blur-md ${
                 selected === ct.id
                   ? "border-primary/60 bg-primary/10 shadow-[0_0_15px_var(--primary-glow)]"
                   : "border-border/40 bg-secondary/10 hover:border-primary/30 hover:bg-primary/5"
               }`}
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: ct.color ?? "#6366f1" }}
-                    />
-                    <span className="font-display font-semibold text-foreground">{ct.name}</span>
-                    {!isPaid && (
-                      <Badge className="bg-accent/10 text-accent border-accent/20 text-xs">
-                        Free
-                      </Badge>
-                    )}
-                    {isPaid && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                        <CreditCard className="w-3 h-3 mr-1" /> Paid
-                      </Badge>
-                    )}
+              <button
+                onClick={() => onSelect(ct.id)}
+                className="w-full text-left"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: ct.color ?? "#6366f1" }}
+                      />
+                      <span className="font-display font-semibold text-foreground">{ct.name}</span>
+                      {!isPaid && (
+                        <Badge className="bg-accent/10 text-accent border-accent/20 text-xs">
+                          Free
+                        </Badge>
+                      )}
+                      {isPaid && (
+                        <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                          <CreditCard className="w-3 h-3 mr-1" /> Paid
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground/60 leading-relaxed">{ct.description}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground/60 leading-relaxed">{ct.description}</p>
+                  <div className="shrink-0 text-right">
+                    <div className="flex items-center gap-1 text-muted-foreground/40 text-sm mb-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {ct.durationMinutes} min
+                    </div>
+                    <div className={`flex items-center gap-1 text-sm font-bold ${isPaid ? "text-primary" : "text-accent"}`}>
+                      {isPaid ? <DollarSign className="w-3.5 h-3.5" /> : null}
+                      {formatPrice(ct.price)}
+                    </div>
+                  </div>
                 </div>
-                <div className="shrink-0 text-right">
-                  <div className="flex items-center gap-1 text-muted-foreground/40 text-sm mb-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {ct.durationMinutes} min
-                  </div>
-                  <div className={`flex items-center gap-1 text-sm font-bold ${isPaid ? "text-primary" : "text-accent"}`}>
-                    {isPaid ? <DollarSign className="w-3.5 h-3.5" /> : null}
-                    {formatPrice(ct.price)}
-                  </div>
-                </div>
-              </div>
-            </button>
+              </button>
+            </InteractiveCard>
           );
         })}
       </div>
@@ -556,7 +563,9 @@ export default function Book() {
   const isPending = createBooking.isPending || createCheckoutSession.isPending;
 
   return (
-    <div className="container py-24 max-w-3xl">
+    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] relative overflow-hidden flex flex-col items-center">
+      <AsciiBackground />
+      <div className="container py-24 max-w-3xl relative z-10">
         {confirmed ? (
           <StepConfirmed callTypeName={confirmedCallTypeName} wasPaid={wasPaid} />
         ) : (
@@ -587,7 +596,7 @@ export default function Book() {
 
             {/* Booking summary bar */}
             {(selectedCallType || selectedDate) && (
-              <div className="rounded-xl border border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.06_0.01_260)] p-4 mb-8 flex flex-wrap gap-4 text-sm">
+              <div className="rounded-xl border border-[oklch(0.78_0.18_195_/_0.12)] bg-[oklch(0.06_0.01_260_/_0.8)] backdrop-blur-sm p-4 mb-8 flex flex-wrap gap-4 text-sm">
                 {selectedCallType && (
                   <div className="flex items-center gap-2 text-[oklch(0.45_0.015_220)]">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: selectedCallType.color ?? "#6366f1" }} />
@@ -610,7 +619,7 @@ export default function Book() {
             )}
 
             {/* Step content */}
-            <div className="hud-card rounded-2xl p-8 md:p-10">
+            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 md:p-10 backdrop-blur-sm">
               {step === 1 && (
                 <StepCallType selected={callTypeId} onSelect={(id) => { setCallTypeId(id); setStep(2); }} />
               )}
@@ -671,9 +680,10 @@ export default function Book() {
                   </button>
                 </div>
               )}
-            </div>
+            </InteractiveCard>
           </>
         )}
+      </div>
     </div>
   );
 }

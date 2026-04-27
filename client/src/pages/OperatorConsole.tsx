@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Terminal } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import AsciiBackground from "@/components/AsciiBackground";
 
 export default function OperatorConsole() {
   const [email, setEmail] = useState("");
@@ -34,8 +35,9 @@ export default function OperatorConsole() {
   };
 
   return (
-    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[oklch(0.04_0.005_260)] flex items-center justify-center p-4 relative overflow-hidden">
+      <AsciiBackground />
+      <div className="w-full max-w-md relative z-10">
         {/* Status Bar */}
         <div className="fixed top-0 left-0 right-0 z-[60] border-b border-[oklch(0.78_0.18_195_/_0.15)] bg-[oklch(0.04_0.005_260_/_0.9)] backdrop-blur-xl">
           <div className="flex items-center justify-between px-4 h-8">

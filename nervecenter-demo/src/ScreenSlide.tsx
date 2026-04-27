@@ -32,7 +32,11 @@ export const ScreenSlide: React.FC<{
   const endPx = -(originalHeight * (scrollEndPercent / 100));
   
   // Smoothly pan from start to end over the duration of the slide
-  const scrollY = interpolate(frame, [15, fps * 4], [startPx, endPx], { extrapolateRight: "clamp" });
+  const beamY = interpolate(frame % (fps * 3), [0, fps * 1.5], [-10, 110], { extrapolateRight: "clamp" });
+  const beamOpacity = interpolate(frame % (fps * 3), [0, 10, fps * 1.4, fps * 1.5], [0, 0.6, 0.6, 0], { extrapolateRight: "clamp" });
+
+  const flashlightX = interpolate(frame, [0, fps * 4], [20, 80]);
+  const flashlightY = interpolate(frame, [0, fps * 4], [30, 70]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#031427" }}>
@@ -45,7 +49,8 @@ export const ScreenSlide: React.FC<{
           borderRadius: "20px",
           transform: `scale(${zoomScale})`,
           boxShadow: "0 0 40px rgba(0, 229, 255, 0.2)",
-          border: "1px solid rgba(255, 255, 255, 0.1)"
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          position: "relative"
         }}>
           <div style={{ transform: `translateY(${scrollY}px)` }}>
             <Img 
@@ -57,6 +62,28 @@ export const ScreenSlide: React.FC<{
               }} 
             />
           </div>
+
+          {/* Flashlight Overlay */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background: `radial-gradient(400px circle at ${flashlightX}% ${flashlightY}%, rgba(0, 229, 255, 0.15), transparent 70%)`,
+            zIndex: 2
+          }} />
+
+          {/* Scanning Beam */}
+          <div style={{
+            position: "absolute",
+            top: `${beamY}%`,
+            left: 0,
+            right: 0,
+            height: "2px",
+            background: "linear-gradient(90deg, transparent, #00E5FF, transparent)",
+            boxShadow: "0 0 15px #00E5FF, 0 0 30px #00E5FF",
+            opacity: beamOpacity,
+            zIndex: 3
+          }} />
         </div>
       </AbsoluteFill>
 

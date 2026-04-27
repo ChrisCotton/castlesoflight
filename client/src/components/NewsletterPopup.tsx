@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { X, Mail, Zap, Terminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import InteractiveCard from "@/components/InteractiveCard";
 
 const SESSION_KEY = "col_newsletter_popup_dismissed";
 const SCROLL_THRESHOLD = 0.6; // 60% of page
@@ -104,7 +105,10 @@ export default function NewsletterPopup() {
             className="fixed z-[100]"
             style={{ bottom: "1.5rem", right: "1.5rem", width: "380px", maxWidth: "calc(100vw - 2rem)" }}
           >
-            <div className="relative rounded-2xl overflow-hidden border border-primary/20 bg-card shadow-2xl shadow-primary/5">
+            <InteractiveCard
+              containerClassName="rounded-2xl"
+              className="relative rounded-2xl overflow-hidden border border-primary/20 bg-card shadow-2xl shadow-primary/5"
+            >
               {/* Top glow strip */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
@@ -217,7 +221,7 @@ export default function NewsletterPopup() {
                   </>
                 )}
               </div>
-            </div>
+            </InteractiveCard>
           </motion.div>
         </>
       )}

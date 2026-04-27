@@ -53,21 +53,22 @@ export default function AsciiBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const FONT_SIZE = 13;
+    const FONT_SIZE = 15;
     const FONT = `${FONT_SIZE}px 'JetBrains Mono', 'Courier New', monospace`;
     ctx.font = FONT;
     const charW = ctx.measureText("M").width;
-    const charH = FONT_SIZE * 1.4;
+    const charH = FONT_SIZE * 1.2; // Tighter line height for better density
 
     function buildGrid() {
-      const canvas = canvasRef.current!;
-      const cols = Math.ceil(canvas.width / charW) + 2;
-      const rows = Math.ceil(canvas.height / charH) + 2;
+      const cv = canvasRef.current;
+      if (!cv) return;
+      const cols = Math.ceil(cv.width / charW) + 1;
+      const rows = Math.ceil(cv.height / charH) + 1;
       const grid: Cell[][] = [];
       for (let r = 0; r < rows; r++) {
         const row: Cell[] = [];
         for (let c = 0; c < cols; c++) {
-          const baseAlpha = Math.random() * 0.25 + 0.03;
+          const baseAlpha = Math.random() * 0.2 + 0.02;
           row.push({
             char: CHARS[Math.floor(Math.random() * CHARS.length)],
             colorIdx: Math.floor(Math.random() * PALETTE.length),
@@ -97,8 +98,9 @@ export default function AsciiBackground() {
     function draw(ts: number) {
       const c = canvasRef.current;
       if (!ctx || !c) return;
-      // ~30 fps cap
-      if (ts - lastFrameRef.current < 33) {
+      
+      // Target ~24fps for better performance on Intel Macs
+      if (ts - lastFrameRef.current < 40) {
         frameRef.current = requestAnimationFrame(draw);
         return;
       }
@@ -112,43 +114,42 @@ export default function AsciiBackground() {
       const cols = grid[0]?.length ?? 0;
 
       for (let r = 0; r < rows; r++) {
+        // Vertical fade calculation moved outside column loop
+        const rowFrac = r / rows;
+        let vertFade = 1;
+        if (rowFrac > 0.4) {
+          vertFade = Math.max(0, 1 - (rowFrac - 0.4) / 0.6);
+        }
+
         for (let c = 0; c < cols; c++) {
           const cell = grid[r][c];
 
           // Tick change timer
           cell.changeTimer--;
           if (cell.changeTimer <= 0) {
-            cell.changeTimer = cell.changePeriod * (0.7 + Math.random() * 0.6);
+            cell.changeTimer = cell.changePeriod * (0.8 + Math.random() * 0.4);
             cell.char = CHARS[Math.floor(Math.random() * CHARS.length)];
-            // Occasionally shift color
-            if (Math.random() < 0.15) {
+            
+            if (Math.random() < 0.1) {
               cell.colorIdx = Math.floor(Math.random() * PALETTE.length);
             }
-            // New target alpha — keep most cells dim, occasional bright flash
+
             const roll = Math.random();
-            if (roll < 0.02) {
-              cell.targetAlpha = 0.55 + Math.random() * 0.35; // bright flash
-            } else if (roll < 0.15) {
-              cell.targetAlpha = 0.12 + Math.random() * 0.18;
+            if (roll < 0.015) {
+              cell.targetAlpha = 0.4 + Math.random() * 0.3; // bright flash
             } else {
-              cell.targetAlpha = 0.03 + Math.random() * 0.10;
+              cell.targetAlpha = 0.03 + Math.random() * 0.08;
             }
           }
 
           // Lerp alpha toward target
-          cell.alpha += (cell.targetAlpha - cell.alpha) * 0.04;
-
-          // Vertical fade — top 60% full, then fade to 0 at bottom
-          const rowFrac = r / rows;
-          let vertFade = 1;
-          if (rowFrac > 0.45) {
-            vertFade = Math.max(0, 1 - (rowFrac - 0.45) / 0.55);
-          }
+          cell.alpha += (cell.targetAlpha - cell.alpha) * 0.05;
 
           const finalAlpha = cell.alpha * vertFade;
-          if (finalAlpha < 0.01) continue;
+          if (finalAlpha < 0.02) continue; // Aggressive skip for dim cells
 
-          ctx.fillStyle = PALETTE[cell.colorIdx] + finalAlpha.toFixed(3) + ")";
+          // Use template literal instead of toFixed for speed
+          ctx.fillStyle = `${PALETTE[cell.colorIdx]}${finalAlpha})`;
           ctx.fillText(cell.char, c * charW, r * charH + FONT_SIZE);
         }
       }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Mail, Zap } from "lucide-react";
+import InteractiveCard from "@/components/InteractiveCard";
 
 interface NewsletterSignupProps {
   source?: "landing_page" | "book_download" | "booking" | "contact_form" | "manual" | "other";
@@ -63,7 +64,7 @@ export default function NewsletterSignup({
         <div className="container relative z-10">
           {/* Constrained card — not full-width */}
           <div className="max-w-2xl mx-auto">
-            <div className="hud-card rounded-2xl p-8 md:p-10">
+            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 md:p-10">
               <div className="flex items-center gap-2 mb-4">
                 <Mail className="w-4 h-4 text-primary" />
                 <span className="text-xs font-mono text-primary/60 tracking-widest uppercase">FREE NEWSLETTER</span>
@@ -100,7 +101,7 @@ export default function NewsletterSignup({
               <p className="text-xs text-muted-foreground/30 mt-3 font-mono uppercase tracking-widest">
                 No spam. Unsubscribe anytime.
               </p>
-            </div>
+            </InteractiveCard>
           </div>
         </div>
       </section>
@@ -136,7 +137,7 @@ export default function NewsletterSignup({
 
   // Default inline variant
   return (
-    <div className="amber-card p-6 md:p-8">
+    <InteractiveCard containerClassName="rounded-2xl" className="amber-card p-6 md:p-8 rounded-2xl">
       <div className="flex items-center gap-2 mb-3">
         <Mail className="w-4 h-4 text-primary" />
         <p className="text-xs font-mono text-primary/60 tracking-widest uppercase">// FREE NEWSLETTER</p>
@@ -169,6 +170,6 @@ export default function NewsletterSignup({
           {subscribe.isPending ? "JOINING..." : "JOIN FREE — UNSUBSCRIBE ANYTIME"}
         </Button>
       </form>
-    </div>
+    </InteractiveCard>
   );
 }

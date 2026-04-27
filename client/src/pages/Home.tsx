@@ -33,6 +33,7 @@ import {
   Activity,
   GitBranch,
 } from "lucide-react";
+import InteractiveCard from "@/components/InteractiveCard";
 
 // ─── Prismatic Hero Background ────────────────────────────────────────────────
 function PrismaticBackground() {
@@ -302,29 +303,26 @@ function Hero() {
 
           {/* Main headline */}
           <h1 className="font-display font-bold leading-[0.95] mb-6">
-            <span className="block text-[clamp(3rem,8vw,7rem)] text-foreground">I Build</span>
-            <span className="block text-[clamp(3rem,8vw,7rem)] gradient-text-amber">3-Month</span>
-            <span className="block text-[clamp(3rem,8vw,7rem)] text-foreground">Infrastructure</span>
-            <span className="block text-[clamp(3rem,8vw,7rem)]">
-              <span className="text-foreground">in </span>
-              <span className="text-cyan-hud">48 Hours.</span>
+            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-foreground">Bulletproof</span>
+            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] gradient-text-amber">Infrastructure</span>
+            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-foreground">
+              in <span className="text-emerald-hud">3 Days,</span>
             </span>
+            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-cyan-hud opacity-40">Not Three Months.</span>
           </h1>
 
-          <p className="text-[oklch(0.65_0.015_220)] text-lg md:text-xl max-w-2xl mb-4 leading-relaxed">
-            30 years of elite infrastructure engineering — Spotify, Google ProServe, Raytheon —
-            now turbocharged with agentic AI.
+          <p className="text-[oklch(0.65_0.015_220)] text-lg md:text-xl max-w-3xl mb-4 leading-relaxed">
+            30 years of elite engineering (Spotify, Google, Raytheon) compressed into a 72-hour AI-augmented strike.
           </p>
-          <p className="text-[oklch(0.55_0.015_220)] text-base max-w-xl mb-10 leading-relaxed">
-            I slash cloud costs by <span className="text-[oklch(0.82_0.20_58)] font-semibold">80%</span> and deployment lag by{" "}
-            <span className="text-[oklch(0.78_0.18_195)] font-semibold">99%</span> for fintech and healthcare companies who can't afford to move slowly.
+          <p className="text-[oklch(0.55_0.015_220)] text-base max-w-2xl mb-10 leading-relaxed">
+            Stop compromising between speed and stability. Stop waiting for DevOps cycles and start shipping.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
             <Link href="/book?type=sprint">
               <Button size="lg" className="bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] hover:bg-[oklch(0.88_0.18_60)] font-bold text-base px-8 glow-amber transition-all">
-                Book Your 48-Hour Sprint
+                Book Your 3-Day Sprint
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -342,14 +340,14 @@ function Hero() {
               { value: "30+", label: "YRS EXPERIENCE", color: "oklch(0.82 0.20 58)" },
               { value: "80%", label: "COST REDUCTION", color: "oklch(0.78 0.18 195)" },
               { value: "99%", label: "DEPLOY SPEEDUP", color: "oklch(0.65 0.22 280)" },
-              { value: "48H", label: "SPRINT DELIVERY", color: "oklch(0.68 0.20 160)" },
+              { value: "3D", label: "SPRINT DELIVERY", color: "oklch(0.68 0.20 160)" },
             ].map((stat) => (
-              <div key={stat.label} className="hud-card p-4 rounded-lg">
+              <InteractiveCard key={stat.label} containerClassName="rounded-lg h-full" className="hud-card p-4 rounded-lg bg-opacity-40 backdrop-blur-md" flashlightSize={150}>
                 <div className="font-display font-bold text-2xl mb-1 animate-hud-flicker" style={{ color: stat.color, textShadow: `0 0 20px ${stat.color}` }}>
                   {stat.value}
                 </div>
                 <div className="hud-label opacity-50">{stat.label}</div>
-              </div>
+              </InteractiveCard>
             ))}
           </div>
         </div>
@@ -357,7 +355,7 @@ function Hero() {
 
       {/* Right-side floating HUD panel — desktop only */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-3 z-10">
-        <div className="hud-card rounded-lg p-4 w-52 animate-float">
+        <InteractiveCard containerClassName="rounded-lg w-52 animate-float" className="hud-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={150}>
           <div className="hud-label mb-3 opacity-60">STACK STATUS</div>
           {[
             { label: "K8s Clusters", status: "NOMINAL", color: "oklch(0.68 0.20 160)" },
@@ -370,12 +368,12 @@ function Hero() {
               <span className="text-[10px] font-mono font-semibold" style={{ color: item.color }}>{item.status}</span>
             </div>
           ))}
-        </div>
+        </InteractiveCard>
 
-        <div className="amber-card rounded-lg p-4 w-52" style={{ animationDelay: "2s" }}>
+        <InteractiveCard containerClassName="rounded-lg w-52" className="amber-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={200}>
           <div className="hud-label mb-2 opacity-60" style={{ color: "oklch(0.82 0.20 58)" }}>CURRENT OFFER</div>
           <div className="text-[oklch(0.82_0.20_58)] font-display font-bold text-lg">The Sprint</div>
-          <div className="text-[oklch(0.55_0.015_220)] text-xs font-mono mt-1">$15,000 · 48-hour delivery</div>
+          <div className="text-[oklch(0.55_0.015_220)] text-xs font-mono mt-1">$15,000 · 3-day delivery</div>
           <div className="mt-3">
             <Link href="/book?type=sprint">
               <Button size="sm" className="w-full bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)] font-bold text-xs h-7">
@@ -383,7 +381,7 @@ function Hero() {
               </Button>
             </Link>
           </div>
-        </div>
+        </InteractiveCard>
       </div>
     </section>
   );
@@ -472,7 +470,7 @@ function CaseStudies() {
 
         <div className="grid md:grid-cols-3 gap-6">
           {cases.map((c) => (
-            <div key={c.client} className="hud-card rounded-xl p-6 group hover:border-[oklch(0.78_0.18_195_/_0.4)] transition-all duration-300">
+            <InteractiveCard key={c.client} containerClassName="rounded-xl" className="hud-card rounded-xl p-6 group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300}>
               <div className="flex items-start justify-between mb-5">
                 <div>
                   <span className="hud-label text-[10px] mb-2 block" style={{ color: c.color }}>{c.tag}</span>
@@ -501,7 +499,7 @@ function CaseStudies() {
                   </span>
                 ))}
               </div>
-            </div>
+            </InteractiveCard>
           ))}
         </div>
       </div>
@@ -529,14 +527,13 @@ function Services() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
-          {/* The Sprint */}
-          <div className="amber-card rounded-2xl p-8 relative overflow-hidden group">
+          <InteractiveCard containerClassName="rounded-2xl" className="amber-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md">
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
               style={{ background: "radial-gradient(circle, oklch(0.82 0.20 58) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
 
             <div className="hud-label mb-2" style={{ color: "oklch(0.82 0.20 58)" }}>TIER 01 // THE SPRINT</div>
             <div className="font-display font-bold text-5xl text-[oklch(0.82_0.20_58)] mb-1">$15,000</div>
-            <div className="text-[oklch(0.55_0.015_220)] text-sm font-mono mb-6">One-time · 48-hour delivery</div>
+            <div className="text-[oklch(0.55_0.015_220)] text-sm font-mono mb-6">One-time · 3-day delivery</div>
 
             <p className="text-[oklch(0.65_0.015_220)] mb-8 leading-relaxed">
               A weekend intensive to diagnose and fix your most critical infrastructure bottleneck.
@@ -563,10 +560,9 @@ function Services() {
                 Book Your Sprint <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-          </div>
+          </InteractiveCard>
 
-          {/* The Advisory */}
-          <div className="hud-card rounded-2xl p-8 relative overflow-hidden group animate-border-glow">
+          <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md">
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
               style={{ background: "radial-gradient(circle, oklch(0.78 0.18 195) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
 
@@ -599,7 +595,7 @@ function Services() {
                 Start the Advisory <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-          </div>
+          </InteractiveCard>
         </div>
       </div>
     </section>
@@ -624,7 +620,7 @@ function Testimonials() {
       color: "oklch(0.78 0.18 195)",
     },
     {
-      quote: "We were burning $45k/month on AWS. After Christopher's 48-hour sprint, we're at $9k. Same performance. Better observability. He literally paid for himself 3x over in the first month.",
+      quote: "We were burning $45k/month on AWS. After Christopher's 3-day sprint, we're at $9k. Same performance. Better observability. He literally paid for himself 3x over in the first month.",
       name: "David Park",
       title: "Co-Founder",
       company: "AI Startup",
@@ -652,7 +648,7 @@ function Testimonials() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {quotes.map((q, i) => (
-            <div key={i} className="hud-card rounded-xl p-7 relative group hover:border-opacity-60 transition-all duration-300">
+            <InteractiveCard key={i} containerClassName="rounded-xl" className="hud-card rounded-xl p-7 relative group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300}>
               {/* Big quote mark */}
               <div className="absolute top-4 right-5 font-display text-7xl leading-none opacity-10 select-none" style={{ color: q.color }}>
                 "
@@ -676,7 +672,7 @@ function Testimonials() {
                   <div className="text-xs text-[oklch(0.45_0.015_220)]">{q.title} · {q.company}</div>
                 </div>
               </div>
-            </div>
+            </InteractiveCard>
           ))}
         </div>
       </div>
@@ -741,7 +737,7 @@ function About() {
           </div>
 
           {/* Timeline */}
-          <div className="hud-card rounded-2xl p-6">
+          <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-6">
             <div className="hud-label mb-5 opacity-60">CAREER TIMELINE</div>
             <div className="space-y-0">
               {timeline.map((item, i) => (
@@ -759,7 +755,7 @@ function About() {
                 </div>
               ))}
             </div>
-          </div>
+          </InteractiveCard>
         </div>
       </div>
     </section>
@@ -782,7 +778,7 @@ function BookSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[oklch(0.82_0.20_58_/_0.03)] to-transparent" />
       <div className="container relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="amber-card rounded-2xl p-10 md:p-14 relative overflow-hidden">
+          <InteractiveCard containerClassName="rounded-2xl" className="amber-card rounded-2xl p-10 md:p-14 relative overflow-hidden">
             {/* Background glow */}
             <div className="absolute top-0 right-0 w-64 h-64 opacity-20 pointer-events-none"
               style={{ background: "radial-gradient(circle, oklch(0.82 0.20 58) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
@@ -834,7 +830,7 @@ function BookSection() {
                 </div>
               )}
             </div>
-          </div>
+          </InteractiveCard>
         </div>
       </div>
     </section>
@@ -870,13 +866,13 @@ function Contact() {
           </div>
 
           {submitted ? (
-            <div className="hud-card rounded-2xl p-10 text-center">
+            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-10 text-center">
               <CheckCircle2 className="w-12 h-12 text-[oklch(0.68_0.20_160)] mx-auto mb-4" />
               <h3 className="font-display font-bold text-2xl text-foreground mb-2">Message received.</h3>
               <p className="text-[oklch(0.55_0.015_220)]">I'll respond within 24 hours. Check your inbox.</p>
-            </div>
+            </InteractiveCard>
           ) : (
-            <div className="hud-card rounded-2xl p-8 space-y-5">
+            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 space-y-5" showBeam={true} flashlightSize={400}>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="hud-label mb-2 block opacity-60">FIRST NAME</label>
@@ -925,7 +921,7 @@ function Contact() {
               >
                 {submit.isPending ? "Transmitting..." : "Send Message"} <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-            </div>
+            </InteractiveCard>
           )}
         </div>
       </div>

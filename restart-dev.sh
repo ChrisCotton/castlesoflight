@@ -6,10 +6,51 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$SCRIPT_DIR/dev-server.log"
 PORT=3000   # Express server port (Vite proxies through it)
 
-# Ensure local node_modules/.bin is on PATH so tsx/vite are found
-export PATH="$SCRIPT_DIR/node_modules/.bin:$PATH"
+# Ensure local node_modules/.bin and Homebrew paths are on PATH
+export PATH="$SCRIPT_DIR/node_modules/.bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
+ensure_db() {
+  echo "🐬 Checking database status..."
+  if ! lsof -iTCP:3306 -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "   — MySQL is not running on port 3306."
+    if command -v brew >/dev/null 2>&1; then
+      if brew list mysql >/dev/null 2>&1 || brew list mysql@8.4 >/dev/null 2>&1 || brew list mysql@8.0 >/dev/null 2>&1; then
+        echo "   🚀 Starting MySQL via Homebrew..."
+        # Try different possible mysql formula names
+        if brew list mysql >/dev/null 2>&1; then brew services start mysql;
+        elif brew list mysql@8.4 >/dev/null 2>&1; then brew services start mysql@8.4;
+        elif brew list mysql@8.0 >/dev/null 2>&1; then brew services start mysql@8.0;
+        fi
+        
+        # Wait for MySQL to be ready
+        local max_wait=30
+        local waited=0
+        echo -n "   ⏳ Waiting for MySQL to initialize"
+        while ! lsof -iTCP:3306 -sTCP:LISTEN >/dev/null 2>&1; do
+          sleep 1
+          waited=$((waited + 1))
+          echo -n "."
+          if [ "$waited" -ge "$max_wait" ]; then
+            echo ""
+            echo "   ⚠️  MySQL failed to start within ${max_wait}s."
+            return 1
+          fi
+        done
+        echo " Ready."
+      else
+        echo "   ❌ MySQL is not installed via Homebrew. Please run 'brew install mysql' first."
+        return 1
+      fi
+    else
+      echo "   ❌ Homebrew not found. Please start MySQL manually."
+      return 1
+    fi
+  else
+    echo "   ✓ MySQL is running."
+  fi
+}
+
 show_help() {
   cat << 'EOF'
 Usage: ./restart-dev.sh [OPTIONS]
@@ -68,6 +109,7 @@ wait_for_server() {
 }
 
 run_background() {
+  ensure_db || true
   echo "🚀 Starting dev server in background..."
   nohup npm run dev > "$LOG_FILE" 2>&1 &
   echo "   PID: $!"
@@ -75,6 +117,7 @@ run_background() {
 }
 
 run_foreground() {
+  ensure_db || true
   echo "🚀 Starting dev server in foreground (Ctrl+C to stop)..."
   echo ""
   npm run dev

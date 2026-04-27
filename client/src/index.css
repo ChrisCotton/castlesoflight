@@ -200,6 +200,12 @@
   text-shadow: 0 0 20px hsl(188 90% 45% / 0.3);
 }
 
+/* Emerald HUD text */
+.text-emerald-hud {
+  color: hsl(160 80% 55%);
+  text-shadow: 0 0 25px hsl(160 80% 55% / 0.4);
+}
+
 /* Glow effects */
 .glow-amber  { box-shadow: 0 0 30px hsl(25 95% 53% / 0.2), 0 0 60px hsl(25 95% 53% / 0.08); }
 .glow-cyan   { box-shadow: 0 0 30px hsl(188 90% 45% / 0.2), 0 0 60px hsl(188 90% 45% / 0.08); }
@@ -302,6 +308,87 @@
   );
 }
 
+/* ─── Animated Beam Border ─── */
+.border-beam-container {
+  position: relative;
+  border-radius: var(--radius);
+}
+
+.border-beam {
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0;
+  z-index: 0; /* Below content — the card's own background masks the interior */
+  transition: opacity 0.5s ease;
+}
+
+/* The spinning conic gradient — oversized so it covers corners during rotation */
+.border-beam::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 60%,
+    var(--brand-orange) 78%,
+    var(--brand-cyan) 88%,
+    transparent 100%
+  );
+  animation: beam-spin 3s linear infinite;
+}
+
+/* Interior mask — sits within .border-beam (z-index:0, behind content)
+   so it only hides the gradient interior, not the card text.
+   inset: 1px relative to .border-beam (which is inset: -1px from container)
+   = 0px from container edge. The visible beam is the -1px that extends beyond. */
+.border-beam::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: hsl(222 47% 11%);  /* matches --background exactly, must be opaque */
+  z-index: 1;
+}
+
+.border-beam-container:hover .border-beam {
+  opacity: 1;
+}
+
+@keyframes beam-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── Mouse Flashlight Effect ─── */
+.flashlight-effect {
+  position: relative;
+}
+
+.flashlight-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    var(--flashlight-size, 600px) circle at var(--x, 50%) var(--y, 50%),
+    oklch(0.78 0.18 195 / 0.15),
+    oklch(0.82 0.20 58 / 0.05) 30%,
+    transparent 60%
+  );
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.flashlight-effect:hover::before {
+  opacity: 1;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    ANIMATIONS
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -342,9 +429,42 @@
   50%       { opacity: 1; }
 }
 
+
 @keyframes border-glow {
   0%, 100% { border-color: hsl(217 33% 35% / 0.2); box-shadow: 0 0 15px hsl(217 33% 35% / 0.05); }
   50%       { border-color: hsl(217 33% 35% / 0.4); box-shadow: 0 0 30px hsl(217 33% 35% / 0.1); }
+}
+
+@keyframes beam-scan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(1000%); opacity: 0; }
+}
+
+.scanning-beam {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.scanning-beam::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--brand-cyan) 50%, 
+    transparent 100%
+  );
+  box-shadow: 0 0 15px var(--brand-cyan), 0 0 30px var(--brand-cyan);
+  animation: beam-scan 4s linear infinite;
 }
 
 .animate-streak-1    { animation: streak-drift 12s ease-in-out infinite; }
