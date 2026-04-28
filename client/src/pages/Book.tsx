@@ -75,12 +75,10 @@ function StepCallType({
             <InteractiveCard
               key={ct.id}
               containerClassName="rounded-xl w-full"
-              showBeam={true}
-              className={`w-full text-left rounded-xl border p-6 transition-all bg-opacity-30 backdrop-blur-md ${
-                selected === ct.id
+              className={`w-full text-left rounded-xl border p-6 transition-all bg-opacity-30 backdrop-blur-md ${selected === ct.id
                   ? "border-primary/60 bg-primary/10 shadow-[0_0_15px_var(--primary-glow)]"
                   : "border-border/40 bg-secondary/10 hover:border-primary/30 hover:bg-primary/5"
-              }`}
+                }`}
             >
               <button
                 onClick={() => onSelect(ct.id)}
@@ -213,13 +211,12 @@ function StepDateTime({
                   key={day}
                   disabled={!selectable}
                   onClick={() => setPickedDate(dateStr)}
-                  className={`aspect-square rounded-lg text-sm font-medium transition-all ${
-                    isSelected
+                  className={`aspect-square rounded-lg text-sm font-medium transition-all ${isSelected
                       ? "bg-primary text-primary-foreground font-bold shadow-[0_0_12px_var(--primary-glow)]"
                       : selectable
-                      ? "hover:bg-secondary/50 text-foreground"
-                      : "text-muted-foreground/20 cursor-not-allowed"
-                  }`}
+                        ? "hover:bg-secondary/50 text-foreground"
+                        : "text-muted-foreground/20 cursor-not-allowed"
+                    }`}
                 >
                   {day}
                 </button>
@@ -259,11 +256,10 @@ function StepDateTime({
                   <button
                     key={slot}
                     onClick={() => onSelect(pickedDate, slot)}
-                    className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-all ${
-                      selectedTime === slot && selectedDate === pickedDate
+                    className={`py-2.5 px-4 rounded-lg border text-sm font-medium transition-all ${selectedTime === slot && selectedDate === pickedDate
                         ? "border-primary/60 bg-primary/10 text-primary shadow-[0_0_10px_var(--primary-glow)]"
                         : "border-border/40 bg-secondary/10 text-foreground hover:border-primary/30"
-                    }`}
+                      }`}
                   >
                     {formatTime(slot)}
                   </button>
@@ -501,7 +497,12 @@ export default function Book() {
   const [confirmedCallTypeName, setConfirmedCallTypeName] = useState("");
   const [wasPaid, setWasPaid] = useState(false);
   const [contactForm, setContactForm] = useState({
-    firstName: "", lastName: "", email: "", phone: "", company: "", message: "",
+    firstName: params.get("firstName") || "",
+    lastName: params.get("lastName") || "",
+    email: params.get("email") || "",
+    phone: params.get("phone") || "",
+    company: params.get("company") || "",
+    message: "",
   });
 
   const { data: callTypes } = trpc.booking.getCallTypes.useQuery();
@@ -579,13 +580,12 @@ export default function Book() {
                 const done = step > n;
                 return (
                   <div key={label} className="flex items-center gap-2">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      done
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${done
                         ? "bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)]"
                         : active
-                        ? "bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)]"
-                        : "bg-[oklch(0.08_0.01_260)] text-[oklch(0.45_0.015_220)] border border-[oklch(0.78_0.18_195_/_0.2)]"
-                    }`}>
+                          ? "bg-[oklch(0.82_0.20_58)] text-[oklch(0.06_0.01_260)]"
+                          : "bg-[oklch(0.08_0.01_260)] text-[oklch(0.45_0.015_220)] border border-[oklch(0.78_0.18_195_/_0.2)]"
+                      }`}>
                       {done ? <CheckCircle2 className="w-4 h-4" /> : n}
                     </div>
                     <span className={`text-sm hidden sm:block ${active ? "text-foreground font-medium" : "text-[oklch(0.45_0.015_220)]"}`}>{label}</span>
