@@ -354,7 +354,7 @@
   z-index: 1;
 }
 
-.border-beam-container:hover .border-beam {
+.border-beam-container:hover > .border-beam {
   opacity: 1;
 }
 
@@ -464,6 +464,12 @@
     transparent 100%
   );
   box-shadow: 0 0 15px var(--brand-cyan), 0 0 30px var(--brand-cyan);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.border-beam-container:hover > .scanning-beam::after {
+  opacity: 0.5;
   animation: beam-scan 4s linear infinite;
 }
 

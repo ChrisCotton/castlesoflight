@@ -75,6 +75,7 @@ function StepCallType({
             <InteractiveCard
               key={ct.id}
               containerClassName="rounded-xl w-full"
+              showBeam={true}
               className={`w-full text-left rounded-xl border p-6 transition-all bg-opacity-30 backdrop-blur-md ${
                 selected === ct.id
                   ? "border-primary/60 bg-primary/10 shadow-[0_0_15px_var(--primary-glow)]"
