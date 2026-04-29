@@ -61,64 +61,75 @@
   --radius: 0.625rem;
 
   /* ── Surface ── */
-  --background:   hsl(222 47% 11%);      /* #0f172a  slate-900 */
-  --foreground:   hsl(210 40% 96%);      /* #f1f5f9  near-white */
+  --background: hsl(222 47% 11%);
+  /* #0f172a  slate-900 */
+  --foreground: hsl(210 40% 96%);
+  /* #f1f5f9  near-white */
 
   /* ── Cards ── */
-  --card:         hsl(217 33% 17%);      /* slate-800 tint */
+  --card: hsl(217 33% 17%);
+  /* slate-800 tint */
   --card-foreground: hsl(210 40% 96%);
 
-  --popover:      hsl(217 33% 17%);
+  --popover: hsl(217 33% 17%);
   --popover-foreground: hsl(210 40% 96%);
 
   /* ── Primary: Burnt Orange ── */
-  --primary:      hsl(25 95% 53%);       /* warm amber/orange */
+  --primary: hsl(25 95% 53%);
+  /* warm amber/orange */
   --primary-foreground: hsl(0 0% 100%);
 
   /* ── Secondary: Slate Blue ── */
-  --secondary:    hsl(217 33% 22%);
+  --secondary: hsl(217 33% 22%);
   --secondary-foreground: hsl(215 20% 75%);
 
   /* ── Muted ── */
-  --muted:        hsl(217 33% 20%);
+  --muted: hsl(217 33% 20%);
   --muted-foreground: hsl(215 20% 65%);
 
   /* ── Accent: Cyan tint ── */
-  --accent:       hsl(188 90% 45%);      /* cyan accent */
+  --accent: hsl(188 90% 45%);
+  /* cyan accent */
   --accent-foreground: hsl(0 0% 100%);
 
   /* ── Destructive ── */
-  --destructive:  hsl(0 85% 60%);
+  --destructive: hsl(0 85% 60%);
   --destructive-foreground: hsl(0 0% 100%);
 
   /* ── Borders / Inputs ── */
-  --border:       hsl(217 33% 25%);
-  --input:        hsl(217 33% 22%);
-  --ring:         hsl(25 95% 53%);       /* orange focus ring */
+  --border: hsl(217 33% 25%);
+  --input: hsl(217 33% 22%);
+  --ring: hsl(25 95% 53%);
+  /* orange focus ring */
 
   /* ── Charts ── */
-  --chart-1: hsl(25 95% 53%);           /* burnt orange */
-  --chart-2: hsl(188 90% 45%);          /* cyan */
-  --chart-3: hsl(263 70% 60%);          /* violet */
-  --chart-4: hsl(160 60% 45%);          /* emerald */
-  --chart-5: hsl(45 90% 60%);           /* gold */
+  --chart-1: hsl(25 95% 53%);
+  /* burnt orange */
+  --chart-2: hsl(188 90% 45%);
+  /* cyan */
+  --chart-3: hsl(263 70% 60%);
+  /* violet */
+  --chart-4: hsl(160 60% 45%);
+  /* emerald */
+  --chart-5: hsl(45 90% 60%);
+  /* gold */
 
   /* ── Sidebar ── */
-  --sidebar:         hsl(222 47% 9%);
+  --sidebar: hsl(222 47% 9%);
   --sidebar-foreground: hsl(215 20% 75%);
   --sidebar-primary: hsl(25 95% 53%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent:  hsl(217 33% 20%);
+  --sidebar-accent: hsl(217 33% 20%);
   --sidebar-accent-foreground: hsl(215 20% 80%);
-  --sidebar-border:  hsl(217 33% 22%);
-  --sidebar-ring:    hsl(25 95% 53%);
+  --sidebar-border: hsl(217 33% 22%);
+  --sidebar-ring: hsl(25 95% 53%);
 
   /* ── Brand tokens (for custom utilities) ── */
-  --brand-orange:  hsl(25 95% 53%);
-  --brand-cyan:    hsl(188 90% 45%);
-  --brand-violet:  hsl(263 70% 60%);
+  --brand-orange: hsl(25 95% 53%);
+  --brand-cyan: hsl(188 90% 45%);
+  --brand-violet: hsl(263 70% 60%);
   --brand-emerald: hsl(160 60% 45%);
-  --brand-slate:   hsl(215 20% 65%);
+  --brand-slate: hsl(215 20% 65%);
 }
 
 /* Site is always dark — .dark mirrors :root */
@@ -131,6 +142,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
@@ -138,12 +150,22 @@
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
   }
-  code, pre, .font-mono {
+
+  code,
+  pre,
+  .font-mono {
     font-family: var(--font-mono);
   }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -166,11 +188,19 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
   @media (min-width: 640px) {
-    .container { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
   }
+
   @media (min-width: 1024px) {
-    .container { padding-left: 2rem; padding-right: 2rem; }
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
 }
 
@@ -200,17 +230,22 @@
   text-shadow: 0 0 20px hsl(188 90% 45% / 0.3);
 }
 
-/* Emerald HUD text */
-.text-emerald-hud {
-  color: hsl(160 80% 55%);
-  text-shadow: 0 0 25px hsl(160 80% 55% / 0.4);
+/* Glow effects */
+.glow-amber {
+  box-shadow: 0 0 30px hsl(25 95% 53% / 0.2), 0 0 60px hsl(25 95% 53% / 0.08);
 }
 
-/* Glow effects */
-.glow-amber  { box-shadow: 0 0 30px hsl(25 95% 53% / 0.2), 0 0 60px hsl(25 95% 53% / 0.08); }
-.glow-cyan   { box-shadow: 0 0 30px hsl(188 90% 45% / 0.2), 0 0 60px hsl(188 90% 45% / 0.08); }
-.glow-sm-amber { box-shadow: 0 0 12px hsl(25 95% 53% / 0.25); }
-.glow-sm-cyan  { box-shadow: 0 0 12px hsl(188 90% 45% / 0.25); }
+.glow-cyan {
+  box-shadow: 0 0 30px hsl(188 90% 45% / 0.2), 0 0 60px hsl(188 90% 45% / 0.08);
+}
+
+.glow-sm-amber {
+  box-shadow: 0 0 12px hsl(25 95% 53% / 0.25);
+}
+
+.glow-sm-cyan {
+  box-shadow: 0 0 12px hsl(188 90% 45% / 0.25);
+}
 
 /* Grid dot background */
 .grid-bg {
@@ -269,6 +304,7 @@
   text-transform: uppercase;
   color: hsl(160 60% 55%);
 }
+
 .sys-online::before {
   content: '';
   width: 6px;
@@ -299,13 +335,11 @@
 
 /* Scan line overlay */
 .scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    hsl(222 47% 8% / 0.1) 2px,
-    hsl(222 47% 8% / 0.1) 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      hsl(222 47% 8% / 0.1) 2px,
+      hsl(222 47% 8% / 0.1) 4px);
 }
 
 /* ─── Animated Beam Border ─── */
@@ -321,7 +355,8 @@
   border-radius: inherit;
   overflow: hidden;
   opacity: 0;
-  z-index: 0; /* Below content — the card's own background masks the interior */
+  z-index: 0;
+  /* Below content — the card's own background masks the interior */
   transition: opacity 0.5s ease;
 }
 
@@ -330,14 +365,12 @@
   content: '';
   position: absolute;
   inset: -50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    transparent 60%,
-    var(--brand-orange) 78%,
-    var(--brand-cyan) 88%,
-    transparent 100%
-  );
+  background: conic-gradient(from 0deg,
+      transparent 0%,
+      transparent 60%,
+      var(--brand-orange) 78%,
+      var(--brand-cyan) 88%,
+      transparent 100%);
   animation: beam-spin 3s linear infinite;
 }
 
@@ -350,17 +383,23 @@
   position: absolute;
   inset: 1px;
   border-radius: inherit;
-  background: hsl(222 47% 11%);  /* matches --background exactly, must be opaque */
+  background: hsl(222 47% 11%);
+  /* matches --background exactly, must be opaque */
   z-index: 1;
 }
 
-.border-beam-container:hover > .border-beam {
+.border-beam-container:hover .border-beam {
   opacity: 1;
 }
 
 @keyframes beam-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ─── Mouse Flashlight Effect ─── */
@@ -374,12 +413,9 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(
-    var(--flashlight-size, 600px) circle at var(--x, 50%) var(--y, 50%),
-    oklch(0.78 0.18 195 / 0.15),
-    oklch(0.82 0.20 58 / 0.05) 30%,
-    transparent 60%
-  );
+  background: radial-gradient(var(--flashlight-size, 600px) circle at var(--x, 50%) var(--y, 50%),
+      rgba(255, 255, 255, 0.12),
+      transparent 40%);
   z-index: 15;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -393,89 +429,159 @@
    ANIMATIONS
    ═══════════════════════════════════════════════════════════════════════════ */
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.85); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
 }
 
 @keyframes streak-drift {
-  0%   { transform: translateX(-10%) translateY(5%) rotate(-5deg); opacity: 0.4; }
-  50%  { transform: translateX(5%) translateY(-3%) rotate(-3deg); opacity: 0.7; }
-  100% { transform: translateX(-10%) translateY(5%) rotate(-5deg); opacity: 0.4; }
+  0% {
+    transform: translateX(-10%) translateY(5%) rotate(-5deg);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateX(5%) translateY(-3%) rotate(-3deg);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateX(-10%) translateY(5%) rotate(-5deg);
+    opacity: 0.4;
+  }
 }
 
 @keyframes streak-drift-2 {
-  0%   { transform: translateX(5%) translateY(-5%) rotate(3deg); opacity: 0.3; }
-  50%  { transform: translateX(-5%) translateY(3%) rotate(5deg); opacity: 0.6; }
-  100% { transform: translateX(5%) translateY(-5%) rotate(3deg); opacity: 0.3; }
+  0% {
+    transform: translateX(5%) translateY(-5%) rotate(3deg);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: translateX(-5%) translateY(3%) rotate(5deg);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateX(5%) translateY(-5%) rotate(3deg);
+    opacity: 0.3;
+  }
 }
 
 @keyframes hud-flicker {
-  0%, 98%, 100% { opacity: 1; }
-  99% { opacity: 0.90; }
+
+  0%,
+  98%,
+  100% {
+    opacity: 1;
+  }
+
+  99% {
+    opacity: 0.90;
+  }
 }
 
 @keyframes data-scroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-6px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 
 @keyframes border-glow {
-  0%, 100% { border-color: hsl(217 33% 35% / 0.2); box-shadow: 0 0 15px hsl(217 33% 35% / 0.05); }
-  50%       { border-color: hsl(217 33% 35% / 0.4); box-shadow: 0 0 30px hsl(217 33% 35% / 0.1); }
+
+  0%,
+  100% {
+    border-color: hsl(217 33% 35% / 0.2);
+    box-shadow: 0 0 15px hsl(217 33% 35% / 0.05);
+  }
+
+  50% {
+    border-color: hsl(217 33% 35% / 0.4);
+    box-shadow: 0 0 30px hsl(217 33% 35% / 0.1);
+  }
 }
 
-@keyframes beam-scan {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.5; }
-  100% { transform: translateY(1000%); opacity: 0; }
+.animate-streak-1 {
+  animation: streak-drift 12s ease-in-out infinite;
 }
 
-.scanning-beam {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 20;
-  overflow: hidden;
-  border-radius: inherit;
+.animate-streak-2 {
+  animation: streak-drift-2 15s ease-in-out infinite;
 }
 
-.scanning-beam::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    var(--brand-cyan) 50%, 
-    transparent 100%
-  );
-  box-shadow: 0 0 15px var(--brand-cyan), 0 0 30px var(--brand-cyan);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.animate-hud-flicker {
+  animation: hud-flicker 8s ease-in-out infinite;
 }
 
-.border-beam-container:hover > .scanning-beam::after {
-  opacity: 0.5;
-  animation: beam-scan 4s linear infinite;
+.animate-float {
+  animation: float-y 5s ease-in-out infinite;
 }
 
-.animate-streak-1    { animation: streak-drift 12s ease-in-out infinite; }
-.animate-streak-2    { animation: streak-drift-2 15s ease-in-out infinite; }
-.animate-hud-flicker { animation: hud-flicker 8s ease-in-out infinite; }
-.animate-float       { animation: float-y 5s ease-in-out infinite; }
-.animate-glow-pulse  { animation: glow-pulse 4s ease-in-out infinite; }
-.animate-border-glow { animation: border-glow 6s ease-in-out infinite; }
+.animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 6s ease-in-out infinite;
+}
+
+.animate-streak-1 {
+  animation: streak-drift 12s ease-in-out infinite;
+}
+
+.animate-streak-2 {
+  animation: streak-drift-2 15s ease-in-out infinite;
+}
+
+.animate-hud-flicker {
+  animation: hud-flicker 8s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 6s ease-in-out infinite;
+}

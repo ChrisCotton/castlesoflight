@@ -1,0 +1,68 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "dist/,package.json,pnpm-lock.yaml"
+          target: ${{ secrets.VPS_DEPLOY_PATH }}
+          strip_components: 0
+
+      - name: Post-deployment commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            # Ensure pnpm is installed
+            if ! command -v pnpm &> /dev/null; then
+              npm install -g pnpm
+            fi
+
+            cd ${{ secrets.VPS_DEPLOY_PATH }}
+            
+            # Install production dependencies
+            pnpm install --prod --frozen-lockfile
+            
+            # Run database migrations (optional, uncomment if needed)
+            # pnpm run db:push
+            
+            # Restart application with PM2
+            # We use --update-env to pick up any changes in the environment
+            pm2 restart castlesoflight --update-env || pm2 start dist/index.js --name castlesoflight
+

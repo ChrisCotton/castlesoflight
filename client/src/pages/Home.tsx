@@ -303,19 +303,22 @@ function Hero() {
 
           {/* Main headline */}
           <h1 className="font-display font-bold leading-[0.95] mb-6">
-            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-foreground">Bulletproof</span>
-            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] gradient-text-amber">Infrastructure</span>
-            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-foreground">
-              in <span className="text-emerald-hud">3 Days,</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)] text-foreground">I Build</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)] gradient-text-amber">3-Month</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)] text-foreground">Infrastructure</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)]">
+              <span className="text-foreground">in </span>
+              <span className="text-cyan-hud">3 Days.</span>
             </span>
-            <span className="block text-[clamp(2.5rem,7vw,6.5rem)] text-cyan-hud opacity-40">Not Three Months.</span>
           </h1>
 
-          <p className="text-[oklch(0.65_0.015_220)] text-lg md:text-xl max-w-3xl mb-4 leading-relaxed">
-            30 years of elite engineering (Spotify, Google, Raytheon) compressed into a 72-hour AI-augmented strike.
+          <p className="text-[oklch(0.65_0.015_220)] text-lg md:text-xl max-w-2xl mb-4 leading-relaxed">
+            30 years of elite infrastructure engineering — Spotify, Google ProServe, Raytheon —
+            now turbocharged with agentic AI.
           </p>
-          <p className="text-[oklch(0.55_0.015_220)] text-base max-w-2xl mb-10 leading-relaxed">
-            Stop compromising between speed and stability. Stop waiting for DevOps cycles and start shipping.
+          <p className="text-[oklch(0.55_0.015_220)] text-base max-w-xl mb-10 leading-relaxed">
+            I slash cloud costs by <span className="text-[oklch(0.82_0.20_58)] font-semibold">80%</span> and deployment lag by{" "}
+            <span className="text-[oklch(0.78_0.18_195)] font-semibold">99%</span> for fintech and healthcare companies who can't afford to move slowly.
           </p>
 
           {/* CTAs */}
@@ -342,7 +345,7 @@ function Hero() {
               { value: "99%", label: "DEPLOY SPEEDUP", color: "oklch(0.65 0.22 280)" },
               { value: "3D", label: "SPRINT DELIVERY", color: "oklch(0.68 0.20 160)" },
             ].map((stat) => (
-              <InteractiveCard key={stat.label} containerClassName="rounded-lg h-full" className="hud-card p-4 rounded-lg bg-opacity-40 backdrop-blur-md" flashlightSize={150} showBeam={true}>
+              <InteractiveCard key={stat.label} containerClassName="rounded-lg h-full" className="hud-card p-4 rounded-lg bg-opacity-40 backdrop-blur-md" flashlightSize={150}>
                 <div className="font-display font-bold text-2xl mb-1 animate-hud-flicker" style={{ color: stat.color, textShadow: `0 0 20px ${stat.color}` }}>
                   {stat.value}
                 </div>
@@ -355,7 +358,7 @@ function Hero() {
 
       {/* Right-side floating HUD panel — desktop only */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-3 z-10">
-        <InteractiveCard containerClassName="rounded-lg w-52 animate-float" className="hud-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={150} showBeam={true}>
+        <InteractiveCard containerClassName="rounded-lg w-52 animate-float" className="hud-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={150}>
           <div className="hud-label mb-3 opacity-60">STACK STATUS</div>
           {[
             { label: "K8s Clusters", status: "NOMINAL", color: "oklch(0.68 0.20 160)" },
@@ -370,7 +373,7 @@ function Hero() {
           ))}
         </InteractiveCard>
 
-        <InteractiveCard containerClassName="rounded-lg w-52" className="amber-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={200} showBeam={true}>
+        <InteractiveCard containerClassName="rounded-lg w-52" className="amber-card rounded-lg p-4 bg-opacity-40 backdrop-blur-md" flashlightSize={200}>
           <div className="hud-label mb-2 opacity-60" style={{ color: "oklch(0.82 0.20 58)" }}>CURRENT OFFER</div>
           <div className="text-[oklch(0.82_0.20_58)] font-display font-bold text-lg">The Sprint</div>
           <div className="text-[oklch(0.55_0.015_220)] text-xs font-mono mt-1">$15,000 · 3-day delivery</div>
@@ -389,26 +392,41 @@ function Hero() {
 
 // ─── Logos Bar ────────────────────────────────────────────────────────────────
 function LogosBar() {
-  const logos = ["Spotify", "Google ProServe", "Raytheon", "Assort Health", "Clapself", "LearnLab AI"];
+  const logos = [
+    { name: "Spotify", path: "/logos/spotify.svg" },
+    { name: "Google ProServe", path: "/logos/google-cloud.svg" },
+    { name: "Raytheon", path: "/logos/raytheon.svg" },
+    { name: "Assort Health", path: "/logos/assort-health.png" },
+    { name: "Clapself", path: "/logos/clapself.png" },
+    { name: "LearnLab AI", path: "/logos/learnlab.png" },
+  ];
   return (
-    <section className="border-y border-[oklch(0.78_0.18_195_/_0.10)] bg-[oklch(0.055_0.008_250_/_0.8)] py-5">
+    <section className="border-y border-[oklch(0.78_0.18_195_/_0.10)] bg-[oklch(0.055_0.008_250_/_0.8)] py-6">
       <div className="container">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-6">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[oklch(0.78_0.18_195_/_0.3)] to-transparent" />
-          <span className="hud-label opacity-40">BATTLE-TESTED AT</span>
+          <span className="hud-label opacity-40 text-[10px] tracking-[0.2em]">BATTLE-TESTED AT</span>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[oklch(0.78_0.18_195_/_0.3)] to-transparent" />
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
           {logos.map((logo) => (
-            <span key={logo} className="font-display font-semibold text-sm text-[oklch(0.40_0.015_220)] hover:text-[oklch(0.65_0.015_220)] transition-colors tracking-wide">
-              {logo}
-            </span>
+            <div key={logo.name} className="flex items-center gap-2.5 group cursor-default">
+              <img 
+                src={logo.path} 
+                alt={`${logo.name} logo`}
+                className="h-5 w-auto opacity-40 group-hover:opacity-80 transition-all duration-300 brightness-0 invert"
+              />
+              <span className="font-display font-semibold text-xs text-[oklch(0.40_0.015_220)] group-hover:text-[oklch(0.65_0.015_220)] transition-colors tracking-wide uppercase">
+                {logo.name}
+              </span>
+            </div>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
 
 // ─── Case Studies ─────────────────────────────────────────────────────────────
 function CaseStudies() {
@@ -470,7 +488,7 @@ function CaseStudies() {
 
         <div className="grid md:grid-cols-3 gap-6">
           {cases.map((c) => (
-            <InteractiveCard key={c.client} containerClassName="rounded-xl" className="hud-card rounded-xl p-6 group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300} showBeam={true}>
+            <InteractiveCard key={c.client} containerClassName="rounded-xl" className="hud-card rounded-xl p-6 group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300}>
               <div className="flex items-start justify-between mb-5">
                 <div>
                   <span className="hud-label text-[10px] mb-2 block" style={{ color: c.color }}>{c.tag}</span>
@@ -527,7 +545,7 @@ function Services() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
-          <InteractiveCard containerClassName="rounded-2xl" className="amber-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md" showBeam={true}>
+          <InteractiveCard containerClassName="rounded-2xl" className="amber-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md">
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
               style={{ background: "radial-gradient(circle, oklch(0.82 0.20 58) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
 
@@ -562,7 +580,7 @@ function Services() {
             </Link>
           </InteractiveCard>
 
-          <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md" showBeam={true}>
+          <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 relative overflow-hidden group bg-opacity-40 backdrop-blur-md">
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
               style={{ background: "radial-gradient(circle, oklch(0.78 0.18 195) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
 
@@ -648,7 +666,7 @@ function Testimonials() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {quotes.map((q, i) => (
-            <InteractiveCard key={i} containerClassName="rounded-xl" className="hud-card rounded-xl p-7 relative group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300} showBeam={true}>
+            <InteractiveCard key={i} containerClassName="rounded-xl" className="hud-card rounded-xl p-7 relative group transition-all duration-300 bg-opacity-40 backdrop-blur-md" flashlightSize={300}>
               {/* Big quote mark */}
               <div className="absolute top-4 right-5 font-display text-7xl leading-none opacity-10 select-none" style={{ color: q.color }}>
                 "
@@ -872,7 +890,7 @@ function Contact() {
               <p className="text-[oklch(0.55_0.015_220)]">I'll respond within 24 hours. Check your inbox.</p>
             </InteractiveCard>
           ) : (
-            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 space-y-5" showBeam={true} flashlightSize={400}>
+            <InteractiveCard containerClassName="rounded-2xl" className="hud-card rounded-2xl p-8 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="hud-label mb-2 block opacity-60">FIRST NAME</label>
